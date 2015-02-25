@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SharpMod.Web", "SharpMod.Web\SharpMod.Web.njsproj", "{21CD686C-C0A4-4169-95D4-98E0DAEEB0D5}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SharpMod.Node", "SharpMod.Node\SharpMod.Node.njsproj", "{A20A551E-80D6-49D8-8F3F-017795644693}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{21CD686C-C0A4-4169-95D4-98E0DAEEB0D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21CD686C-C0A4-4169-95D4-98E0DAEEB0D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21CD686C-C0A4-4169-95D4-98E0DAEEB0D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21CD686C-C0A4-4169-95D4-98E0DAEEB0D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A20A551E-80D6-49D8-8F3F-017795644693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A20A551E-80D6-49D8-8F3F-017795644693}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A20A551E-80D6-49D8-8F3F-017795644693}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A20A551E-80D6-49D8-8F3F-017795644693}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

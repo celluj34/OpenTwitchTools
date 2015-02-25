@@ -1,0 +1,16 @@
+{
+  "name": "SharpMod.Node",
+  "version": "0.0.0",
+  "description": "SharpMod.Node",
+  "main": "index.html",
+  "node-main": "app.js",
+  "author": {
+    "name": "Joe",
+    "email": "celluj34@gmail.com"
+  },
+  "dependencies": {
+    "express": "3.4.4",
+    "jade": "*",
+    "stylus": "*"
+  }
+}

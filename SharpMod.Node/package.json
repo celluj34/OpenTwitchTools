@@ -1,6 +1,6 @@
 {
   "name": "SharpMod.Node",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "SharpMod.Node",
   "main": "index.html",
   "node-main": "app.js",
@@ -12,5 +12,21 @@
     "express": "3.4.4",
     "jade": "*",
     "stylus": "*"
+  },
+  "window": {
+    "title": "SharpMod",
+    "toolbar": false,
+    "resizable": true,
+    "width": 800,
+    "height": 500,
+    "min_width": 400,
+    "min_height": 200,
+    "position": "center",
+    "frame": true
+  },
+  "webkit": {
+    "plugin": false,
+    "java": false,
+    "page-cache": true
   }
 }

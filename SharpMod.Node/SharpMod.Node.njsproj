@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>SharpMod.Node</Name>
     <RootNamespace>SharpMod.Node</RootNamespace>
-    <NodeExePath>C:\Users\Joe\OneDrive\Documents\Programs\SharpMod\SharpMod.Node\nw\nw.exe</NodeExePath>
+    <NodeExePath>C:\node-webkit\nw.exe</NodeExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -65,7 +65,6 @@
     <Content Include="public\stylesheets\bootstrap.css" />
     <Content Include="public\stylesheets\bootstrap.min.css" />
     <Content Include="public\stylesheets\style.styl" />
-    <Content Include="README.md" />
     <Content Include="views\contact.jade" />
     <Content Include="views\about.jade" />
     <Content Include="views\index.jade" />

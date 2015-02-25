@@ -2,7 +2,7 @@
 import routes = require("./routes/index");
 import http = require("http");
 import path = require("path");
-var diskdb = require("diskdb");
+import diskdb = require("diskdb");
 
 var app = express();
 

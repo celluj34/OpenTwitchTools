@@ -1,5 +1,5 @@
 ﻿var express = require("express");
-var routes = require("./routes/index");
+var routes = require("./routes");
 var http = require("http");
 var path = require("path");
 var diskdb = require("diskdb");
@@ -27,6 +27,7 @@ if ("development" == app.get("env")) {
 }
 
 app.get("/", routes.index);
+app.get("/login", routes.login);
 
 diskdb = diskdb.connect("sharpModDb", ["userSettings"]);
 

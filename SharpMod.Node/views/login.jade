@@ -1,0 +1,14 @@
+﻿extends layout
+
+block content
+    iframe(src='http://lobbylobby.azurewebsites.net/')
+    
+    form(method=post)
+        div
+            span Title :
+            input(type="text", name="username", id="username")
+        div
+            span Body :
+            input(type="text", name="password", id="password")
+        div#loginSubmit
+            input(type="submit", value="Login")

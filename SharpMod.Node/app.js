@@ -3,11 +3,11 @@ var routes = require("./routes");
 var http = require("http");
 var path = require("path");
 var diskdb = require("diskdb");
+var irc = require("irc");
 
 var app = express();
 
 // all environments
-app.set("port", "18044");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(express.favicon());
@@ -16,22 +16,39 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
-
-var stylus = require("stylus");
-app.use(stylus.middleware(path.join(__dirname, "public")));
+app.use(require("stylus").middleware(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
 // development only
-if ("development" == app.get("env")) {
-    app.use(express.errorHandler());
+if("development" == app.get("env")) {
+	app.use(express.errorHandler());
 }
 
 app.get("/", routes.index);
 app.get("/login", routes.login);
 
-diskdb = diskdb.connect("sharpModDb", ["userSettings"]);
+diskdb.connect("sharpdb", ["settings"]);
 
-http.createServer(app).listen(app.get("port"), function () {
-    console.log("Express server listening on port " + app.get("port"));
-});
-//# sourceMappingURL=app.js.map
+//var client = irc.Client("irc.twitch.tv", {
+//	userName: "nodebot",
+//	realName: "nodebot",
+//	port: 6667,
+//	localAddress: null,
+//	debug: false,
+//	showErrors: false,
+//	autoRejoin: false,
+//	autoConnect: false,
+//	channels: [],
+//	secure: false,
+//	selfSigned: false,
+//	certExpired: false,
+//	floodProtection: false,
+//	floodProtectionDelay: 1500,
+//	sasl: false,
+//	stripColors: false,
+//	channelPrefixes: "&#",
+//	messageSplit: 512,
+//	encoding: ""
+//});
+
+http.createServer(app).listen(18044);

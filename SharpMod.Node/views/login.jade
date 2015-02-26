@@ -1,14 +1,26 @@
 ﻿extends layout
 
 block content
-    iframe(src='http://lobbylobby.azurewebsites.net/')
-    
-    form(method=post)
-        div
-            span Title :
-            input(type="text", name="username", id="username")
-        div
-            span Body :
-            input(type="text", name="password", id="password")
-        div#loginSubmit
-            input(type="submit", value="Login")
+    div.row
+        div.col-md-4
+            form(method="post", action="/")
+                div.form-group
+                    label(for="username") Username:
+                    input.form-control(type="text", name="username", id="username", placeholder="Username", required, value="#{Username}")
+
+                div.form-group
+                    label(for="password") Password:
+                    input.form-control(type="password", name="password", id="password", placeholder="Password", required, value="#{Password}")
+
+                button.btn.btn-default(value="Login", type="submit").
+                    Login
+
+        div.col-md-8
+            div.embed-responsive.embed-responsive-4by3
+                iframe(src='http://www.twitchapps.com/tmi/', width="100%", height="100%")
+
+block scripts
+    script.
+        $(function() {
+            //alert("hi!");
+        });

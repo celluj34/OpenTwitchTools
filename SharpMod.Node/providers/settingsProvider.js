@@ -1,20 +1,31 @@
 ﻿SettingsProvider = function(diskDb) {
-	this.database = diskDb;
+	this.settings = diskDb.settings;
 };
 
-SettingsProvider.prototype.database = null;
+SettingsProvider.prototype.settings = null;
 
 SettingsProvider.prototype.Username = function() {
-	var findOne = this.database.settings.findOne({Key: "Username"});
-	return findOne || "";
+	return findSetting(this.settings, "Username") || "";
 };
 
 SettingsProvider.prototype.Password = function() {
-	var findOne = this.database.settings.findOne({Key: "Password"});
-	return findOne || "";
+	return findSetting(this.settings, "Password") || "";
 };
 
-SettingsProvider.prototype.saveLogin = function(username, password, callback) {
+SettingsProvider.prototype.Channels = function() {
+	return findSetting(this.settings, "Channels") || [];
+};
+
+function findSetting(settings, key) {
+	var findOne = settings.findOne({Key: key});
+	if(findOne) {
+		return findOne.Value;
+	}
+
+	return null;
+};
+
+SettingsProvider.prototype.saveLogin = function(username, password, channel, callback) {
 	if(!username || 0 === username.length) {
 		callback("Username must not be null.");
 	}
@@ -29,10 +40,8 @@ SettingsProvider.prototype.saveLogin = function(username, password, callback) {
 		upsert: true
 	};
 
-	this.database.settings.update({Key: "Username", Value: username}, options);
-	this.database.settings.update({Key: "Password", Value: password}, options);
+	this.settings.update({Key: "Username"}, {Key: "Username", Value: username}, options);
+	this.settings.update({Key: "Password"}, {Key: "Password", Value: password}, options);
 
 	callback(null);
 };
-
-exports.SettingsProvider = SettingsProvider;

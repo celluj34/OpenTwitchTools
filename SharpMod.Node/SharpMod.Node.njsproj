@@ -32,6 +32,8 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="providers\settingsProvider.js" />
+    <Compile Include="public\javascripts\select2.js" />
+    <Compile Include="public\javascripts\select2.min.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
@@ -64,6 +66,8 @@
     <Content Include="public\stylesheets\bootstrap.min.css" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="public\stylesheets\style.styl" />
+    <Content Include="public\stylesheets\select2.css" />
+    <Content Include="public\stylesheets\select2.min.css" />
     <Content Include="sharpdb\settings.json" />
     <Content Include="views\chat.jade" />
     <Content Include="views\layout.jade" />

@@ -15,21 +15,7 @@ SettingsProvider.prototype.Password = function() {
 };
 
 SettingsProvider.prototype.Channels = function() {
-	var channels = all(this.settings, "Channel");
-
-	channels.sort(function(a, b) {
-		if(a.LastAccessed > b.LastAccessed) {
-			return -1;
-		}
-
-		if(a.LastAccessed < b.LastAccessed) {
-			return 1;
-		}
-
-		return 0;
-	});
-
-	return channels;
+	return all(this.settings, "Channel");
 };
 
 // Public Methods
@@ -63,6 +49,20 @@ SettingsProvider.prototype.saveLogin = function(underscore, username, password, 
 	}
 
 	callback(null);
+};
+
+SettingsProvider.prototype.GetChannelNames = function (underscore) {
+	var channels = all(this.settings, "Channel");
+    
+    var sortedChannels = underscore.sortBy(channels, function (channel) {
+        return channel.LastAccessed;
+    });
+    
+    sortedChannels.reverse();
+    
+    var channelNames = underscore.pluck(sortedChannels, "Value");
+
+	return channelNames;
 };
 
 // Helper Methods

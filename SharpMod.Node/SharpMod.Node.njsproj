@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="providers\settingsProvider.js" />
+    <Compile Include="public\javascripts\chat.js" />
     <Compile Include="public\javascripts\select2.js" />
     <Compile Include="public\javascripts\select2.min.js" />
   </ItemGroup>

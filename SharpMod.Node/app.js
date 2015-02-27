@@ -2,7 +2,8 @@
 var http = require("http");
 var path = require("path");
 var diskdb = require("diskdb");
-var irc = require("irc");
+var net = require("net");
+var irc = require("irc-message");
 var underscore = require("underscore");
 var settingsProvider = require("./providers/settingsProvider.js").SettingsProvider;
 
@@ -29,15 +30,7 @@ if("development" == app.get("env")) {
 app.get("/", function(req, res) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
-	var channels = settingsProvider.Channels();
-
-	var sortedChannels = underscore.sortBy(channels, function(channel) {
-		return channel.LastAccessed;
-    });
-
-    sortedChannels.reverse();
-
-	var channelNames = underscore.pluck(sortedChannels, "Value");
+	var channelNames = settingsProvider.GetChannelNames(underscore);
 
 	res.render("login", {
 		"Username": settingsProvider.Username(),
@@ -55,35 +48,51 @@ app.post("/", function(req, res) {
 			res.redirect("/", error);
 		}
 		else {
-			res.redirect("/chat");
+			res.redirect("/chat", req.param("channel"));
 		}
 	});
 });
 
 app.get("/chat", function(req, res) {
-	res.render("chat");
-});
+	diskdb = diskdb.connect("./sharpdb", ["settings"]);
+	var settingsProvider = new SettingsProvider(diskdb);
+	var channelNames = settingsProvider.GetChannelNames(underscore);
+	var channelName = channelNames[0];
 
-//var client = irc.Client("irc.twitch.tv", {
-//	userName: "nodebot",
-//	realName: "nodebot",
-//	port: 6667,
-//	localAddress: null,
-//	debug: false,
-//	showErrors: false,
-//	autoRejoin: false,
-//	autoConnect: false,
-//	channels: [],
-//	secure: false,
-//	selfSigned: false,
-//	certExpired: false,
-//	floodProtection: false,
-//	floodProtectionDelay: 1500,
-//	sasl: false,
-//	stripColors: false,
-//	channelPrefixes: "&#",
-//	messageSplit: 512,
-//	encoding: ""
-//});
+	//var client = irc.Client("irc.twitch.tv", {
+	//	userName: "nodebot",
+	//	realName: "nodebot",
+	//	port: 6667,
+	//	localAddress: null,
+	//	debug: false,
+	//	showErrors: false,
+	//	autoRejoin: false,
+	//	autoConnect: false,
+	//	channels: [],
+	//	secure: false,
+	//	selfSigned: false,
+	//	certExpired: false,
+	//	floodProtection: false,
+	//	floodProtectionDelay: 1500,
+	//	sasl: false,
+	//	stripColors: false,
+	//	channelPrefixes: "&#",
+	//	messageSplit: 512,
+	//	encoding: ""
+	//});
+
+	net.connect(6667, "irc.twitch.tv")
+		.pipe(irc.createStream())
+		.on("data", function(message) {
+			console.log(message);
+		});
+
+	res.render("chat", {
+		Channels: channelNames,
+		CurrentChannel: channelNames[0],
+		Username: settingsProvider.Username(),
+		Password: settingsProvider.Password()
+	});
+});
 
 http.createServer(app).listen(18044);

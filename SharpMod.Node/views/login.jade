@@ -1,6 +1,8 @@
-﻿extends layout
+﻿extends layout    
 
 block content
+    link(rel='stylesheet', type='text/css', href='/stylesheets/select2.css')
+
     div.row
         div.col-md-4
             form(method="post", action="/")
@@ -12,6 +14,13 @@ block content
                     label(for="password") Password:
                     input.form-control(type="password", name="password", id="password", placeholder="Password", required, value="#{Password}")
 
+                div.form-group
+                    label(for="channel") Channel:
+                    div
+                        select.form-control(name="channel", id="channel", required)
+                            for channel in Channels
+                                option #{channel}
+
                 button.btn.btn-default(value="Login", type="submit").
                     Login
 
@@ -20,7 +29,11 @@ block content
                 iframe(src='http://www.twitchapps.com/tmi/', width="100%", height="100%")
 
 block scripts
+    script(src='/javascripts/select2.js')
+
     script.
         $(function() {
-            //alert("hi!");
+            $("#channel").select2({
+                tags: true
+            });
         });

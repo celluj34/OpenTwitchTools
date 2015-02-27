@@ -20,29 +20,24 @@ SettingsProvider.prototype.Channels = function() {
 
 // Public Methods
 
-SettingsProvider.prototype.saveLogin = function(underscore, username, password, channel, callback) {
-	if(!username || 0 === username.length) {
+SettingsProvider.prototype.saveLogin = function(_, username, password, channel, callback) {
+	if(_.isUndefined(username) || _.isEmpty(username.trim())) {
 		callback("Username must not be null.");
 		return;
 	}
 
-	if(!password || 0 === password.length) {
+	if(_.isUndefined(password) || _.isEmpty(password.trim())) {
 		callback("Password must not be null.");
 		return;
 	}
 
-	var options = {
-		multi: false,
-		upsert: true
-	};
-
-	this.settings.update({Key: "Username"}, {Value: username}, options);
-	this.settings.update({Key: "Password"}, {Value: password}, options);
+	this.settings.update({Key: "Username"}, {Value: username});
+	this.settings.update({Key: "Password"}, {Value: password});
 
 	var date = getDate();
 	var allChannels = this.settings.find({Key: "Channel"});
 
-	var matchingChannels = underscore.where(allChannels, {Value: channel});
+	var matchingChannels = _.where(allChannels, {Value: channel});
 
 	if(matchingChannels.length === 0) {
 		this.settings.save({Key: "Channel", Value: channel, LastAccessed: date});
@@ -51,16 +46,16 @@ SettingsProvider.prototype.saveLogin = function(underscore, username, password, 
 	callback(null);
 };
 
-SettingsProvider.prototype.GetChannelNames = function (underscore) {
+SettingsProvider.prototype.GetChannelNames = function(_) {
 	var channels = all(this.settings, "Channel");
-    
-    var sortedChannels = underscore.sortBy(channels, function (channel) {
-        return channel.LastAccessed;
-    });
-    
-    sortedChannels.reverse();
-    
-    var channelNames = underscore.pluck(sortedChannels, "Value");
+
+	var sortedChannels = _.sortBy(channels, function(channel) {
+		return channel.LastAccessed;
+	});
+
+	sortedChannels.reverse();
+
+	var channelNames = _.pluck(sortedChannels, "Value");
 
 	return channelNames;
 };

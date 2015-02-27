@@ -26,19 +26,31 @@ if("development" == app.get("env")) {
 	app.use(express.errorHandler());
 }
 
-diskdb = diskdb.connect("./sharpdb", ["settings"]);
+app.get("/", function(req, res) {
+	diskdb = diskdb.connect("./sharpdb", ["settings"]);
+	var settingsProvider = new SettingsProvider(diskdb);
+	var channels = settingsProvider.Channels();
 
-var settingsProvider = new SettingsProvider(diskdb);
+	var sortedChannels = underscore.sortBy(channels, function(channel) {
+		return channel.LastAccessed;
+    });
 
-app.get("/", function (req, res) {
+    sortedChannels.reverse();
+
+	var channelNames = underscore.pluck(sortedChannels, "Value");
+
 	res.render("login", {
 		"Username": settingsProvider.Username(),
-		"Password": settingsProvider.Password()
+		"Password": settingsProvider.Password(),
+		"Channels": channelNames
 	});
 });
 
 app.post("/", function(req, res) {
-	settingsProvider.saveLogin(req.param("username"), req.param("password"), function(error) {
+	diskdb = diskdb.connect("./sharpdb", ["settings"]);
+	var settingsProvider = new SettingsProvider(diskdb);
+
+	settingsProvider.saveLogin(underscore, req.param("username"), req.param("password"), req.param("channel"), function(error) {
 		if(error) {
 			res.redirect("/", error);
 		}

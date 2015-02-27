@@ -4,9 +4,11 @@
     path = require("path"),
     diskdb = require("diskdb"),
     net = require("net"),
-    irc = require("irc"),
+    irc = require("twitch-irc"),
     _ = require("underscore"),
-    settingsProvider = require("./providers/settingsProvider.js").SettingsProvider;
+    settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
+    io = require("socket.io").listen(http),
+    client;
 
 // all environments
 app.set("ipaddr", "127.0.0.1");
@@ -57,35 +59,75 @@ app.post("/", function(request, response) {
 app.get("/chat", function(request, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
+	var username = settingsProvider.Username();
+	var password = settingsProvider.Password();
 	var channelNames = settingsProvider.GetChannelNames(_);
+	var channel = "#" + channelNames[0];
 
-	//var client = irc.Client("irc.twitch.tv", {
-	//	userName: "nodebot",
-	//	realName: "nodebot",
-	//	port: 6667,
-	//	localAddress: null,
-	//	debug: false,
-	//	showErrors: false,
-	//	autoRejoin: false,
-	//	autoConnect: false,
-	//	channels: [],
-	//	secure: false,
-	//	selfSigned: false,
-	//	certExpired: false,
-	//	floodProtection: false,
-	//	floodProtectionDelay: 1500,
-	//	sasl: false,
-	//	stripColors: false,
-	//	channelPrefixes: "&#",
-	//	messageSplit: 512,
-	//	encoding: ""
-	//});
+	io.on("connection", function(socket) {
+		client = new irc.client({
+			options: {
+				debug: true,
+				debugIgnore: ["ping", "chat", "action"],
+				logging: false,
+				tc: 3
+			},
+			identity: {
+				username: username,
+				password: password
+			},
+			channels: [channel]
+		});
+
+		client.connect();
+
+		client.addListener("chat", function(incChannel, user, message) {
+			// https://github.com/Schmoopiie/twitch-irc/wiki/Command:-Say 
+			console.log(incChannel + " - " + user + " - " + message);
+			io.sockets.emit("incomingMessage", {message: message, name: user});
+		});
+
+        socket.on("outgoingMessage", function (data) {
+	        client.say("channel", data.message);
+        });
+
+		///*
+		//  When a new user connects to our server, we expect an event called "newUser"
+		//  and then we'll emit an event called "newConnection" with a list of all 
+		//  participants to all connected clients
+		//*/
+		//socket.on("newUser", function(data) {
+		//	participants.push({id: data.id, name: data.name});
+		//	io.sockets.emit("newConnection", {participants: participants});
+		//});
+
+		///*
+		//  When a user changes his name, we are expecting an event called "nameChange" 
+		//  and then we'll emit an event called "nameChanged" to all participants with
+		//  the id and new name of the user who emitted the original message
+		//*/
+		//socket.on("nameChange", function(data) {
+		//	_.findWhere(participants, {id: socket.id}).name = data.name;
+		//	io.sockets.emit("nameChanged", {id: data.id, name: data.name});
+		//});
+
+		///* 
+		//  When a client disconnects from the server, the event "disconnect" is automatically 
+		//  captured by the server. It will then emit an event called "userDisconnected" to 
+		//  all participants with the id of the client that disconnected
+		//*/
+		//socket.on("disconnect", function() {
+		//	participants = _.without(participants, _.findWhere(participants, {id: socket.id}));
+		//	io.sockets.emit("userDisconnected", {id: socket.id, sender: "system"});
+		//});
+
+	});
 
 	response.render("chat", {
 		Channels: channelNames,
-		CurrentChannel: channelNames[0],
-		Username: settingsProvider.Username(),
-		Password: settingsProvider.Password()
+		CurrentChannel: channel,
+		Username: username,
+		Password: password
 	});
 });
 

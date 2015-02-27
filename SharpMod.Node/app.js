@@ -1,17 +1,17 @@
-﻿var express = require("express");
-var http = require("http");
-var path = require("path");
-var diskdb = require("diskdb");
-var net = require("net");
-var irc = require("irc-message");
-var underscore = require("underscore");
-var settingsProvider = require("./providers/settingsProvider.js").SettingsProvider;
-
-var app = express();
+﻿var express = require("express"),
+    app = express(),
+    http = require("http").createServer(app),
+    path = require("path"),
+    diskdb = require("diskdb"),
+    net = require("net"),
+    irc = require("irc"),
+    _ = require("underscore"),
+    settingsProvider = require("./providers/settingsProvider.js").SettingsProvider;
 
 // all environments
+app.set("ipaddr", "127.0.0.1");
+app.set("port", 18044);
 app.set("views", path.join(__dirname, "views"));
-app.set("env", "development");
 app.set("view engine", "jade");
 app.use(express.favicon());
 app.use(express.logger("dev"));
@@ -23,41 +23,41 @@ app.use(require("stylus").middleware(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
 // development only
+app.set("env", "development");
 if("development" == app.get("env")) {
 	app.use(express.errorHandler());
 }
 
-app.get("/", function(req, res) {
+app.get("/", function(request, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
-	var channelNames = settingsProvider.GetChannelNames(underscore);
+	var channelNames = settingsProvider.GetChannelNames(_);
 
-	res.render("login", {
+	response.render("login", {
 		"Username": settingsProvider.Username(),
 		"Password": settingsProvider.Password(),
 		"Channels": channelNames
 	});
 });
 
-app.post("/", function(req, res) {
+app.post("/", function(request, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
 
-	settingsProvider.saveLogin(underscore, req.param("username"), req.param("password"), req.param("channel"), function(error) {
+	settingsProvider.saveLogin(_, request.param("username"), request.param("password"), request.param("channel"), function(error) {
 		if(error) {
-			res.redirect("/", error);
+			response.redirect("/", error);
 		}
 		else {
-			res.redirect("/chat", req.param("channel"));
+			response.redirect("/chat");
 		}
 	});
 });
 
-app.get("/chat", function(req, res) {
+app.get("/chat", function(request, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
-	var channelNames = settingsProvider.GetChannelNames(underscore);
-	var channelName = channelNames[0];
+	var channelNames = settingsProvider.GetChannelNames(_);
 
 	//var client = irc.Client("irc.twitch.tv", {
 	//	userName: "nodebot",
@@ -81,13 +81,7 @@ app.get("/chat", function(req, res) {
 	//	encoding: ""
 	//});
 
-	net.connect(6667, "irc.twitch.tv")
-		.pipe(irc.createStream())
-		.on("data", function(message) {
-			console.log(message);
-		});
-
-	res.render("chat", {
+	response.render("chat", {
 		Channels: channelNames,
 		CurrentChannel: channelNames[0],
 		Username: settingsProvider.Username(),
@@ -95,4 +89,22 @@ app.get("/chat", function(req, res) {
 	});
 });
 
-http.createServer(app).listen(18044);
+//app.post("/chat", function(request, response) {
+//	//The request body expects a param named "message"
+//	var message = request.body.message;
+
+//	//If the message is empty or wasn't sent it's a bad request
+//	if(_.isUndefined(message) || _.isEmpty(message.trim())) {
+//		return response.json(400, {error: "Message is invalid"});
+//	}
+
+//	//Let our chatroom know there was a new message
+//	freenode.write(message.toString() + "\r\n");
+
+//	//Looks good, let the client know
+//	response.json(200, {message: "Message received"});
+//});
+
+http.listen(app.get("port"), app.get("ipaddr"), function() {
+	console.log("Server up and running. Go to http://" + app.get("ipaddr") + ":" + app.get("port"));
+});

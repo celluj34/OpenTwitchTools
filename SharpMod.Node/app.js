@@ -3,6 +3,7 @@ var http = require("http");
 var path = require("path");
 var diskdb = require("diskdb");
 var irc = require("irc");
+var underscore = require("underscore");
 var settingsProvider = require("./providers/settingsProvider.js").SettingsProvider;
 
 var app = express();

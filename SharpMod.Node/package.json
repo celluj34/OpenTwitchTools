@@ -12,7 +12,8 @@
     "express": "3.4.4",
     "irc": "^0.3.9",
     "jade": "*",
-    "stylus": "*"
+    "stylus": "*",
+    "underscore": "^1.8.2"
   },
   "window": {
     "title": "SharpMod",

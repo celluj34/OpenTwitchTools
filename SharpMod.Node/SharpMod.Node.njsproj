@@ -57,7 +57,6 @@
     <Content Include="public\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="public\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="public\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="public\javascripts\jquery-2.1.3.min.map" />
     <Content Include="public\stylesheets\bootstrap-theme.css" />
     <Content Include="public\stylesheets\bootstrap-theme.css.map" />
     <Content Include="public\stylesheets\bootstrap-theme.min.css" />

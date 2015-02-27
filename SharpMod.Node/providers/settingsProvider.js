@@ -42,6 +42,9 @@ SettingsProvider.prototype.saveLogin = function(_, username, password, channel, 
 	if(matchingChannels.length === 0) {
 		this.settings.save({Key: "Channel", Value: channel, LastAccessed: date});
 	}
+	else {
+		this.settings.update({_id: matchingChannels[0]._id}, {LastAccessed: date});
+	}
 
 	callback(null);
 };

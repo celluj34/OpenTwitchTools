@@ -8,7 +8,7 @@
 		//{name: user.username, attributes: user.special, emote_set : user.emote, color: user.color, message: message, channel: incChannel}
 		//{name               , attributes              , emote_set             , color            , message         , channel            }
 
-		var thing = "<div class='panel panel-default'>" +
+		var thing = "<div class='panel panel-default comment'>" +
 			"   <div class='panel-heading'>" +
 			"       <h3 class='panel-title' style='color: " + data.color + "; font-weight:bold'>" + parseAttributes(data.attributes) + data.name + "</h3>" +
 			"   </div>" +
@@ -18,6 +18,8 @@
 			"</div>";
 
 		$("#messages").prepend(thing);
+
+		$("#messages").children(".comment").slice(300).remove();
 	});
 });
 

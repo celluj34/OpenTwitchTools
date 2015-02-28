@@ -23,22 +23,31 @@
 function getEmotes() {
 	$.get("/emotes", function(data) {
 		window.emoteSet = data;
-		$("#loadingMessage").hide();
-		$("#successMessage").show();
+		$("#loadingEmotesMessage").hide();
+		$("#successEmotesMessage").alert(7500).fadeOut("slow");
 	}, "json");
 }
 
 function parseMessage(message, availableEmotes) {
-	if(availableEmotes.length === 0 || !window.emoteSet) {
+	if(!window.emoteSet) {
 		return message;
 	}
 
 	var words = message.split(" ");
 	var newWords = [];
 	var tempWord;
+	var emoteList;
+
+	if(availableEmotes.length === 0) {
+		emoteList = [];
+	}
+	else {
+		emoteList = JSON.parse(availableEmotes);
+	}
+
 	_.each(words, function(word) {
 		tempWord = _.find(window.emoteSet, function(emote) {
-			return word.match(emote.regex) && _.contains(JSON.parse(availableEmotes), emote.emoticon_set);
+			return word.match(emote.regex) && (!emote.emoticon_set || _.contains(emoteList, emote.emoticon_set));
 		});
 
 		if(tempWord) {

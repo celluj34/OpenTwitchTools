@@ -2,11 +2,11 @@
 
 block content
 
-    div.alert.alert-warning.fade.in.out(role="alert", id="loadingMessage")
+    div.alert.alert-warning#loadingEmotesMessage(role="alert")
         strong.
             Emoticons are currently loading.
 
-    div.alert.alert-success.alert-dismissable.fade.in.out(role="alert", style="display:none", id="successMessage")
+    div.alert.alert-success.alert-dismissable#successEmotesMessage(role="alert", style="display:none")
         button(type="button", class="close", data-dismiss="alert", aria-label="Close")
             span(aria-hidden="true").
                 &times;

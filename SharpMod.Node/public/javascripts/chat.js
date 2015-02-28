@@ -1,17 +1,53 @@
 ﻿$(function() {
-	var serverBaseUrl = document.domain;
+	getEmotes();
 
-	var socket = io.connect(serverBaseUrl + ":18044");
+	var socket = io.connect("127.0.0.1:18044");
 
 	socket.on("incomingMessage", function(data) {
-		var message = data.message;
-		var name = data.name;
-		var msg = "<b>" + name + "</b><br />" + message;
-		console.log(msg);
-		$("#messages").prepend(msg + "<hr />");
-	});
+		//{name: user.username, attributes: user.special, emote_set : user.emote, color: user.color, message: message, channel: incChannel}
+		//{name               , attributes              , emote_set             , color            , message         , channel            }
 
-	$(window).on("beforeunload", function() {
-		socket.close();
+		var thing = "<div class='panel panel-default'>" +
+			"   <div class='panel-heading'>" +
+			"       <h3 class='panel-title' style='color: " + data.color + "; font-weight:bold'>" + data.name + "</h3>" +
+			"   </div>" +
+			"   <div class='panel-body'>" +
+			parseMessage(data.message, data.emote_set) +
+			"   </div>" +
+			"</div>";
+
+		$("#messages").prepend(thing);
 	});
 });
+
+function getEmotes() {
+	$.get("/emotes", function(data) {
+		window.emoteSet = data;
+		$("#loadingMessage").hide();
+		$("#successMessage").show();
+	}, "json");
+}
+
+function parseMessage(message, availableEmotes) {
+	if(availableEmotes.length === 0 || !window.emoteSet) {
+		return message;
+	}
+
+	var words = message.split(" ");
+	var newWords = [];
+	var tempWord;
+	_.each(words, function(word) {
+		tempWord = _.find(window.emoteSet, function(emote) {
+			return word.match(emote.regex) && _.contains(JSON.parse(availableEmotes), emote.emoticon_set);
+		});
+
+		if(tempWord) {
+			newWords.push(tempWord.url);
+		}
+		else {
+			newWords.push(word);
+		}
+	});
+
+	return newWords.join(" ");
+}

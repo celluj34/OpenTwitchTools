@@ -2,10 +2,23 @@
 
 block content
 
-    h1 {#CurrentChannel}
+    div.alert.alert-warning.fade.in.out(role="alert", id="loadingMessage")
+        strong.
+            Emoticons are currently loading.
+
+    div.alert.alert-success.alert-dismissable.fade.in.out(role="alert", style="display:none", id="successMessage")
+        button(type="button", class="close", data-dismiss="alert", aria-label="Close")
+            span(aria-hidden="true").
+                &times;
+        strong.
+            Emoticons have been successfully loaded.
+
+    h1 #{CurrentChannel}
     
     div#messages
 
 block scripts
     script(src='https://cdn.socket.io/socket.io-1.3.4.js')
-    script(src='../javascripts/chat.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js')
+    script
+        include ../public/javascripts/chat.js

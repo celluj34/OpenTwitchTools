@@ -8,7 +8,10 @@
     _ = require("underscore"),
     settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
     io = require("socket.io").listen(http),
+    request = require("request"),
     client;
+
+app.use(express.compress());
 
 // all environments
 app.set("ipaddr", "127.0.0.1");
@@ -30,7 +33,7 @@ if("development" == app.get("env")) {
 	app.use(express.errorHandler());
 }
 
-app.get("/", function(request, response) {
+app.get("/", function(req, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
 	var channelNames = settingsProvider.GetChannelNames(_);
@@ -42,11 +45,37 @@ app.get("/", function(request, response) {
 	});
 });
 
-app.post("/", function(request, response) {
+app.get("/emotes", function(req, response) {
+	var url = "https://api.twitch.tv/kraken/chat/emoticons";
+
+	request(url, function(err, resp, body) {
+		body = JSON.parse(body);
+
+		var iconGroups = _.chain(body.emoticons)
+			.map(function(emoticonSet) {
+				return _.map(emoticonSet.images, function(image) {
+					return {
+						regex: emoticonSet.regex,
+						url: "<img alt='" + emoticonSet.regex + "' height='" + image.height + "' width='" + image.width + "' src='" + image.url + "' />",
+						emoticon_set: image.emoticon_set
+					};
+				});
+			})
+			.flatten()
+			.filter(function(item) {
+				return item.emoticon_set;
+			})
+			.value();
+
+		response.send(iconGroups);
+	});
+});
+
+app.post("/", function(req, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
 
-	settingsProvider.saveLogin(_, request.param("username"), request.param("password"), request.param("channel"), function(error) {
+	settingsProvider.saveLogin(_, req.param("username"), req.param("password"), req.param("channel"), function(error) {
 		if(error) {
 			response.redirect("/", error);
 		}
@@ -56,7 +85,7 @@ app.post("/", function(request, response) {
 	});
 });
 
-app.get("/chat", function(request, response) {
+app.get("/chat", function(req, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
 	var username = settingsProvider.Username();
@@ -83,13 +112,20 @@ app.get("/chat", function(request, response) {
 
 		client.addListener("chat", function(incChannel, user, message) {
 			// https://github.com/Schmoopiie/twitch-irc/wiki/Command:-Say 
-			console.log(incChannel + " - " + user + " - " + message);
-			io.sockets.emit("incomingMessage", {message: message, name: user});
+
+			io.sockets.emit("incomingMessage", {
+				name: user.username,
+				attributes: user.special,
+				emote_set: user.emote,
+				color: user.color,
+				message: message,
+				channel: incChannel
+			});
 		});
 
-        socket.on("outgoingMessage", function (data) {
-	        client.say("channel", data.message);
-        });
+		socket.on("outgoingMessage", function(data) {
+			client.say("#" + channel, data.message);
+		});
 
 		///*
 		//  When a new user connects to our server, we expect an event called "newUser"
@@ -130,22 +166,6 @@ app.get("/chat", function(request, response) {
 		Password: password
 	});
 });
-
-//app.post("/chat", function(request, response) {
-//	//The request body expects a param named "message"
-//	var message = request.body.message;
-
-//	//If the message is empty or wasn't sent it's a bad request
-//	if(_.isUndefined(message) || _.isEmpty(message.trim())) {
-//		return response.json(400, {error: "Message is invalid"});
-//	}
-
-//	//Let our chatroom know there was a new message
-//	freenode.write(message.toString() + "\r\n");
-
-//	//Looks good, let the client know
-//	response.json(200, {message: "Message received"});
-//});
 
 http.listen(app.get("port"), app.get("ipaddr"), function() {
 	console.log("Server up and running. Go to http://" + app.get("ipaddr") + ":" + app.get("port"));

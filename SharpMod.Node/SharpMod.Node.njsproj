@@ -68,6 +68,7 @@
     <Content Include="public\stylesheets\style.styl" />
     <Content Include="public\stylesheets\select2.css" />
     <Content Include="public\stylesheets\select2.min.css" />
+    <Content Include="sharpdb\emoticons.json" />
     <Content Include="sharpdb\settings.json" />
     <Content Include="views\chat.jade" />
     <Content Include="views\layout.jade" />

@@ -51,7 +51,7 @@ app.get("/emotes", function(req, response) {
 	request(url, function(err, resp, body) {
 		body = JSON.parse(body);
 
-		var iconGroups = _.chain(body.emoticons)
+		var emotes = _.chain(body.emoticons)
 			.map(function(emoticonSet) {
 				return _.map(emoticonSet.images, function(image) {
 					return {
@@ -62,12 +62,62 @@ app.get("/emotes", function(req, response) {
 				});
 			})
 			.flatten()
-			.filter(function(item) {
-				return item.emoticon_set;
-			})
 			.value();
 
-		response.send(iconGroups);
+		response.send(emotes);
+	});
+});
+
+app.get("/badges", function(req, response) {
+	var url = "https://api.twitch.tv/kraken/chat/" + req.param("channel") + "/badges";
+
+	request(url, function(err, resp, body) {
+		body = JSON.parse(body);
+
+		var badgeList = [];
+
+		badgeList.push({
+			role: "global_mod",
+			url: body.global_mod.image
+		});
+
+		badgeList.push({
+			role: "admin",
+			url: body.admin.image
+		});
+
+		badgeList.push({
+			role: "broadcaster",
+			url: body.broadcaster.image
+		});
+
+		badgeList.push({
+			role: "mod",
+			url: body.mod.image
+		});
+
+		badgeList.push({
+			role: "staff",
+			url: body.staff.image
+		});
+
+		badgeList.push({
+			role: "turbo",
+			url: body.turbo.image
+		});
+
+		var subscriber = {
+			role: "subscriber",
+			url: null
+		};
+
+		if(body.subscriber) {
+            subscriber.url = body.subscriber.image;
+		}
+
+		badgeList.push(subscriber);
+
+		response.send(badgeList);
 	});
 });
 
@@ -112,7 +162,6 @@ app.get("/chat", function(req, response) {
 
 		client.addListener("chat", function(incChannel, user, message) {
 			// https://github.com/Schmoopiie/twitch-irc/wiki/Command:-Say 
-
 			io.sockets.emit("incomingMessage", {
 				name: user.username,
 				attributes: user.special,

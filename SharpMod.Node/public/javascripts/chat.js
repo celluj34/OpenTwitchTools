@@ -1,5 +1,6 @@
 ﻿$(function() {
 	getEmotes();
+	getBadges();
 
 	var socket = io.connect("127.0.0.1:18044");
 
@@ -24,7 +25,15 @@ function getEmotes() {
 	$.get("/emotes", function(data) {
 		window.emoteSet = data;
 		$("#loadingEmotesMessage").hide();
-		$("#successEmotesMessage").alert(7500).fadeOut("slow");
+		$("#successEmotesMessage").show().delay(7500).fadeOut("slow");
+	}, "json");
+}
+
+function getBadges() {
+	$.get("/badges", {channel: $("#channel").text().replace("#", "")}, function(data) {
+		window.badgeSet = data;
+		$("#loadingBadgesMessage").hide();
+		$("#successBadgesMessage").show().delay(7500).fadeOut("slow");
 	}, "json");
 }
 

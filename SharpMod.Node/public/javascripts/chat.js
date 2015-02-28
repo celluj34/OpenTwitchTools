@@ -10,7 +10,7 @@
 
 		var thing = "<div class='panel panel-default'>" +
 			"   <div class='panel-heading'>" +
-			"       <h3 class='panel-title' style='color: " + data.color + "; font-weight:bold'>" + data.name + "</h3>" +
+			"       <h3 class='panel-title' style='color: " + data.color + "; font-weight:bold'>" + parseAttributes(data.attributes) + data.name + "</h3>" +
 			"   </div>" +
 			"   <div class='panel-body'>" +
 			parseMessage(data.message, data.emote_set) +
@@ -68,4 +68,21 @@ function parseMessage(message, availableEmotes) {
 	});
 
 	return newWords.join(" ");
+}
+
+function parseAttributes(attributes) {
+	if(!attributes || attributes.length === 0 || !window.badgeSet) {
+		return "";
+	}
+
+	var attributeString = "";
+	_.each(attributes, function(attribute, index, list) {
+		var matchingBadge = _.find(window.badgeSet, function(badge) {
+			return badge.role === attribute;
+		});
+
+		attributeString = attributeString + "<img alt='" + matchingBadge.role + "' src='" + matchingBadge.url + "' /> ";
+	});
+
+	return attributeString;
 }

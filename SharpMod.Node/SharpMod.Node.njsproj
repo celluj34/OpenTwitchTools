@@ -39,19 +39,12 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="public\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="public\javascripts\bootstrap.js" />
-    <Content Include="public\javascripts\bootstrap.min.js" />
-    <Content Include="public\javascripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="public\javascripts\jquery-2.1.3.js" />
-    <Content Include="public\javascripts\jquery-2.1.3.min.js" />
     <Content Include="public\javascripts\jquery.validate-vsdoc.js" />
     <Content Include="public\javascripts\jquery.validate.js" />
     <Content Include="public\javascripts\jquery.validate.min.js" />
     <Content Include="public\javascripts\jquery.validate.unobtrusive.js" />
     <Content Include="public\javascripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="public\javascripts\modernizr-2.6.2.js" />
-    <Content Include="public\javascripts\respond.js" />
-    <Content Include="public\javascripts\respond.min.js" />
     <Content Include="public\javascripts\_references.js" />
     <Content Include="package.json" />
     <Content Include="public\fonts\glyphicons-halflings-regular.eot" />

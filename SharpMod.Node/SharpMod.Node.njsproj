@@ -31,7 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="providers\emoticonProvider.js" />
     <Compile Include="providers\settingsProvider.js" />
     <Compile Include="public\javascripts\chat.js" />
   </ItemGroup>
@@ -45,7 +44,6 @@
     <Content Include="public\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="public\stylesheets\style.styl" />
-    <Content Include="sharpdb\emoticons.json" />
     <Content Include="sharpdb\settings.json" />
     <Content Include="views\chat.jade" />
     <Content Include="views\login.jade" />

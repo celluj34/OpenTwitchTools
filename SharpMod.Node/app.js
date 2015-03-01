@@ -27,6 +27,9 @@ app.use(app.router);
 app.use(require("stylus").middleware(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
+diskdb.connect("./sharpdb", ["settings", "emoticons"]);
+var settingsProvider = new SettingsProvider(diskdb);
+
 // development only
 app.set("env", "development");
 if("development" == app.get("env")) {
@@ -34,14 +37,10 @@ if("development" == app.get("env")) {
 }
 
 app.get("/", function(req, response) {
-	diskdb = diskdb.connect("./sharpdb", ["settings"]);
-	var settingsProvider = new SettingsProvider(diskdb);
-	var channelNames = settingsProvider.GetChannelNames(_);
-    
-    response.render("login", {
+	response.render("login", {
 		"Username": settingsProvider.Username(),
 		"Password": settingsProvider.Password(),
-		"Channels": channelNames
+		"Channels": settingsProvider.GetChannelNames(_)
 	});
 });
 
@@ -112,7 +111,7 @@ app.get("/badges", function(req, response) {
 		};
 
 		if(body.subscriber) {
-            subscriber.url = body.subscriber.image;
+			subscriber.url = body.subscriber.image;
 		}
 
 		badgeList.push(subscriber);
@@ -122,9 +121,6 @@ app.get("/badges", function(req, response) {
 });
 
 app.post("/", function(req, response) {
-	diskdb = diskdb.connect("./sharpdb", ["settings"]);
-	var settingsProvider = new SettingsProvider(diskdb);
-
 	settingsProvider.saveLogin(_, req.param("username"), req.param("password"), req.param("channel"), function(error) {
 		if(error) {
 			response.redirect("/", error);
@@ -136,8 +132,6 @@ app.post("/", function(req, response) {
 });
 
 app.get("/chat", function(req, response) {
-	diskdb = diskdb.connect("./sharpdb", ["settings"]);
-	var settingsProvider = new SettingsProvider(diskdb);
 	var username = settingsProvider.Username();
 	var password = settingsProvider.Password();
 	var channelNames = settingsProvider.GetChannelNames(_);
@@ -161,7 +155,6 @@ app.get("/chat", function(req, response) {
 		client.connect();
 
 		client.addListener("chat", function(incChannel, user, message) {
-			// https://github.com/Schmoopiie/twitch-irc/wiki/Command:-Say 
 			io.sockets.emit("incomingMessage", {
 				name: user.username,
 				attributes: user.special,
@@ -184,16 +177,6 @@ app.get("/chat", function(req, response) {
 		//socket.on("newUser", function(data) {
 		//	participants.push({id: data.id, name: data.name});
 		//	io.sockets.emit("newConnection", {participants: participants});
-		//});
-
-		///*
-		//  When a user changes his name, we are expecting an event called "nameChange" 
-		//  and then we'll emit an event called "nameChanged" to all participants with
-		//  the id and new name of the user who emitted the original message
-		//*/
-		//socket.on("nameChange", function(data) {
-		//	_.findWhere(participants, {id: socket.id}).name = data.name;
-		//	io.sockets.emit("nameChanged", {id: data.id, name: data.name});
 		//});
 
 		///* 

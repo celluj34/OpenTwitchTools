@@ -1,5 +1,5 @@
-﻿SettingsProvider = function(diskDb) {
-	this.settings = diskDb.settings;
+﻿SettingsProvider = function(database) {
+	this.settings = database.settings;
 };
 
 SettingsProvider.prototype.settings = null;

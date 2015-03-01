@@ -2,6 +2,12 @@
 	getEmotes();
 	getBadges();
 
+	$("#chatForm").submit(function(event) {
+		socket.emit("outgoingMessage", $("#chatMessage").val());
+		event.preventDefault();
+		$("#chatMessage").val(null);
+	});
+
 	var socket = io.connect("127.0.0.1:18044");
 
 	socket.on("incomingMessage", function(data) {
@@ -44,9 +50,8 @@ function parseMessage(message, availableEmotes) {
 		return message;
 	}
 
-	var words = message.split(" ");
 	var newWords = [];
-	var tempWord;
+	var tempWords;
 	var emoteList;
 
 	if(availableEmotes.length === 0) {
@@ -56,16 +61,23 @@ function parseMessage(message, availableEmotes) {
 		emoteList = JSON.parse(availableEmotes);
 	}
 
-	_.each(words, function(word) {
-		tempWord = _.find(window.emoteSet, function(emote) {
-			return word.match(emote.regex) && (!emote.emoticon_set || _.contains(emoteList, emote.emoticon_set));
+	_.each(message.split(" "), function(word) {
+		tempWords = _.filter(window.emoteSet, function(emote) {
+			return word.match(_.unescape(emote.regex)) && (!emote.emoticon_set || _.contains(emoteList, emote.emoticon_set));
 		});
 
-		if(tempWord) {
-			newWords.push(tempWord.url);
+		if(tempWords.length === 0) {
+			newWords.push(word);
+		}
+		else if(tempWords.length === 1) {
+			newWords.push(tempWords[0].url);
 		}
 		else {
-			newWords.push(word);
+			tempWords = _.find(tempWords, function(emote) {
+				return emote.regex === word || emote.emoticon_set;
+			});
+
+			newWords.push(tempWords.url);
 		}
 	});
 

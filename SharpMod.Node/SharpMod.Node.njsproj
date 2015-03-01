@@ -33,8 +33,6 @@
     <Compile Include="app.js" />
     <Compile Include="providers\settingsProvider.js" />
     <Compile Include="public\javascripts\chat.js" />
-    <Compile Include="public\javascripts\select2.js" />
-    <Compile Include="public\javascripts\select2.min.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
@@ -54,13 +52,8 @@
     <Content Include="public\stylesheets\bootstrap-theme.css" />
     <Content Include="public\stylesheets\bootstrap-theme.css.map" />
     <Content Include="public\stylesheets\bootstrap-theme.min.css" />
-    <Content Include="public\stylesheets\bootstrap.css" />
-    <Content Include="public\stylesheets\bootstrap.css.map" />
-    <Content Include="public\stylesheets\bootstrap.min.css" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="public\stylesheets\style.styl" />
-    <Content Include="public\stylesheets\select2.css" />
-    <Content Include="public\stylesheets\select2.min.css" />
     <Content Include="sharpdb\emoticons.json" />
     <Content Include="sharpdb\settings.json" />
     <Content Include="views\chat.jade" />

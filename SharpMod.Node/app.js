@@ -173,7 +173,7 @@ app.get("/chat", function(req, response) {
 		});
 
 		socket.on("outgoingMessage", function(data) {
-			client.say("#" + channel, data.message);
+			client.say(channel, data);
 		});
 
 		///*

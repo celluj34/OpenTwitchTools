@@ -37,8 +37,8 @@ app.get("/", function(req, response) {
 	diskdb = diskdb.connect("./sharpdb", ["settings"]);
 	var settingsProvider = new SettingsProvider(diskdb);
 	var channelNames = settingsProvider.GetChannelNames(_);
-
-	response.render("login", {
+    
+    response.render("login", {
 		"Username": settingsProvider.Username(),
 		"Password": settingsProvider.Password(),
 		"Channels": channelNames

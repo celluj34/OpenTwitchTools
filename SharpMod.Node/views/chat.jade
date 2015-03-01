@@ -10,30 +10,36 @@ html
     body
         div.container.body-content
             div.alert.alert-warning#loadingEmotesMessage(role="alert")
-                strong.
-                    Emoticons are currently loading.
+                strong Emoticons are currently loading.
 
             div.alert.alert-success.alert-dismissable#successEmotesMessage(role="alert", style="display:none")
                 button(type="button", class="close", data-dismiss="alert", aria-label="Close")
-                    span(aria-hidden="true").
-                        &times;
-                strong.
-                    Emoticons have been successfully loaded.
+                    span(aria-hidden="true") &times;
+
+                strong Emoticons have been successfully loaded.
 
             div.alert.alert-warning#loadingBadgesMessage(role="alert")
-                strong.
-                    Badges are currently loading.
+                strong Badges are currently loading.
 
             div.alert.alert-success.alert-dismissable#successBadgesMessage(role="alert", style="display:none")
                 button(type="button", class="close", data-dismiss="alert", aria-label="Close")
-                    span(aria-hidden="true").
-                        &times;
-                strong.
-                    Badges have been successfully loaded.
+                    span(aria-hidden="true") &times;
 
-            h1#channel #{CurrentChannel}
+                strong Badges have been successfully loaded.
+
+            ul.nav.nav-tabs
+                li.active(role="presentation")
+                    a(href=CurrentChannel, data-toggle="tab") #{CurrentChannel}
+                li(role="presentation")
+                    a(href="#AddNew", data-toggle="tab") New Channel
+
+            div.tab-content#content
+                div.tab-pane.active(id=CurrentChannel.replace("#", ""))
+                    div#messages
+                div.tab-pane.active#AddNew
+                    div#messages2
     
-            div#messages
+            //div#messages
 
             nav.navbar.navbar-default.navbar-fixed-bottom
                 div.container
@@ -47,5 +53,5 @@ html
         script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.4/socket.io.min.js')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js')
         script(src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js')
-        script
+        //script
             include ../public/javascripts/chat.js

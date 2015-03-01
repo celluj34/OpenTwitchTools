@@ -1,42 +1,51 @@
-﻿extends layout
+﻿doctype html
+html
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title SharpMod
+        link(rel='stylesheet', type='text/css', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
+        link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js')
+    body
+        div.container.body-content
+            div.alert.alert-warning#loadingEmotesMessage(role="alert")
+                strong.
+                    Emoticons are currently loading.
 
-block content
+            div.alert.alert-success.alert-dismissable#successEmotesMessage(role="alert", style="display:none")
+                button(type="button", class="close", data-dismiss="alert", aria-label="Close")
+                    span(aria-hidden="true").
+                        &times;
+                strong.
+                    Emoticons have been successfully loaded.
 
-    div.alert.alert-warning#loadingEmotesMessage(role="alert")
-        strong.
-            Emoticons are currently loading.
+            div.alert.alert-warning#loadingBadgesMessage(role="alert")
+                strong.
+                    Badges are currently loading.
 
-    div.alert.alert-success.alert-dismissable#successEmotesMessage(role="alert", style="display:none")
-        button(type="button", class="close", data-dismiss="alert", aria-label="Close")
-            span(aria-hidden="true").
-                &times;
-        strong.
-            Emoticons have been successfully loaded.
+            div.alert.alert-success.alert-dismissable#successBadgesMessage(role="alert", style="display:none")
+                button(type="button", class="close", data-dismiss="alert", aria-label="Close")
+                    span(aria-hidden="true").
+                        &times;
+                strong.
+                    Badges have been successfully loaded.
 
-    div.alert.alert-warning#loadingBadgesMessage(role="alert")
-        strong.
-            Badges are currently loading.
-
-    div.alert.alert-success.alert-dismissable#successBadgesMessage(role="alert", style="display:none")
-        button(type="button", class="close", data-dismiss="alert", aria-label="Close")
-            span(aria-hidden="true").
-                &times;
-        strong.
-            Badges have been successfully loaded.
-
-    h1#channel #{CurrentChannel}
+            h1#channel #{CurrentChannel}
     
-    div#messages
+            div#messages
 
-    nav.navbar.navbar-default.navbar-fixed-bottom
-        div.container
-            div.navbar-form.navbar-left(role="Send")
-                form.form-group#chatForm
-                    input.form-control#chatMessage(type="text",placeholder="Send a message",style="width:280px")
-
-block scripts
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.4/socket.io.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js')
-    script
-        include ../public/javascripts/chat.js
+            nav.navbar.navbar-default.navbar-fixed-bottom
+                div.container
+                    div.navbar-form.navbar-left(role="Send")
+                        form.form-group#chatForm
+                            input.form-control#chatMessage(type="text",placeholder="Send a message",style="width:280px")
+        
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.4/socket.io.min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js')
+        script
+            include ../public/javascripts/chat.js

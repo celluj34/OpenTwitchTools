@@ -16,8 +16,7 @@ app.use(express.compress());
 // all environments
 app.set("ipaddr", "127.0.0.1");
 app.set("port", 18044);
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+app.set("view engine", "html");
 app.use(express.favicon());
 app.use(express.logger("dev"));
 app.use(express.json());
@@ -36,12 +35,8 @@ if("development" == app.get("env")) {
 	app.use(express.errorHandler());
 }
 
-app.get("/", function(req, response) {
-	response.render("login", {
-		"Username": settingsProvider.Username(),
-		"Password": settingsProvider.Password(),
-		"Channels": settingsProvider.GetChannelNames(_)
-	});
+app.get("/", function (req, response) {
+	response.sendfile("index.html");
 });
 
 app.get("/emotes", function(req, response) {

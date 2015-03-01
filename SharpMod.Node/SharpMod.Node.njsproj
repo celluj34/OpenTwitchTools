@@ -37,12 +37,6 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="public\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="public\javascripts\jquery.validate-vsdoc.js" />
-    <Content Include="public\javascripts\jquery.validate.js" />
-    <Content Include="public\javascripts\jquery.validate.min.js" />
-    <Content Include="public\javascripts\jquery.validate.unobtrusive.js" />
-    <Content Include="public\javascripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="public\javascripts\_references.js" />
     <Content Include="package.json" />
     <Content Include="public\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="public\fonts\glyphicons-halflings-regular.svg" />

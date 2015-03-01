@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="providers\emoticonProvider.js" />
     <Compile Include="providers\settingsProvider.js" />
     <Compile Include="public\javascripts\chat.js" />
   </ItemGroup>

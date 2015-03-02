@@ -6,7 +6,7 @@
 		<meta content="width=device-width" initial-scale="1.0 " name="viewport" />
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css" rel="stylesheet" type="text/css" />
-		<link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
 	</head>
 	<body>
@@ -74,51 +74,70 @@
 			</div>
 		</div>
 
-		<div aria-hidden="true" aria-labelledby="myModalLabel" class="fade in modal" data-backdrop="static" data-keyboard="false" id="myModal" role="dialog" tabindex="-1">
-			<div class="modal-dialog">
+		<div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="loginModal" role="dialog">
+			<div class="modal-dialog modal-sm">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title" id="myModalLabel">Login</h4>
+						<h4 class="modal-title">Login to SharpMod</h4>
 					</div>
-					<div class="modal-body">
-						<div class="row">
-							<!--<div class="col-md-4">-->
-							<div class="col-md-12">
-								<form action="/" id="loginForm" method="POST">
+					<form action="/" method="POST">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
 									<div class="form-group">
 										<label for="username">Username</label>
-										<input class="form-control" id="username" name="username" placeholder="Username" required type="text" />
+										<input class="form-control" id="username" name="username" required type="text" />
 									</div>
 
 									<div class="form-group">
 										<label for="password">Password</label>
-										<input class="form-control" id="password" name="password" placeholder="Password" required type="text" />
+										<input class="form-control" id="password" name="password" required type="password" />
 									</div>
 
 									<div class="form-group">
-										<label for="password">Channel</label>
+										<label for="channel">Channel</label>
 										<div>
-											<select class="form-control" id="channel" name="channel" required style="width: 280px"></select>
+											<select class="form-control" id="channel" name="channel" style="width: 100%"></select>
 										</div>
 									</div>
-								</form>
+								</div>
 							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-info pull-left" id="getAuthButton" type="button">Get auth token</button>
+							<button class="btn btn-success" type="submit">Login</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 
-							<!--<div class="col-md-8">
+		<div aria-hidden="true" aria-labelledby="loginModalLabel" class="fade in modal" id="authTokenModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Generate oauth token</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
 								<div class="embed-responsive embed-responsive-4by3">
 									<iframe src="http://www.twitchapps.com/tmi/"></iframe>
 								</div>
-							</div>-->
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-primary" id="submitButton" type="button">Save changes</button>
+						<div class="text-left">
+							In order to log in, you must generate an oauth token. This is required. Please use the "Connect with Twitch" button above to generate your token. Copy that token and paste it into the password field on the previous form.
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js" type="text/javascript"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" type="text/javascript"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js" type="text/javascript"></script>

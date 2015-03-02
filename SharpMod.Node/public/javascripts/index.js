@@ -53,23 +53,20 @@ function initialize() {
 	}, "json");
 
 	$("#loginForm").submit(function(event) {
+		event.preventDefault();
+
 		var submitData = {
 			username: $("#username").val(),
 			password: $("#password").val(),
 			channel: $("#channel").val()
-        };
+		};
 
-		$.post({
-			url: "/",
-			data: submitData,
-			success: function(data, textStatus, jqxhr) {
-				if(!data.isValid) {
-					alert("You need a new token!");
-					event.preventDefault();
-				}
-				else {
-					alert("success!");
-				}
+		$.post("/", submitData).done(function(data) {
+			if(!data.isValid) {
+				alert(data.error);
+			}
+			else {
+				$("#loginModal").modal("hide");
 			}
 		});
 	});

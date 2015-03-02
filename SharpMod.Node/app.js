@@ -133,7 +133,7 @@ app.post("/", function(req, response) {
 	request("https://api.twitch.tv/kraken/?oauth_token=" + password, function(err, resp, body) {
 		var data = JSON.parse(body);
 		if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
-			response.json({isValid: false, error: "Token is expired or it is for another user."});
+			response.json({isValid: false, error: "Token is expired or it is registered to another user."});
 		}
 		else {
 			settingsProvider.saveLogin(_, req.param("username"), req.param("password"), req.param("channel"), function(error) {

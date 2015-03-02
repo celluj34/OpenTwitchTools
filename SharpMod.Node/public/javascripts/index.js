@@ -29,20 +29,49 @@
 });
 
 function initialize() {
+	$("#loginModal").modal();
+
+	$("#getAuthButton").click(function() {
+		$("#authTokenModal").modal();
+	});
+
 	$.get("/emotes", function(data) {
 		window.emoteSet = data;
 		$("#loadingEmotesMessage").hide();
 		$("#successEmotesMessage").show().delay(7500).fadeOut("slow");
 	}, "json");
 
-	$("#channel").select2({
-		tags: true
-	});
+	$.get("/loginInfo", function(data) {
+		$("#username").val(data.username);
+		$("#password").val(data.password);
 
-	$("#loginModal").modal();
+		_.each(data.channels, function(item) {
+			$("#channel").append($("<option></option>").attr("value", item).text(item));
+		});
 
-	$("#getAuthButton").click(function() {
-		$("#authTokenModal").modal();
+		$("#channel").select2();
+	}, "json");
+
+	$("#loginForm").submit(function(event) {
+		var submitData = {
+			username: $("#username").val(),
+			password: $("#password").val(),
+			channel: $("#channel").val()
+        };
+
+		$.post({
+			url: "/",
+			data: submitData,
+			success: function(data, textStatus, jqxhr) {
+				if(!data.isValid) {
+					alert("You need a new token!");
+					event.preventDefault();
+				}
+				else {
+					alert("success!");
+				}
+			}
+		});
 	});
 
 	window.socket = io.connect("127.0.0.1:18044");

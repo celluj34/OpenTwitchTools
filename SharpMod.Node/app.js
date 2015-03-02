@@ -26,7 +26,7 @@ app.use(app.router);
 app.use(require("stylus").middleware(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
-diskdb.connect("./sharpdb", ["settings", "emoticons"]);
+diskdb.connect("./sharpdb", ["settings"]);
 var settingsProvider = new SettingsProvider(diskdb);
 
 // development only
@@ -35,8 +35,20 @@ if("development" == app.get("env")) {
 	app.use(express.errorHandler());
 }
 
-app.get("/", function (req, response) {
+app.get("/", function(req, response) {
 	response.sendfile("index.html");
+});
+
+app.get("/loginInfo", function(req, response) {
+	var username = settingsProvider.Username();
+	var password = settingsProvider.Password();
+	var channelNames = settingsProvider.GetChannelNames(_);
+
+	response.send({
+		username: username,
+		password: password,
+		channels: channelNames
+	});
 });
 
 app.get("/emotes", function(req, response) {
@@ -116,14 +128,25 @@ app.get("/badges", function(req, response) {
 });
 
 app.post("/", function(req, response) {
-	settingsProvider.saveLogin(_, req.param("username"), req.param("password"), req.param("channel"), function(error) {
-		if(error) {
-			response.redirect("/", error);
+	var username = req.param("username");
+	var password = req.param("password").replace("oauth:", "");
+	request("https://api.twitch.tv/kraken/?oauth_token=" + password, function(err, resp, body) {
+		var data = JSON.parse(body);
+		if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
+			response.json({isValid: false, error: "Token is expired or it is for another user."});
 		}
 		else {
-			response.redirect("/chat");
+			settingsProvider.saveLogin(_, req.param("username"), req.param("password"), req.param("channel"), function(error) {
+				if(error) {
+					response.json({isValid: false, error: error});
+				}
+				else {
+					response.json({isValid: true});
+				}
+			});
 		}
 	});
+
 });
 
 app.get("/chat", function(req, response) {

@@ -31,6 +31,11 @@ SettingsProvider.prototype.saveLogin = function(_, username, password, channel, 
 		return;
 	}
 
+	if(_.isUndefined(channel) || _.isEmpty(channel.trim())) {
+		callback("Channel must not be null.");
+		return;
+	}
+
 	this.settings.update({Key: "Username"}, {Value: username});
 	this.settings.update({Key: "Password"}, {Value: password});
 

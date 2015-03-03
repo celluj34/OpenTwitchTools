@@ -45,6 +45,8 @@ router.route("/")
 						response.json({isValid: false, error: error});
 					}
 					else {
+						setupConnection();
+
 						response.json({isValid: true});
 					}
 				});
@@ -143,75 +145,6 @@ router.route("/badges")
 		});
 	});
 
-router.route("/chat")
-	.get(function(req, response) {
-		var username = settingsProvider.Username();
-		var password = settingsProvider.Password();
-		var channelNames = settingsProvider.GetChannelNames(_);
-		var channel = "#" + channelNames[0];
-
-		socketio.on("connection", function(socket) {
-			client = new irc.client({
-				options: {
-					debug: true,
-					debugIgnore: ["ping", "chat", "action"],
-					logging: false,
-					tc: 3
-				},
-				identity: {
-					username: username,
-					password: password
-				},
-				channels: [channel]
-			});
-
-			client.connect();
-
-			client.addListener("chat", function(incChannel, user, message) {
-				socketio.sockets.emit("incomingMessage", {
-					name: user.username,
-					attributes: user.special,
-					emote_set: user.emote,
-					color: user.color,
-					message: message,
-					channel: incChannel
-				});
-			});
-
-			socket.on("outgoingMessage", function(data) {
-				client.say(channel, data);
-			});
-
-			///*
-			//  When a new user connects to our server, we expect an event called "newUser"
-			//  and then we'll emit an event called "newConnection" with a list of all 
-			//  participants to all connected clients
-			//*/
-			//socket.on("newUser", function(data) {
-			//	participants.push({id: data.id, name: data.name});
-			//	socketio.sockets.emit("newConnection", {participants: participants});
-			//});
-
-			///* 
-			//  When a client disconnects from the server, the event "disconnect" is automatically 
-			//  captured by the server. It will then emit an event called "userDisconnected" to 
-			//  all participants with the id of the client that disconnected
-			//*/
-			//socket.on("disconnect", function() {
-			//	participants = _.without(participants, _.findWhere(participants, {id: socket.id}));
-			//	socketio.sockets.emit("userDisconnected", {id: socket.id, sender: "system"});
-			//});
-
-		});
-
-		response.render("chat", {
-			Channels: channelNames,
-			CurrentChannel: channel,
-			Username: username,
-			Password: password
-		});
-	});
-
 app.use("/", router);
 
 var server = app.listen(app.locals.port, app.locals.ipAddress, function() {
@@ -219,3 +152,58 @@ var server = app.listen(app.locals.port, app.locals.ipAddress, function() {
 });
 
 socketio = socketio.listen(server);
+
+socketio.on("connection", function(socket) {
+	socket.on("outgoingMessage", function(data) {
+		client.say(data.channel, data.message);
+	});
+
+	//socket.on("ban", function(data) {
+	//       client.ban(data.user);
+	//});
+});
+
+function setupConnection() {
+	var username = settingsProvider.Username();
+	var password = settingsProvider.Password();
+	var channelNames = settingsProvider.GetChannelNames(_);
+	var channel = "#" + channelNames[0];
+
+	client = new irc.client({
+		options: {
+			debug: true,
+			debugIgnore: ["ping", "chat", "action"],
+			logging: false,
+			tc: 3
+		},
+		identity: {
+			username: username,
+			password: password
+		},
+		channels: [channel]
+	});
+
+	client.connect();
+
+	client.addListener("chat", function(incChannel, user, message) {
+		socketio.sockets.emit("incomingMessage", {
+			name: user.username,
+			attributes: user.special,
+			emote_set: user.emote,
+			color: user.color,
+			message: message,
+			channel: incChannel
+		});
+	});
+
+	//client.addListener("timeout", function(incChannel, user, message) {
+	//	socketio.sockets.emit("timeout", {
+	//		name: user.username,
+	//		attributes: user.special,
+	//		emote_set: user.emote,
+	//		color: user.color,
+	//		message: message,
+	//		channel: incChannel
+	//	});
+	//});
+};

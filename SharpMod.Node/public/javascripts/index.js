@@ -1,8 +1,6 @@
 ﻿$(function() {
 	initialize();
 
-	//getBadges();
-
 	//$("#chatForm").submit(function(event) {
 	//	socket.emit("outgoingMessage", $("#chatMessage").val());
 	//	event.preventDefault();
@@ -29,17 +27,20 @@
 });
 
 function initialize() {
-	$("#loginModal").modal();
 
-	$("#getAuthButton").click(function() {
-		$("#authTokenModal").modal();
-	});
+	window.socket = io.connect("127.0.0.1:18044");
 
 	$.get("/emotes", function(data) {
 		window.emoteSet = data;
 		$("#loadingEmotesMessage").hide();
 		$("#successEmotesMessage").show().delay(7500).fadeOut("slow");
 	}, "json");
+
+	$("#loginModal").modal();
+
+	$("#getAuthButton").click(function() {
+		$("#authTokenModal").modal();
+	});
 
 	$.get("/loginInfo", function(data) {
 		$("#username").val(data.username);
@@ -66,20 +67,21 @@ function initialize() {
 				alert(data.error);
 			}
 			else {
+				getBadges(channel);
+
 				$("#loginModal").modal("hide");
+				$("#chatContent").show();
 			}
 		});
 	});
-
-	window.socket = io.connect("127.0.0.1:18044");
 }
 
 function getBadges(channel) {
-	//$.get("/badges", {channel: channel.replace("#", "")}, function(data) {
-	//	window.badgeSet = data;
-	//	$("#loadingBadgesMessage").hide();
-	//	$("#successBadgesMessage").show().delay(7500).fadeOut("slow");
-	//}, "json");
+	$.get("/badges", {channel: channel}, function(data) {
+		window.badgeSet = data;
+		$("#loadingBadgesMessage").hide();
+		$("#successBadgesMessage").show().delay(7500).fadeOut("slow");
+	}, "json");
 }
 
 function parseMessage(message, availableEmotes) {

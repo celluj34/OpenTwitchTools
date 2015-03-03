@@ -5,7 +5,7 @@
     irc = require("twitch-irc"),
     _ = require("underscore"),
     settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
-    io = require("socket.io").listen(http),
+    socketio = require("socket.io"),
     request = require("request"),
     compression = require("compression"),
     bodyParser = require("body-parser"),
@@ -17,7 +17,7 @@ app.locals.port = 18044;
 app.locals.index = path.join(__dirname, "index.html");
 app.locals.database = path.join(__dirname, "sharpdb/"); //diskDb doesn't like variable names for some reason
 
-app.use(compression);
+app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "public")));
@@ -150,7 +150,7 @@ router.route("/chat")
 		var channelNames = settingsProvider.GetChannelNames(_);
 		var channel = "#" + channelNames[0];
 
-		io.on("connection", function(socket) {
+		socketio.on("connection", function(socket) {
 			client = new irc.client({
 				options: {
 					debug: true,
@@ -168,7 +168,7 @@ router.route("/chat")
 			client.connect();
 
 			client.addListener("chat", function(incChannel, user, message) {
-				io.sockets.emit("incomingMessage", {
+				socketio.sockets.emit("incomingMessage", {
 					name: user.username,
 					attributes: user.special,
 					emote_set: user.emote,
@@ -189,7 +189,7 @@ router.route("/chat")
 			//*/
 			//socket.on("newUser", function(data) {
 			//	participants.push({id: data.id, name: data.name});
-			//	io.sockets.emit("newConnection", {participants: participants});
+			//	socketio.sockets.emit("newConnection", {participants: participants});
 			//});
 
 			///* 
@@ -199,7 +199,7 @@ router.route("/chat")
 			//*/
 			//socket.on("disconnect", function() {
 			//	participants = _.without(participants, _.findWhere(participants, {id: socket.id}));
-			//	io.sockets.emit("userDisconnected", {id: socket.id, sender: "system"});
+			//	socketio.sockets.emit("userDisconnected", {id: socket.id, sender: "system"});
 			//});
 
 		});
@@ -214,6 +214,8 @@ router.route("/chat")
 
 app.use("/", router);
 
-app.listen(app.locals.port, app.locals.ipAddress, function() {
+var server = app.listen(app.locals.port, app.locals.ipAddress, function() {
 	console.log("Server up and running. Go to http://" + app.locals.ipAddress + ":" + app.locals.port);
 });
+
+socketio = socketio.listen(server);

@@ -20,7 +20,7 @@ app.locals.database = path.join(__dirname, "sharpdb/"); //diskDb doesn't like va
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname));
 
 diskdb.connect("./sharpdb", ["settings"]);
 var settingsProvider = new SettingsProvider(diskdb);
@@ -33,8 +33,9 @@ router.route("/")
 		var username = req.body.username;
 		var password = req.body.password;
 		var channel = req.body.channel;
+		var url = "https://api.twitch.tv/kraken/?oauth_token=" + password.replace("oauth:", "");
 
-		request("https://api.twitch.tv/kraken/?oauth_token=" + password.replace("oauth:", ""), function(err, resp, body) {
+		request(url, function(err, resp, body) {
 			var data = JSON.parse(body);
 			if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
 				response.json({isValid: false, error: "Token is expired or it is registered to another user."});
@@ -203,7 +204,7 @@ function setupConnection() {
 			emote_set: emoteList,
 			color: user.color,
 			message: message,
-			channel: incChannel
+			channel: incChannel.replace("#", "")
 		});
 	});
 

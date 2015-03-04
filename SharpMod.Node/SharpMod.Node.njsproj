@@ -32,26 +32,18 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="providers\settingsProvider.js" />
-    <Compile Include="public\javascripts\index.js" />
+    <Compile Include="javascript\index.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
-    <Content Include="public\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="package.json" />
-    <Content Include="public\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="public\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="public\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="public\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="public\stylesheets\site.css" />
+    <Content Include="css\site.css" />
     <Content Include="sharpdb\settings.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="providers\" />
-    <Folder Include="public\" />
-    <Folder Include="public\fonts\" />
-    <Folder Include="public\images\" />
-    <Folder Include="public\javascripts\" />
-    <Folder Include="public\stylesheets\" />
+    <Folder Include="javascript\" />
+    <Folder Include="css\" />
     <Folder Include="sharpdb\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

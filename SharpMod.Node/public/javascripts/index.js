@@ -68,7 +68,7 @@ function initializeKnockout() {
 	var commentViewModel = function(data, channelBadges) {
 		var self = this;
 
-        self.Name = data.name;
+		self.Name = data.name;
 		self.Color = data.color;
 		self.Message = parseMessage(data.message, data.emote_set);
 		self.Badges = parseAttributes(data.attributes, channelBadges);
@@ -82,7 +82,11 @@ function initializeKnockout() {
 		self.Badges = [];
 
 		self.addComment = function(comment) {
-			self.Comments.push(new commentViewModel(comment, self.Badges));
+			self.Comments.unshift(new commentViewModel(comment, self.Badges));
+
+			if(self.Comments().length > 100) {
+				self.Comments.pop();
+			}
 		};
 	};
 
@@ -92,8 +96,8 @@ function initializeKnockout() {
 		self.OutgoingMessage = ko.observable();
 		self.Channels = ko.observableArray();
 
-        self.addComment = function (data) {
-	        var channelName = data.channel.replace("#", "");
+		self.addComment = function(data) {
+			var channelName = data.channel.replace("#", "");
 			var matchingChannel = _.find(self.Channels(), function(channel) {
 				return channel.ChannelName === channelName;
 			});

@@ -47,7 +47,7 @@ function initializeHandlers() {
 			}
 			else {
 				$("#loginModal").modal("hide");
-				$("#chatContent").show();
+				$(".body-content").show();
 				window.viewModel.joinChannel(data.channel);
 			}
 		});
@@ -82,8 +82,8 @@ function initializeKnockout() {
 		self.Badges = [];
 
 		self.Selected = ko.computed(function() {
-			return self === selectedChannel();
-		}, self);
+			return this === selectedChannel();
+		}, this);
 
 		self.addComment = function(comment) {
 			self.Comments.unshift(new commentViewModel(comment, self.Badges));
@@ -102,9 +102,8 @@ function initializeKnockout() {
 		self.SelectedChannel = ko.observable();
 
 		self.addComment = function(data) {
-			var channelName = data.channel.replace("#", "");
 			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === channelName;
+				return channel.ChannelName === data.channel;
 			});
 
 			matchingChannel.addComment(data);
@@ -112,7 +111,7 @@ function initializeKnockout() {
 
 		self.joinChannel = function(data) {
 			var newChannel = new channelViewModel(data, self.SelectedChannel);
-			self.Channels.push(viewModel);
+			self.Channels.push(newChannel);
 			self.SelectedChannel(newChannel);
 			getBadges(data);
 		};
@@ -127,7 +126,7 @@ function initializeKnockout() {
 	};
 
 	window.viewModel = new windowViewModel();
-	ko.applyBindings(viewModel, document.getElementById("chatContent"));
+	ko.applyBindings(viewModel);
 }
 
 function getBadges(channelName) {

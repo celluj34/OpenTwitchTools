@@ -1,3 +1,17 @@
 .body-content {
-	padding: 5px;
+	display: none;
+	margin-bottom: 50px;
+	margin-top: 70px;
+}
+
+#successEmotesMessage {
+	display: none;
+}
+
+#chatMessage {
+	width: 100%;
+}
+
+.select2.select2-container.select2-container--default {
+	width: 100% !important;
 }

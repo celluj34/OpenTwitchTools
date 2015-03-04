@@ -86,10 +86,10 @@ function initializeKnockout() {
 		}, this);
 
 		self.addComment = function(comment) {
-			self.Comments.unshift(new commentViewModel(comment, self.Badges));
+			self.Comments.push(new commentViewModel(comment, self.Badges));
 
 			if(self.Comments().length > 100) {
-				self.Comments.pop();
+				self.Comments.shift();
 			}
 		};
 	};
@@ -106,7 +106,9 @@ function initializeKnockout() {
 				return channel.ChannelName === data.channel;
 			});
 
-			matchingChannel.addComment(data);
+			if(matchingChannel) {
+				matchingChannel.addComment(data);
+			}
 		};
 
 		self.joinChannel = function(data) {
@@ -119,9 +121,11 @@ function initializeKnockout() {
 		self.setBadges = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
 				return channel.ChannelName === data.channel;
-			});
+            });
 
-			matchingChannel.Badges = data.badges;
+			if(matchingChannel) {
+				matchingChannel.Badges = data.badges;
+			}
 		};
 	};
 

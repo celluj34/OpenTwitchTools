@@ -1,46 +1,19 @@
 ﻿$(function() {
-	initialize();
-
-	//$("#chatForm").submit(function(event) {
-	//	socket.emit("outgoingMessage", $("#chatMessage").val());
-	//	event.preventDefault();
-	//	$("#chatMessage").val(null);
-	//});
-
-	//socket.on("incomingMessage", function(data) {
-	//	//{name: user.username, attributes: user.special, emote_set : user.emote, color: user.color, message: message, channel: incChannel}
-	//	//{name               , attributes              , emote_set             , color            , message         , channel            }
-
-	//	var thing = "<div class='panel panel-default comment'>" +
-	//		"   <div class='panel-heading'>" +
-	//		"       <h3 class='panel-title' style='color: " + data.color + "; font-weight:bold'>" + parseAttributes(data.attributes) + data.name + "</h3>" +
-	//		"   </div>" +
-	//		"   <div class='panel-body'>" +
-	//		parseMessage(data.message, data.emote_set) +
-	//		"   </div>" +
-	//		"</div>";
-
-	//	$("#messages").prepend(thing);
-
-	//	$("#messages").children(".comment").slice(300).remove();
-	//});
-});
-
-function initialize() {
-
 	window.socket = io.connect("127.0.0.1:18044");
 
+	$("#loginModal").modal();
+
+	initializeCommunication();
+	initializeHandlers();
+	initializeKnockout();
+});
+
+function initializeCommunication() {
 	$.get("/emotes", function(data) {
 		window.emoteSet = data;
 		$("#loadingEmotesMessage").hide();
 		$("#successEmotesMessage").show().delay(7500).fadeOut("slow");
 	}, "json");
-
-	$("#loginModal").modal();
-
-	$("#getAuthButton").click(function() {
-		$("#authTokenModal").modal();
-	});
 
 	$.get("/loginInfo", function(data) {
 		$("#username").val(data.username);
@@ -52,6 +25,12 @@ function initialize() {
 
 		$("#channel").select2();
 	}, "json");
+}
+
+function initializeHandlers() {
+	$("#getAuthButton").click(function() {
+		$("#authTokenModal").modal();
+	});
 
 	$("#loginForm").submit(function(event) {
 		event.preventDefault();
@@ -67,20 +46,82 @@ function initialize() {
 				alert(data.error);
 			}
 			else {
-				getBadges(channel);
-
 				$("#loginModal").modal("hide");
 				$("#chatContent").show();
+				window.viewModel.joinChannel(data.channel);
 			}
 		});
 	});
+
+	$("#chatForm").submit(function(event) {
+		window.socket.emit("outgoingMessage", $("#chatMessage").val());
+		$("#chatMessage").val(null);
+		event.preventDefault();
+	});
+
+	socket.on("incomingMessage", function(data) {
+		window.viewModel.addComment(data);
+	});
 }
 
-function getBadges(channel) {
-	$.get("/badges", {channel: channel}, function(data) {
-		window.badgeSet = data;
-		$("#loadingBadgesMessage").hide();
-		$("#successBadgesMessage").show().delay(7500).fadeOut("slow");
+function initializeKnockout() {
+	var commentViewModel = function(data, channelBadges) {
+		var self = this;
+
+        self.Name = data.name;
+		self.Color = data.color;
+		self.Message = parseMessage(data.message, data.emote_set);
+		self.Badges = parseAttributes(data.attributes, channelBadges);
+	};
+
+	var channelViewModel = function(data) {
+		var self = this;
+
+		self.ChannelName = data;
+		self.Comments = ko.observableArray();
+		self.Badges = [];
+
+		self.addComment = function(comment) {
+			self.Comments.push(new commentViewModel(comment, self.Badges));
+		};
+	};
+
+	var windowViewModel = function() {
+		var self = this;
+
+		self.OutgoingMessage = ko.observable();
+		self.Channels = ko.observableArray();
+
+        self.addComment = function (data) {
+	        var channelName = data.channel.replace("#", "");
+			var matchingChannel = _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === channelName;
+			});
+
+			matchingChannel.addComment(data);
+		};
+
+		self.joinChannel = function(data) {
+			self.Channels.push(new channelViewModel(data));
+			getBadges(data);
+		};
+
+		self.setBadges = function(data) {
+			var matchingChannel = _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === data.channel;
+			});
+
+			matchingChannel.Badges = data.badges;
+		};
+	};
+
+	window.viewModel = new windowViewModel();
+	ko.applyBindings(viewModel, document.getElementById("chatContent"));
+}
+
+function getBadges(channelName) {
+	$.get("/badges", {channel: channelName}, function(data) {
+		window.viewModel.setBadges(data);
 	}, "json");
 }
 
@@ -123,14 +164,14 @@ function parseMessage(message, availableEmotes) {
 	return newWords.join(" ");
 }
 
-function parseAttributes(attributes) {
-	if(!attributes || attributes.length === 0 || !window.badgeSet) {
+function parseAttributes(attributes, availableBadges) {
+	if(!attributes || attributes.length === 0 || availableBadges.length === 0) {
 		return "";
 	}
 
 	var attributeString = "";
 	_.each(attributes, function(attribute, index, list) {
-		var matchingBadge = _.find(window.badgeSet, function(badge) {
+		var matchingBadge = _.find(availableBadges, function(badge) {
 			return badge.role === attribute;
 		});
 

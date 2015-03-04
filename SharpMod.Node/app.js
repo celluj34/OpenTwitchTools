@@ -31,10 +31,10 @@ router.route("/")
 	})
 	.post(function(req, response) {
 		var username = req.body.username;
-		var password = req.body.password.replace("oauth:", "");
+		var password = req.body.password;
 		var channel = req.body.channel;
 
-		request("https://api.twitch.tv/kraken/?oauth_token=" + password, function(err, resp, body) {
+		request("https://api.twitch.tv/kraken/?oauth_token=" + password.replace("oauth:", ""), function(err, resp, body) {
 			var data = JSON.parse(body);
 			if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
 				response.json({isValid: false, error: "Token is expired or it is registered to another user."});
@@ -47,7 +47,10 @@ router.route("/")
 					else {
 						setupConnection();
 
-						response.json({isValid: true});
+						response.json({
+							isValid: true,
+							channel: channel
+						});
 					}
 				});
 			}
@@ -93,7 +96,7 @@ router.route("/emotes")
 
 router.route("/badges")
 	.get(function(req, response) {
-		var url = "https://api.twitch.tv/kraken/chat/" + req.param.channel + "/badges";
+		var url = "https://api.twitch.tv/kraken/chat/" + req.query.channel + "/badges";
 
 		request(url, function(err, resp, body) {
 			body = JSON.parse(body);
@@ -141,7 +144,10 @@ router.route("/badges")
 
 			badgeList.push(subscriber);
 
-			response.send(badgeList);
+			response.send({
+				channel: req.query.channel,
+				badges: badgeList
+			});
 		});
 	});
 
@@ -186,10 +192,15 @@ function setupConnection() {
 	client.connect();
 
 	client.addListener("chat", function(incChannel, user, message) {
+		var emoteList = [];
+		if(user.emote.length !== 0) {
+			emoteList = JSON.parse(user.emote);
+		}
+
 		socketio.sockets.emit("incomingMessage", {
 			name: user.username,
 			attributes: user.special,
-			emote_set: user.emote,
+			emote_set: emoteList,
 			color: user.color,
 			message: message,
 			channel: incChannel

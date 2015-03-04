@@ -38,14 +38,24 @@
 				<div class="tab-content" data-bind="foreach: Channels">
 					<div class="tab-pane" data-bind="attr: {id: ChannelName}, css: {active: Selected}">
 						<div data-bind="foreach: Comments">
-							<div class="comment panel panel-default">
-								<div class="panel-heading">
-									<h3 class="panel-title" data-bind="style: {color: Color}">
-										<span data-bind="html: Badges"></span>
-										<strong data-bind="text: Name"></strong>
-									</h3>
+							<div class="well well-sm" id="singleComment">
+								<div class="btn-group list-inline" id="commentCommands">
+									<button aria-expanded="false" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li>
+											<a href="#">BAN</a>
+										</li>
+										<li>
+											<a href="#">TIMEOUT</a>
+										</li>
+									</ul>
 								</div>
-								<div class="panel-body" data-bind="html: Message"></div>
+
+								<span data-bind="html: Badges"></span>
+								<strong data-bind="text: Name, style: {color: Color}"></strong>
+								<span data-bind="html: Message"></span>
 							</div>
 						</div>
 					</div>

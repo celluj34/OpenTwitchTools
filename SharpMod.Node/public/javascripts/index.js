@@ -74,12 +74,16 @@ function initializeKnockout() {
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 	};
 
-	var channelViewModel = function(data) {
+	var channelViewModel = function(data, selectedChannel) {
 		var self = this;
 
 		self.ChannelName = data;
 		self.Comments = ko.observableArray();
 		self.Badges = [];
+
+		self.Selected = ko.computed(function() {
+			return self === selectedChannel();
+		}, self);
 
 		self.addComment = function(comment) {
 			self.Comments.unshift(new commentViewModel(comment, self.Badges));
@@ -95,6 +99,7 @@ function initializeKnockout() {
 
 		self.OutgoingMessage = ko.observable();
 		self.Channels = ko.observableArray();
+		self.SelectedChannel = ko.observable();
 
 		self.addComment = function(data) {
 			var channelName = data.channel.replace("#", "");
@@ -106,7 +111,9 @@ function initializeKnockout() {
 		};
 
 		self.joinChannel = function(data) {
-			self.Channels.push(new channelViewModel(data));
+			var newChannel = new channelViewModel(data, self.SelectedChannel);
+			self.Channels.push(viewModel);
+			self.SelectedChannel(newChannel);
 			getBadges(data);
 		};
 

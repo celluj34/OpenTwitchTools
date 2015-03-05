@@ -1,5 +1,5 @@
 ﻿var express = require("express"),
-    app = express(),
+    server = express(),
     path = require("path"),
     diskdb = require("diskdb"),
     irc = require("twitch-irc"),
@@ -9,25 +9,27 @@
     request = require("request"),
     compression = require("compression"),
     bodyParser = require("body-parser"),
+    cors = require("cors"),
     router = express.Router(),
     client;
 
-app.locals.ipAddress = "127.0.0.1";
-app.locals.port = 18044;
-app.locals.index = path.join(__dirname, "index.html");
-app.locals.database = path.join(__dirname, "sharpdb/"); //diskDb doesn't like variable names for some reason
+server.locals.ipAddress = "127.0.0.1";
+server.locals.port = 18044;
+server.locals.index = path.join(__dirname, "index.html");
+server.locals.database = path.join(__dirname, "sharpdb/"); //diskDb doesn't like variable names for some reason
 
-app.use(compression());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(__dirname));
+server.use(compression());
+server.use(cors());
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: true}));
+server.use(express.static(__dirname));
 
 diskdb.connect("./sharpdb", ["settings"]);
 var settingsProvider = new SettingsProvider(diskdb);
 
 router.route("/")
 	.get(function(req, response) {
-		response.sendFile(app.locals.index);
+		response.sendFile(server.locals.index);
 	})
 	.post(function(req, response) {
 		var username = req.body.username;
@@ -152,13 +154,13 @@ router.route("/badges")
 		});
 	});
 
-app.use("/", router);
+server.use("/", router);
 
-var server = app.listen(app.locals.port, app.locals.ipAddress, function() {
-	console.log("Server up and running. Go to http://" + app.locals.ipAddress + ":" + app.locals.port);
+var serverListener = server.listen(server.locals.port, server.locals.ipAddress, function() {
+	console.log("Server up and running. Go to http://" + server.locals.ipAddress + ":" + server.locals.port);
 });
 
-socketio = socketio.listen(server);
+socketio = socketio.listen(serverListener);
 
 socketio.on("connection", function(socket) {
 	socket.on("outgoingMessage", function(data) {

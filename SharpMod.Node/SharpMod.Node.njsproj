@@ -31,16 +31,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="javascript\loading.js" />
     <Compile Include="providers\settingsProvider.js" />
     <Compile Include="javascript\index.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="index.html" />
+    <Content Include="loading.html" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="sharpdb\settings.json" />
+    <Content Include="views\index.html" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="views\" />
     <Folder Include="providers\" />
     <Folder Include="javascript\" />
     <Folder Include="css\" />

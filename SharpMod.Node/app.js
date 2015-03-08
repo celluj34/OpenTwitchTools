@@ -170,27 +170,41 @@ function setupConnection() {
 
 	client.connect();
 
-    client.addListener("chat", function (incChannel, user, message) {
-        var newMessage = message;
+	client.addListener("chat", function(channel, user, message) {
+		var parsedMessage = message;
 
-        _.each(user.emote, function (emote, index) {
-            var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
+		_.chain(user.emote)
+			.map(function(emote, index) {
+				var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
 
-            _.each(emote, function (chars) {
-                var indexes = chars.split("-");
-                var firstHalf = newMessage.substring(0, indexes[0]);
-                var replacement = "<img alt='" + newMessage.substring(indexes[0], indexes[1] + 1) + "' src='" + url + "' />";
-	            var secondHalf = newMessage.substring(indexes[1] + 1);
+				var charIndex = _.map(emote, function(chars) {
+					var indexes = chars.split("-");
 
-	            newMessage = firstHalf + replacement + secondHalf;
-            });
-        });
+					return {
+						url: url,
+						startIndex: parseInt(indexes[0]),
+						endIndex: parseInt(indexes[1]) + 1
+					};
+				});
+
+				return charIndex;
+			})
+			.flatten()
+			.sortBy(function(item) {
+				return -1 * item.startIndex;
+			}).each(function(emote) {
+				var firstHalf = parsedMessage.substring(0, emote.startIndex);
+				var replacement = "<img alt='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+				var secondHalf = parsedMessage.substring(emote.endIndex);
+
+				parsedMessage = firstHalf + replacement + secondHalf;
+			});
 
 		socketio.sockets.emit("incomingMessage", {
 			name: user.username,
 			attributes: user.special,
 			color: user.color,
-			message: newMessage,
+			message: parsedMessage,
 			channel: incChannel.replace("#", "")
 		});
 	});

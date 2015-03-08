@@ -60,7 +60,8 @@ function initializeHandlers() {
 	});
 
 	socket.on("incomingMessage", function(data) {
-		window.viewModel.addComment(data);
+        window.viewModel.addComment(data);
+        window.scrollTo(0, document.body.scrollHeight);
 	});
 }
 

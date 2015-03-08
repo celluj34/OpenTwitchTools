@@ -48,7 +48,7 @@ router.route("/")
 						response.json({isValid: false, error: error});
 					}
 					else {
-						setupConnection();
+						setupConnection(req.body.channel);
 
 						response.json({
 							isValid: true,
@@ -143,17 +143,12 @@ socketio.on("connection", function(socket) {
 		client.say(data.channel, data.message);
 	});
 
-	//socket.on("ban", function(data) {
-	//       client.ban(data.user);
-	//});
+	socket.on("joinChannel", function(data) {
+		client.join(data.channel);
+	});
 });
 
-function setupConnection() {
-	var username = settingsProvider.Username();
-	var password = settingsProvider.Password();
-	var channelNames = settingsProvider.GetChannelNames(_);
-	var channel = "#" + channelNames[0];
-
+function setupConnection(initialChannel) {
 	client = new irc.client({
 		options: {
 			debug: true,
@@ -162,10 +157,10 @@ function setupConnection() {
 			tc: 3
 		},
 		identity: {
-			username: username,
-			password: password
+			username: settingsProvider.Username(),
+			password: settingsProvider.Password()
 		},
-		channels: [channel]
+		channels: [initialChannel]
 	});
 
 	client.connect();

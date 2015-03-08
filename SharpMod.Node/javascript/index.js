@@ -13,11 +13,22 @@ function initializeCommunication() {
 		$("#username").val(data.username);
 		$("#password").val(data.password);
 
+		var channels = $("#channel");
+		var newChannels = $("#newChannel");
 		_.each(data.channels, function(item) {
-			$("#channel").append($("<option></option>").attr("value", item).text(item));
+			channels.append($("<option/>", {
+				value: item,
+				text: item
+			}));
+
+			newChannels.append($("<option/>", {
+				value: item,
+				text: item
+			}));
 		});
 
 		$("#channel").select2();
+		$("#newChannel").select2();
 	}, "json");
 }
 
@@ -40,22 +51,33 @@ function initializeHandlers() {
 				alert(data.error);
 			}
 			else {
+				window.viewModel.joinChannel(data.channel);
+
 				$("#loginModal").modal("hide");
 				$(".body-content").show();
-				window.viewModel.joinChannel(data.channel);
 			}
 		});
 	});
 
-	$("#chatForm").submit(function(event) {
-		window.socket.emit("outgoingMessage", $("#chatMessage").val());
-		$("#chatMessage").val(null);
+	$("#joinChannelForm").submit(function(event) {
 		event.preventDefault();
+
+		var channel = $("#newChannel").val();
+		if(channel) {
+			window.viewModel.joinChannel(channel);
+
+			$("#newChannel").val(null);
+			$("#joinChannelModal").modal("hide");
+		}
 	});
 
 	socket.on("incomingMessage", function(data) {
-        window.viewModel.addComment(data);
-        window.scrollTo(0, document.body.scrollHeight);
+		window.viewModel.addComment(data);
+		window.scrollTo(0, document.body.scrollHeight);
+	});
+
+	socket.on("channelJoined", function(data) {
+		window.viewModel.joinChannel(data.channel);
 	});
 }
 
@@ -106,11 +128,24 @@ function initializeKnockout() {
 			}
 		};
 
-		self.joinChannel = function(data) {
-			var newChannel = new channelViewModel(data, self.SelectedChannel);
-			self.Channels.push(newChannel);
-			self.SelectedChannel(newChannel);
-			getBadges(data);
+		self.joinChannel = function(channelToJoin) {
+			var matchingChannel = _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === channelToJoin;
+			});
+
+			if(!matchingChannel) {
+				$("#newChannel [value='" + channelToJoin + "']").remove();
+				$("#newChannel").select2();
+
+				var newChannel = new channelViewModel(channelToJoin, self.SelectedChannel);
+				self.Channels.push(newChannel);
+				self.SelectedChannel(newChannel);
+				getBadges(channelToJoin);
+
+				window.socket.emit("joinChannel", {
+					channel: channelToJoin
+				});
+			}
 		};
 
 		self.setBadges = function(data) {
@@ -126,6 +161,10 @@ function initializeKnockout() {
 
 	window.viewModel = new windowViewModel();
 	ko.applyBindings(viewModel);
+
+	$("#joinChannel").click(function() {
+		$("#joinChannelModal").modal();
+	});
 }
 
 function getBadges(channelName) {

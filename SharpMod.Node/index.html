@@ -19,6 +19,10 @@
 						</a>
 					</li>
 				</ul>
+
+				<div class="nav navbar-nav pull-right">
+					<button class="btn btn-sm btn-success navbar-btn" id="joinChannel">Join Channel</button>
+				</div>
 			</div>
 		</div>
 
@@ -122,6 +126,36 @@
 							In order to log in, you must generate an oauth token. This is required. Please use the "Connect with Twitch" button above to generate your token. Copy that token and paste it into the password field on the previous form.
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+
+		<div aria-hidden="true" class="fade in modal" id="joinChannelModal" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button aria-label="Close" class="close" data-dismiss="modal" type="button">
+							<span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Join Channel</h4>
+					</div>
+					<form id="joinChannelForm">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label for="newChannel">Channel</label>
+										<div>
+											<select class="form-control" data-tags="true" id="newChannel" name="newChannel"></select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+							<button class="btn btn-primary" type="submit">Join</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

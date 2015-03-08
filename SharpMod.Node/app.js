@@ -15,8 +15,8 @@
 
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
-server.locals.index = path.join(__dirname, "index.html");
-server.locals.database = path.join(__dirname, "sharpdb/"); //diskDb doesn't like variable names for some reason
+server.locals.index = path.join(__dirname, "views", "index.html");
+server.locals.database = path.join(__dirname, "sharpdb");
 
 server.use(compression());
 server.use(cors());
@@ -24,7 +24,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
-diskdb.connect("./sharpdb", ["settings"]);
+diskdb.connect(server.locals.database, ["settings"]);
 var settingsProvider = new SettingsProvider(diskdb);
 
 router.route("/")

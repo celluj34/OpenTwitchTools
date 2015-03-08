@@ -148,6 +148,30 @@ function initializeKnockout() {
 			}
 		};
 
+		self.leaveChannel = function(channelToLeave) {
+			var matchingChannel = _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === channelToLeave;
+			});
+
+			if(matchingChannel) {
+				//$("#newChannel [value='" + channelToJoin + "']").append();
+				//$("#newChannel").select2();
+
+				self.Channels.remove(matchingChannel);
+			}
+		};
+
+		self.sendMessage = function() {
+			if(self.OutgoingMessage().length > 0) {
+				window.socket.emit("outgoingMessage", {
+					message: self.OutgoingMessage(),
+					channel: self.SelectedChannel().ChannelName
+				});
+
+				self.OutgoingMessage("");
+			}
+		};
+
 		self.setBadges = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
 				return channel.ChannelName === data.channel;
@@ -167,8 +191,8 @@ function initializeKnockout() {
 	});
 }
 
-function getBadges(channelName) {
-	$.get("/badges", {channel: channelName}, function(data) {
+function getBadges(channel) {
+	$.get("/badges", {channel: channel}, function(data) {
 		window.viewModel.setBadges(data);
 	}, "json");
 }

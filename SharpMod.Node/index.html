@@ -57,7 +57,7 @@
 				<nav class="navbar navbar-default navbar-fixed-bottom">
 					<div class="container">
 						<div class="navbar-form">
-							<form id="chatForm">
+							<form data-bind="submit: sendMessage">
 								<input class="form-control" data-bind="value: OutgoingMessage" id="chatMessage" placeholder="Send a message" type="text" />
 							</form>
 						</div>

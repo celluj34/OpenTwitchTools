@@ -132,9 +132,7 @@ router.route("/badges")
 
 server.use("/", router);
 
-var serverListener = server.listen(server.locals.port, server.locals.ipAddress, function() {
-	console.log("Server up and running. Go to http://" + server.locals.ipAddress + ":" + server.locals.port);
-});
+var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
 
 socketio = socketio.listen(serverListener);
 
@@ -200,18 +198,7 @@ function setupConnection(initialChannel) {
 			attributes: user.special,
 			color: user.color,
 			message: parsedMessage,
-			channel: incChannel.replace("#", "")
+			channel: channel.replace("#", "")
 		});
 	});
-
-	//client.addListener("timeout", function(incChannel, user, message) {
-	//	socketio.sockets.emit("timeout", {
-	//		name: user.username,
-	//		attributes: user.special,
-	//		emote_set: user.emote,
-	//		color: user.color,
-	//		message: message,
-	//		channel: incChannel
-	//	});
-	//});
 };

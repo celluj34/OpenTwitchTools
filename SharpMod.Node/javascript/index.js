@@ -9,12 +9,6 @@
 });
 
 function initializeCommunication() {
-	$.get("/emotes", function(data) {
-		window.emoteSet = data;
-		$("#loadingEmotesMessage").hide();
-		$("#successEmotesMessage").show().delay(7500).fadeOut("slow");
-	}, "json");
-
 	$.get("/loginInfo", function(data) {
 		$("#username").val(data.username);
 		$("#password").val(data.password);
@@ -71,7 +65,7 @@ function initializeKnockout() {
 
 		self.Name = data.name;
 		self.Color = data.color;
-		self.Message = parseMessage(data.message, data.emote_set);
+		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 	};
 
@@ -122,7 +116,7 @@ function initializeKnockout() {
 		self.setBadges = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
 				return channel.ChannelName === data.channel;
-            });
+			});
 
 			if(matchingChannel) {
 				matchingChannel.Badges = data.badges;
@@ -138,45 +132,6 @@ function getBadges(channelName) {
 	$.get("/badges", {channel: channelName}, function(data) {
 		window.viewModel.setBadges(data);
 	}, "json");
-}
-
-function parseMessage(message, availableEmotes) {
-	if(!window.emoteSet) {
-		return message;
-	}
-
-	var newWords = [];
-	var tempWords;
-	var emoteList;
-
-	if(availableEmotes.length === 0) {
-		emoteList = [];
-	}
-	else {
-		emoteList = JSON.parse(availableEmotes);
-	}
-
-	_.each(message.split(" "), function(word) {
-		tempWords = _.filter(window.emoteSet, function(emote) {
-			return word.match(_.unescape(emote.regex)) && (!emote.emoticon_set || _.contains(emoteList, emote.emoticon_set));
-		});
-
-		if(tempWords.length === 0) {
-			newWords.push(word);
-		}
-		else if(tempWords.length === 1) {
-			newWords.push(tempWords[0].url);
-		}
-		else {
-			tempWords = _.find(tempWords, function(emote) {
-				return emote.regex === word || emote.emoticon_set;
-			});
-
-			newWords.push(tempWords.url);
-		}
-	});
-
-	return newWords.join(" ");
 }
 
 function parseAttributes(attributes, availableBadges) {

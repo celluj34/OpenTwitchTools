@@ -24,17 +24,6 @@
 
 		<div class="body-content container">
 			<div class="row">
-				<div class="alert alert-warning" id="loadingEmotesMessage" role="alert">
-					<strong>Emoticons are currently loading.</strong>
-				</div>
-
-				<div class="alert alert-success" id="successEmotesMessage" role="alert">
-					<button aria-label="Close" class="close" data-dismiss="alert" type="button">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<strong>Emoticons have been successfully loaded.</strong>
-				</div>
-
 				<div class="tab-content" data-bind="foreach: Channels">
 					<div class="tab-pane" data-bind="attr: {id: ChannelName}, css: {active: Selected}">
 						<div data-bind="foreach: Comments">

@@ -73,30 +73,6 @@ router.route("/loginInfo")
 		});
 	});
 
-router.route("/emotes")
-	.get(function(req, response) {
-		var url = "https://api.twitch.tv/kraken/chat/emoticons";
-
-		request(url, function(err, resp, body) {
-			body = JSON.parse(body);
-
-			var emotes = _.chain(body.emoticons)
-				.map(function(emoticonSet) {
-					return _.map(emoticonSet.images, function(image) {
-						return {
-							regex: emoticonSet.regex,
-							url: "<img alt='" + emoticonSet.regex + "' height='" + image.height + "' width='" + image.width + "' src='" + image.url + "' />",
-							emoticon_set: image.emoticon_set
-						};
-					});
-				})
-				.flatten()
-				.value();
-
-			response.send(emotes);
-		});
-	});
-
 router.route("/badges")
 	.get(function(req, response) {
 		var url = "https://api.twitch.tv/kraken/chat/" + req.query.channel + "/badges";
@@ -194,18 +170,27 @@ function setupConnection() {
 
 	client.connect();
 
-	client.addListener("chat", function(incChannel, user, message) {
-		var emoteList = [];
-		if(user.emote.length !== 0) {
-			emoteList = JSON.parse(user.emote);
-		}
+    client.addListener("chat", function (incChannel, user, message) {
+        var newMessage = message;
+
+        _.each(user.emote, function (emote, index) {
+            var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
+
+            _.each(emote, function (chars) {
+                var indexes = chars.split("-");
+                var firstHalf = newMessage.substring(0, indexes[0]);
+                var replacement = "<img alt='" + newMessage.substring(indexes[0], indexes[1] + 1) + "' src='" + url + "' />";
+	            var secondHalf = newMessage.substring(indexes[1] + 1);
+
+	            newMessage = firstHalf + replacement + secondHalf;
+            });
+        });
 
 		socketio.sockets.emit("incomingMessage", {
 			name: user.username,
 			attributes: user.special,
-			emote_set: emoteList,
 			color: user.color,
-			message: message,
+			message: newMessage,
 			channel: incChannel.replace("#", "")
 		});
 	});

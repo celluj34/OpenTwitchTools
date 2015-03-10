@@ -32,6 +32,7 @@
 					<div class="tab-pane" data-bind="attr: {id: ChannelName}, css: {active: Selected}">
 						<div data-bind="foreach: Comments">
 							<div class="singleComment well well-sm" data-bind="click: showComment">
+								<span data-bind="text: Timestamp"></span>
 								<span data-bind="html: Badges"></span>
 								<strong data-bind="text: Name, style: {color: Color}"></strong>
 								<span data-bind="html: Message"></span>
@@ -158,6 +159,7 @@
 					<div class="modal-body">
 						<div class="row">
 							<div class="col-md-12">
+								<span data-bind="text: Timestamp"></span>
 								<span data-bind="html: Badges"></span>
 								<strong data-bind="text: Name, style: {color: Color}"></strong>
 								<span data-bind="html: Message"></span>

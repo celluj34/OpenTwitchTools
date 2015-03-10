@@ -89,6 +89,7 @@ function initializeKnockout() {
 		self.Color = data.color;
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
+		self.Timestamp = getTimestamp();
 
 		self.showComment = function() {
 			window.viewModel.SelectedComment(self);
@@ -234,4 +235,18 @@ function parseAttributes(attributes, availableBadges) {
 	});
 
 	return attributeString;
+}
+
+function getTimestamp() {
+	var date = new Date();
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+	var period = hours < 12 ? "AM" : "PM";
+
+	hours = hours - 12;
+	if(minutes < 10) {
+		minutes = "0" + minutes;
+	}
+
+	return hours + ":" + minutes + period;
 }

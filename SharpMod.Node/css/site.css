@@ -12,7 +12,7 @@
 	width: 100% !important;
 }
 
-#singleComment {
+.singleComment {
 	margin-bottom: 7px;
 	padding: 3px;
 }

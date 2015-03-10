@@ -89,6 +89,27 @@ function initializeKnockout() {
 		self.Color = data.color;
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
+
+		self.showComment = function() {
+			window.viewModel.SelectedComment(self);
+			$("#commentModal").modal("show");
+		};
+
+		self.ban = function() {
+			alert("ban " + self.Name);
+		};
+
+		self.timeout = function() {
+			alert("timeout " + self.Name);
+		};
+
+		self.op = function() {
+			alert("mod " + self.Name);
+		};
+
+		self.deop = function() {
+			alert("unmod " + self.Name);
+		};
 	};
 
 	var channelViewModel = function(data, selectedChannel) {
@@ -117,6 +138,7 @@ function initializeKnockout() {
 		self.OutgoingMessage = ko.observable();
 		self.Channels = ko.observableArray();
 		self.SelectedChannel = ko.observable();
+		self.SelectedComment = ko.observable();
 
 		self.addComment = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {

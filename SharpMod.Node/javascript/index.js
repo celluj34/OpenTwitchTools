@@ -92,8 +92,11 @@ function initializeKnockout() {
 		self.Timestamp = getTimestamp();
 
 		self.showComment = function() {
-			window.viewModel.SelectedComment(self);
-			$("#commentModal").modal("show");
+			window.viewModel.setComment(self);
+		};
+
+		self.closeComment = function() {
+			window.viewModel.unsetComment();
 		};
 
 		self.ban = function() {
@@ -140,6 +143,7 @@ function initializeKnockout() {
 		self.Channels = ko.observableArray();
 		self.SelectedChannel = ko.observable();
 		self.SelectedComment = ko.observable();
+		self.AlreadyClicked = ko.observable(false);
 
 		self.addComment = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
@@ -177,6 +181,7 @@ function initializeKnockout() {
 			});
 
 			if(matchingChannel) {
+				// add selection back to select2
 				//$("#newChannel [value='" + channelToJoin + "']").append();
 				//$("#newChannel").select2();
 
@@ -203,6 +208,20 @@ function initializeKnockout() {
 			if(matchingChannel) {
 				matchingChannel.Badges = data.badges;
 			}
+		};
+
+		self.setComment = function(comment) {
+			if(!self.AlreadyClicked()) {
+				self.SelectedComment(comment);
+				self.AlreadyClicked(true);
+                $("#commentModal").modal("show");
+			}
+		};
+
+		self.unsetComment = function() {
+			self.SelectedComment(null);
+			self.AlreadyClicked(false);
+            $("#commentModal").modal("hide");
 		};
 	};
 

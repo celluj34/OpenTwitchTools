@@ -100,8 +100,8 @@ function initializeKnockout() {
 			alert("ban " + self.Name);
 		};
 
-		self.timeout = function() {
-			alert("timeout " + self.Name);
+		self.timeout = function(seconds) {
+			alert("timeout " + self.Name + " for " + seconds + " second(s)");
 		};
 
 		self.op = function() {

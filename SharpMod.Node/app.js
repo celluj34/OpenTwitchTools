@@ -187,7 +187,7 @@ function setupConnection(initialChannel) {
 				return -1 * item.startIndex;
 			}).each(function(emote) {
 				var firstHalf = parsedMessage.substring(0, emote.startIndex);
-				var replacement = "<img alt='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+				var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
 				var secondHalf = parsedMessage.substring(emote.endIndex);
 
 				parsedMessage = firstHalf + replacement + secondHalf;

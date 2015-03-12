@@ -231,7 +231,7 @@ function parseAttributes(attributes, availableBadges) {
 			return badge.role === attribute;
 		});
 
-		attributeString = attributeString + "<img alt='" + matchingBadge.role + "' src='" + matchingBadge.url + "' /> ";
+		attributeString = attributeString + "<img title='" + matchingBadge.role + "' src='" + matchingBadge.url + "' /> ";
 	});
 
 	return attributeString;

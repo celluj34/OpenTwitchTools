@@ -2,7 +2,8 @@
   "name": "SharpMod.Node",
   "version": "0.0.1",
   "description": "SharpMod.Node",
-  "main": "app.js",
+  "main": "loading.html",
+  "node-main": "app.js",
   "author": {
     "name": "Joe",
     "email": "celluj34@gmail.com"

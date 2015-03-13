@@ -144,6 +144,18 @@ socketio.on("connection", function(socket) {
 	socket.on("joinChannel", function(data) {
 		client.join(data.channel);
 	});
+
+	socket.on("timeoutUser", function(data) {
+		client.timeout(data.channel, data.user, data.seconds);
+	});
+
+	socket.on("banUser", function(data) {
+		client.ban(data.channel, data.user);
+	});
+
+	socket.on("unbanUser", function(data) {
+		client.unban(data.channel, data.user);
+	});
 });
 
 function setupConnection(initialChannel) {

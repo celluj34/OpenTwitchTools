@@ -99,12 +99,32 @@ function initializeKnockout() {
 			window.viewModel.unsetComment();
 		};
 
-		self.ban = function() {
-			alert("ban " + self.Name);
+		self.timeout = function(seconds) {
+			window.socket.emit("timeoutUser", {
+				user: self.Name,
+				channel: window.viewModel.SelectedChannel().ChannelName,
+				seconds: seconds
+			});
+
+			self.closeComment();
 		};
 
-		self.timeout = function(seconds) {
-			alert("timeout " + self.Name + " for " + seconds + " second(s)");
+		self.ban = function() {
+			window.socket.emit("banUser", {
+				user: self.Name,
+				channel: window.viewModel.SelectedChannel().ChannelName
+			});
+
+			self.closeComment();
+		};
+
+		self.unban = function() {
+			window.socket.emit("unbanUser", {
+				user: self.Name,
+				channel: window.viewModel.SelectedChannel().ChannelName
+			});
+
+			self.closeComment();
 		};
 
 		self.op = function() {
@@ -214,14 +234,14 @@ function initializeKnockout() {
 			if(!self.AlreadyClicked()) {
 				self.SelectedComment(comment);
 				self.AlreadyClicked(true);
-                $("#commentModal").modal("show");
+				$("#commentModal").modal("show");
 			}
 		};
 
 		self.unsetComment = function() {
 			self.SelectedComment(null);
 			self.AlreadyClicked(false);
-            $("#commentModal").modal("hide");
+			$("#commentModal").modal("hide");
 		};
 	};
 

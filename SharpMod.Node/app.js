@@ -9,7 +9,6 @@
     request = require("request"),
     compression = require("compression"),
     bodyParser = require("body-parser"),
-    cors = require("cors"),
     router = express.Router(),
     client;
 
@@ -19,7 +18,6 @@ server.locals.index = path.join(__dirname, "views", "index.html");
 server.locals.database = path.join(__dirname, "sharpdb");
 
 server.use(compression());
-server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));

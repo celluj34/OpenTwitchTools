@@ -110,16 +110,14 @@ router.route("/badges")
 				url: body.turbo.image
 			});
 
-			var subscriber = {
-				role: "subscriber",
-				url: null
-			};
-
 			if(body.subscriber) {
-				subscriber.url = body.subscriber.image;
-			}
+				var subscriber = {
+					role: "subscriber",
+					url: body.subscriber.image
+				};
 
-			badgeList.push(subscriber);
+				badgeList.push(subscriber);
+			}
 
 			response.send({
 				channel: req.query.channel,
@@ -157,58 +155,60 @@ socketio.on("connection", function(socket) {
 });
 
 function setupConnection(initialChannel) {
-	client = new irc.client({
-		options: {
-			debug: true,
-			debugIgnore: ["ping", "chat", "action"],
-			logging: false,
-			tc: 3
-		},
-		identity: {
-			username: settingsProvider.Username(),
-			password: settingsProvider.Password()
-		},
-		channels: [initialChannel]
-	});
+	if(!client) {
+		client = new irc.client({
+			options: {
+				debug: true,
+				debugIgnore: ["ping", "chat", "action"],
+				logging: false,
+				tc: 3
+			},
+			identity: {
+				username: settingsProvider.Username(),
+				password: settingsProvider.Password()
+			},
+			channels: [initialChannel]
+		});
 
-	client.connect();
+		client.connect();
 
-	client.addListener("chat", function(channel, user, message) {
-		var parsedMessage = message;
+		client.addListener("chat", function(channel, user, message) {
+			var parsedMessage = message;
 
-		_.chain(user.emote)
-			.map(function(emote, index) {
-				var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
+			_.chain(user.emote)
+				.map(function(emote, index) {
+					var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
 
-				var charIndex = _.map(emote, function(chars) {
-					var indexes = chars.split("-");
+					var charIndex = _.map(emote, function(chars) {
+						var indexes = chars.split("-");
 
-					return {
-						url: url,
-						startIndex: parseInt(indexes[0]),
-						endIndex: parseInt(indexes[1]) + 1
-					};
+						return {
+							url: url,
+							startIndex: parseInt(indexes[0]),
+							endIndex: parseInt(indexes[1]) + 1
+						};
+					});
+
+					return charIndex;
+				})
+				.flatten()
+				.sortBy(function(item) {
+					return -1 * item.startIndex;
+				}).each(function(emote) {
+					var firstHalf = parsedMessage.substring(0, emote.startIndex);
+					var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+					var secondHalf = parsedMessage.substring(emote.endIndex);
+
+					parsedMessage = firstHalf + replacement + secondHalf;
 				});
 
-				return charIndex;
-			})
-			.flatten()
-			.sortBy(function(item) {
-				return -1 * item.startIndex;
-			}).each(function(emote) {
-				var firstHalf = parsedMessage.substring(0, emote.startIndex);
-				var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
-				var secondHalf = parsedMessage.substring(emote.endIndex);
-
-				parsedMessage = firstHalf + replacement + secondHalf;
+			socketio.sockets.emit("incomingMessage", {
+				name: user.username,
+				attributes: user.special,
+				color: user.color,
+				message: parsedMessage,
+				channel: channel.replace("#", "")
 			});
-
-		socketio.sockets.emit("incomingMessage", {
-			name: user.username,
-			attributes: user.special,
-			color: user.color,
-			message: parsedMessage,
-			channel: channel.replace("#", "")
 		});
-	});
+	}
 };

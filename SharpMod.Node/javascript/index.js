@@ -3,12 +3,12 @@
 
 	$("#loginModal").modal();
 
-	initializeCommunication();
-	initializeHandlers();
+	getLoginInfo();
+	setupSocketHandlers();
 	initializeKnockout();
 });
 
-function initializeCommunication() {
+function getLoginInfo() {
 	$.get("/loginInfo", function(data) {
 		$("#username").val(data.username);
 		$("#password").val(data.password);
@@ -32,45 +32,7 @@ function initializeCommunication() {
 	}, "json");
 }
 
-function initializeHandlers() {
-	$("#getAuthButton").click(function() {
-		$("#authTokenModal").modal();
-	});
-
-	$("#loginForm").submit(function(event) {
-		event.preventDefault();
-
-		var submitData = {
-			username: $("#username").val(),
-			password: $("#password").val(),
-			channel: $("#channel").val()
-		};
-
-		$.post("/", submitData).done(function(data) {
-			if(!data.isValid) {
-				alert(data.error);
-			}
-			else {
-				window.viewModel.joinChannel(data.channel);
-
-				$("#loginModal").modal("hide");
-				$(".body-content").show();
-			}
-		});
-	});
-
-	$("#joinChannelForm").submit(function(event) {
-		event.preventDefault();
-
-		var channel = $("#newChannel").val();
-		if(channel) {
-			window.viewModel.joinChannel(channel);
-
-			$("#newChannel").val(null);
-			$("#joinChannelModal").modal("hide");
-		}
-	});
-
+function setupSocketHandlers() {
 	socket.on("incomingMessage", function(data) {
 		window.viewModel.addComment(data);
 		window.scrollTo(0, document.body.scrollHeight);
@@ -164,6 +126,31 @@ function initializeKnockout() {
 		self.SelectedChannel = ko.observable();
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
+		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
+
+		self.showTokenAuthModal = function() {
+			$("#tokenAuthModal").modal();
+		};
+
+		self.login = function() {
+			var submitData = {
+				username: $("#username").val(),
+				password: $("#password").val(),
+				channel: $("#channel").val()
+			};
+
+			$.post("/", submitData).done(function(data) {
+				if(!data.isValid) {
+					alert(data.error);
+				}
+				else {
+					self.joinChannel(data.channel);
+
+					$("#loginModal").modal("hide");
+					$(".body-content").show();
+				}
+			});
+		};
 
 		self.addComment = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
@@ -175,23 +162,29 @@ function initializeKnockout() {
 			}
 		};
 
-		self.joinChannel = function(channelToJoin) {
-			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === channelToJoin;
-			});
+		self.joinChannel = function() {
+			var channelToJoin = $("#newChannel").val();
+			if(channelToJoin) {
+				$("#newChannel").val(null);
+				$("#joinChannelModal").modal("hide");
 
-			if(!matchingChannel) {
-				$("#newChannel [value='" + channelToJoin + "']").remove();
-				$("#newChannel").select2();
-
-				var newChannel = new channelViewModel(channelToJoin, self.SelectedChannel);
-				self.Channels.push(newChannel);
-				self.SelectedChannel(newChannel);
-				getBadges(channelToJoin);
-
-				window.socket.emit("joinChannel", {
-					channel: channelToJoin
+				var matchingChannel = _.find(self.Channels(), function(channel) {
+					return channel.ChannelName === channelToJoin;
 				});
+
+				if(!matchingChannel) {
+					$("#newChannel [value='" + channelToJoin + "']").remove();
+					$("#newChannel").select2();
+
+					var newChannel = new channelViewModel(channelToJoin, self.SelectedChannel);
+					self.Channels.push(newChannel);
+					self.SelectedChannel(newChannel);
+					getBadges(channelToJoin);
+
+					window.socket.emit("joinChannel", {
+						channel: channelToJoin
+					});
+				}
 			}
 		};
 
@@ -289,3 +282,57 @@ function getTimestamp() {
 
 	return hours + ":" + minutes + period;
 }
+
+//e(window.AttachSearchJavaScript = function() {
+//	var r = e("#header_search"), i;
+//	i = new Date(+(new Date) - 186e4);
+//	var s =
+//	{
+//		engineKey: "9NXQEpmQPwBEz43TM592",
+//		searchFields:
+//		{live: ["name", "login", "status", "game^2"], users: ["login", "name"], broadcasts: ["title", "game^2", "user"]},
+//		fetchFields:
+//		{live: ["status", "title", "name", "path"], users: ["name", "path"], broadcasts: ["title", "user", "path"]},
+//		functionalBoosts:
+//		{
+//			live:
+//			{followers: "logarithmic"},
+//			users:
+//			{followers: "logarithmic"},
+//			broadcasts:
+//			{views: "logarithmic"}
+//		},
+//		filters:
+//		{
+//			live:
+//			{updated_at: "[" + i.toISOString() + " TO *]"}
+//		},
+//		resultRenderFunction: t,
+//		onComplete: n,
+//		suggestionListType: "div",
+//		suggestionListClass: "st-autocomplete",
+//		resultListSelector: ".result",
+//		setWidth: !1,
+//		resultLimit: 3
+//	};
+//	e("input#query", r).swiftype(s), e("div.st-autocomplete").on("click", "div.all", function(e) {
+//		r.submit();
+//	}).on("mouseover", "div.all", function() {
+//		e(".st-autocomplete .active").removeClass("active"), e(this).children(".result").addClass("active");
+//	}), e("body").on("autocomplete-small", function() {
+//		var t = e("#sidebar_search_small");
+//		e("input#sidebar_query_small", t).swiftype(Twitch.defaults(
+//		{appendTo: "#flyout .content", suggestionListClass: "st-autocomplete-small"}, s)), e("div.st-autocomplete-small").on("click", "div.all", function(e) {
+//			t.submit();
+//		}).on("mouseover", "div.all", function() {
+//			e(".st-autocomplete-small .active").removeClass("active"), e(this).children(".result").addClass("active");
+//		});
+//	});
+//	var o = e("#sidebar_search");
+//	e("input#sidebar_query", o).swiftype(Twitch.defaults(
+//	{suggestionListClass: "st-autocomplete-sidebar"}, s)), e("div.st-autocomplete-sidebar").on("click", "div.all", function(e) {
+//		o.submit();
+//	}).on("mouseover", "div.all", function() {
+//		e(".st-autocomplete-sidebar .active").removeClass("active"), e(this).children(".result").addClass("active");
+//	});
+//});

@@ -258,7 +258,7 @@ function parseAttributes(attributes, availableBadges) {
 	}
 
 	var attributeString = "";
-	_.each(attributes, function(attribute, index, list) {
+	_.each(attributes, function(attribute) {
 		var matchingBadge = _.find(availableBadges, function(badge) {
 			return badge.role === attribute;
 		});
@@ -282,6 +282,8 @@ function getTimestamp() {
 
 	return hours + ":" + minutes + period;
 }
+
+//https://api.twitch.tv/kraken/search/channels?q=[user]
 
 //e(window.AttachSearchJavaScript = function() {
 //	var r = e("#header_search"), i;

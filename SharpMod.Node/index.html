@@ -12,17 +12,32 @@
 <body>
 <div class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
-		<ul class="nav navbar-nav" data-bind="foreach: Channels">
-			<li data-bind="css: {active: Selected}" role="presentation">
-				<a data-bind="click: $parent.SelectedChannel" href="#">
-					<span data-bind="text: '#' + ChannelName"></span>
-				</a>
-			</li>
-		</ul>
+			<ul class="nav navbar-nav" data-bind="foreach: Channels">
+				<li data-bind="css: {active: Selected}" role="presentation">
+					<a data-bind="click: $parent.SelectedChannel" href="#">
+						<span data-bind="text: '#' + ChannelName"></span>
+					</a>
+				</li>
+			</ul>
 
-			<div class="nav navbar-nav pull-right">
-						<button class="btn btn-sm btn-success navbar-btn" id="joinChannel">Join Channel</button>
-			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Tools <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a data-bind="click:showJoinChannelModal" href="#" id="joinChannel">Join Channel</a>
+						</li>
+						<li>
+							<a href="#">Users</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a data-bind="click:leaveChannel" href="#">Leave Channel</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>
 
@@ -40,18 +55,16 @@
 				</div>
 			</div>
 		</div>
-
-		<nav class="navbar navbar-default navbar-fixed-bottom">
-			<div class="container">
-				<div class="navbar-form">
-					<form data-bind="submit: sendMessage">
-						<input class="form-control" data-bind="value: OutgoingMessage" id="chatMessage" placeholder="Send a message" type="text" />
-					</form>
-				</div>
-			</div>
-		</nav>
 	</div>
 </div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+	<div class="container">
+		<form data-bind="submit: sendMessage">
+			<input class="form-control" data-bind="value: OutgoingMessage" id="chatMessage" placeholder="Send a message" type="text" />
+		</form>
+	</div>
+</nav>
 
 <div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="loginModal" role="dialog">
 	<div class="modal-dialog modal-sm">

@@ -10,26 +10,46 @@
 
 function getLoginInfo() {
 	$.get("/loginInfo", function(data) {
-		$("#username").val(data.username);
-		$("#password").val(data.password);
-
-		var channels = $("#channel");
-		var newChannels = $("#newChannel");
-		_.each(data.channels, function(item) {
-			channels.append($("<option/>", {
-				value: item,
-				text: item
-			}));
-
-			newChannels.append($("<option/>", {
-				value: item,
-				text: item
-			}));
-		});
-
-		$("#channel").select2();
-		$("#newChannel").select2();
+		window.viewModel.Username(data.username);
+		window.viewModel.Password(data.password);
 	}, "json");
+
+	var select2Settings = {
+		ajax: {
+			delay: 200,
+			dataType: "json",
+			url: "/search",
+			data: function(params) {
+				return {
+					channel: params.term,
+					page: params.page
+				};
+			},
+			method: "POST",
+			processResults: function(data) {
+				return {
+					results: data
+				};
+			}
+		},
+		minimumInputLength: 4,
+		placeholder: "Select a Channel",
+		templateResult: function(channel) {
+			return channel.name;
+		},
+		templateSelection: function(channel) {
+			return channel.name;
+		},
+		escapeMarkup: function(markup) {
+			return markup;
+		},
+		id: function(channel) {
+			return channel.id;
+		}
+	};
+
+	$("#channel").select2(select2Settings);
+	$("#newChannel").select2(select2Settings);
 }
 
 function setupSocketHandlers() {
@@ -121,6 +141,12 @@ function initializeKnockout() {
 	var windowViewModel = function() {
 		var self = this;
 
+		//login information
+		self.Username = ko.observable();
+		self.Password = ko.observable();
+		self.LoginSelectedChannel = ko.observable();
+
+		//chat information
 		self.OutgoingMessage = ko.observable();
 		self.Channels = ko.observableArray();
 		self.SelectedChannel = ko.observable();
@@ -268,67 +294,8 @@ function getTimestamp() {
 	var hours = date.getHours();
 	var minutes = date.getMinutes();
 	var period = hours < 12 ? "AM" : "PM";
-
-	hours = hours - 12;
-	if(minutes < 10) {
-		minutes = "0" + minutes;
-	}
-
-	return hours + ":" + minutes + period;
+	hours = hours % 12;
+	hours = hours ? hours : 12;
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+	return hours + ":" + minutes + "" + period;
 }
-
-//https://api.twitch.tv/kraken/search/channels?q=[user]
-
-//e(window.AttachSearchJavaScript = function() {
-//	var r = e("#header_search"), i;
-//	i = new Date(+(new Date) - 186e4);
-//	var s =
-//	{
-//		engineKey: "9NXQEpmQPwBEz43TM592",
-//		searchFields:
-//		{live: ["name", "login", "status", "game^2"], users: ["login", "name"], broadcasts: ["title", "game^2", "user"]},
-//		fetchFields:
-//		{live: ["status", "title", "name", "path"], users: ["name", "path"], broadcasts: ["title", "user", "path"]},
-//		functionalBoosts:
-//		{
-//			live:
-//			{followers: "logarithmic"},
-//			users:
-//			{followers: "logarithmic"},
-//			broadcasts:
-//			{views: "logarithmic"}
-//		},
-//		filters:
-//		{
-//			live:
-//			{updated_at: "[" + i.toISOString() + " TO *]"}
-//		},
-//		resultRenderFunction: t,
-//		onComplete: n,
-//		suggestionListType: "div",
-//		suggestionListClass: "st-autocomplete",
-//		resultListSelector: ".result",
-//		setWidth: !1,
-//		resultLimit: 3
-//	};
-//	e("input#query", r).swiftype(s), e("div.st-autocomplete").on("click", "div.all", function(e) {
-//		r.submit();
-//	}).on("mouseover", "div.all", function() {
-//		e(".st-autocomplete .active").removeClass("active"), e(this).children(".result").addClass("active");
-//	}), e("body").on("autocomplete-small", function() {
-//		var t = e("#sidebar_search_small");
-//		e("input#sidebar_query_small", t).swiftype(Twitch.defaults(
-//		{appendTo: "#flyout .content", suggestionListClass: "st-autocomplete-small"}, s)), e("div.st-autocomplete-small").on("click", "div.all", function(e) {
-//			t.submit();
-//		}).on("mouseover", "div.all", function() {
-//			e(".st-autocomplete-small .active").removeClass("active"), e(this).children(".result").addClass("active");
-//		});
-//	});
-//	var o = e("#sidebar_search");
-//	e("input#sidebar_query", o).swiftype(Twitch.defaults(
-//	{suggestionListClass: "st-autocomplete-sidebar"}, s)), e("div.st-autocomplete-sidebar").on("click", "div.all", function(e) {
-//		o.submit();
-//	}).on("mouseover", "div.all", function() {
-//		e(".st-autocomplete-sidebar .active").removeClass("active"), e(this).children(".result").addClass("active");
-//	});
-//});

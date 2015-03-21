@@ -69,6 +69,27 @@ router.route("/loginInfo")
 		});
 	});
 
+router.route("/search")
+	.post(function(req, response) {
+		var channel = req.body.channel;
+		var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
+
+		request(url, function(err, resp, body) {
+			var data = JSON.parse(body);
+
+			var channels = _.chain(data.channels)
+				.map(function(item) {
+					return {
+						id: item.name,
+						name: item.name
+					};
+				})
+				.value();
+
+			response.json(channels);
+		});
+	});
+
 router.route("/badges")
 	.get(function(req, response) {
 		var url = "https://api.twitch.tv/kraken/chat/" + req.query.channel + "/badges";

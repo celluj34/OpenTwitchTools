@@ -171,6 +171,10 @@ socketio.on("connection", function(socket) {
 	socket.on("unbanUser", function(data) {
 		client.unban(data.channel, data.user);
 	});
+
+	socket.on("leaveChannel", function(data) {
+		client.part(data.channel);
+	});
 });
 
 function setupConnection(initialChannel) {

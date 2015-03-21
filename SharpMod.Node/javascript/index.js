@@ -212,13 +212,28 @@ function initializeKnockout() {
 			}
 		};
 
-		self.leaveChannel = function(channelToLeave) {
+		self.channelJoined = function(data) {
 			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === channelToLeave;
+				return channel.ChannelName === data.channel;
+			});
+
+			if(matchingChannel) {
+				matchingChannel.Joined(true);
+			}
+		};
+
+		self.leaveChannel = function() {
+			var matchingChannel = _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === self.SelectedChannel().ChannelName;
 			});
 
 			if(matchingChannel) {
 				self.Channels.remove(matchingChannel);
+				self.SelectedChannel({});
+
+				socket.emit("leaveChannel", {
+					channel: matchingChannel.ChannelName
+				});
 			}
 		};
 

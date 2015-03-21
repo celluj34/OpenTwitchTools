@@ -12,6 +12,18 @@
 <body>
 <div class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
+		<div class="navbar-header">
+			<button class="collapsed navbar-toggle" data-target="#channelNavbar" data-toggle="collapse" type="button">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + SelectedChannel().ChannelName, visible:SelectedChannel().ChannelName" href="#"></a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="channelNavbar">
 			<ul class="nav navbar-nav" data-bind="foreach: Channels">
 				<li data-bind="css: {active: Selected}" role="presentation">
 					<a data-bind="click: $parent.SelectedChannel" href="#">

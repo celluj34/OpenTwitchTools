@@ -41,7 +41,7 @@ router.route("/")
 				response.json({isValid: false, error: "Token is expired or it is registered to another user."});
 			}
 			else {
-				settingsProvider.saveLogin(_, username, password, channel, function(error) {
+				settingsProvider.saveLogin(_, username, password, function(error) {
 					if(error) {
 						response.json({isValid: false, error: error});
 					}
@@ -62,12 +62,10 @@ router.route("/loginInfo")
 	.get(function(req, response) {
 		var username = settingsProvider.Username();
 		var password = settingsProvider.Password();
-		var channelNames = settingsProvider.GetChannelNames(_);
 
 		response.send({
 			username: username,
-			password: password,
-			channels: channelNames
+			password: password
 		});
 	});
 

@@ -134,9 +134,9 @@ function initializeKnockout() {
 
 		self.login = function() {
 			var submitData = {
-				username: $("#username").val(),
-				password: $("#password").val(),
-				channel: $("#channel").val()
+				username: self.Username(),
+				password: self.Password(),
+				channel: self.LoginSelectedChannel()
 			};
 
 			$.post("/", submitData).done(function(data) {
@@ -144,7 +144,7 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					self.joinChannel(data.channel);
+					self.LoginSelectedChannel({});
 
 					$("#loginModal").modal("hide");
 					$(".body-content").show();
@@ -163,9 +163,10 @@ function initializeKnockout() {
 		};
 
 		self.joinChannel = function() {
-			var channelToJoin = $("#newChannel").val();
+			var channelToJoin = self.LoginSelectedChannel();
+			self.LoginSelectedChannel({});
+
 			if(channelToJoin) {
-				$("#newChannel").val(null);
 				$("#joinChannelModal").modal("hide");
 
 				var matchingChannel = _.find(self.Channels(), function(channel) {
@@ -173,9 +174,6 @@ function initializeKnockout() {
 				});
 
 				if(!matchingChannel) {
-					$("#newChannel [value='" + channelToJoin + "']").remove();
-					$("#newChannel").select2();
-
 					var newChannel = new channelViewModel(channelToJoin, self.SelectedChannel);
 					self.Channels.push(newChannel);
 					self.SelectedChannel(newChannel);
@@ -194,10 +192,6 @@ function initializeKnockout() {
 			});
 
 			if(matchingChannel) {
-				// add selection back to select2
-				//$("#newChannel [value='" + channelToJoin + "']").append();
-				//$("#newChannel").select2();
-
 				self.Channels.remove(matchingChannel);
 			}
 		};

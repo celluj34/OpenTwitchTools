@@ -1,7 +1,7 @@
 ﻿$(function() {
-	window.socket = io.connect("127.0.0.1:18044");
+	$("#loginModal").modal("show");
 
-	$("#loginModal").modal();
+	window.socket = io.connect("127.0.0.1:18044");
 
 	getLoginInfo();
 	setupSocketHandlers();
@@ -59,7 +59,7 @@ function setupSocketHandlers() {
 	});
 
 	socket.on("channelJoined", function(data) {
-		window.viewModel.joinChannel(data.channel);
+		window.viewModel.channelJoined(data);
 	});
 }
 
@@ -123,6 +123,7 @@ function initializeKnockout() {
 
 		self.ChannelName = data;
 		self.Comments = ko.observableArray();
+		self.Joined = ko.observable(false);
 		self.Badges = [];
 
 		self.Selected = ko.computed(function() {
@@ -149,20 +150,27 @@ function initializeKnockout() {
 		//chat information
 		self.OutgoingMessage = ko.observable();
 		self.Channels = ko.observableArray();
-		self.SelectedChannel = ko.observable();
+		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
 		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
 
 		self.showTokenAuthModal = function() {
-			$("#tokenAuthModal").modal();
+			$("#tokenAuthModal").modal("show");
+		};
+
+		self.showJoinChannelModal = function() {
+			$("#joinChannelModal").modal("show");
 		};
 
 		self.login = function() {
+			var selectedChannel = self.LoginSelectedChannel();
+			self.LoginSelectedChannel({});
+
 			var submitData = {
 				username: self.Username(),
 				password: self.Password(),
-				channel: self.LoginSelectedChannel()
+				channel: selectedChannel
 			};
 
 			$.post("/", submitData).done(function(data) {
@@ -170,10 +178,12 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					self.LoginSelectedChannel({});
+					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
+					self.Channels.push(newChannel);
+					self.SelectedChannel(newChannel);
+					getBadges(selectedChannel);
 
 					$("#loginModal").modal("hide");
-					$(".body-content").show();
 				}
 			});
 		};
@@ -275,10 +285,6 @@ function initializeKnockout() {
 
 	window.viewModel = new windowViewModel();
 	ko.applyBindings(viewModel);
-
-	$("#joinChannel").click(function() {
-		$("#joinChannelModal").modal();
-	});
 }
 
 function getBadges(channel) {

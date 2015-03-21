@@ -46,11 +46,10 @@ router.route("/")
 						response.json({isValid: false, error: error});
 					}
 					else {
-						setupConnection(req.body.channel);
+						setupConnection(channel);
 
 						response.json({
-							isValid: true,
-							channel: channel
+							isValid: true
 						});
 					}
 				});
@@ -154,6 +153,14 @@ socketio = socketio.listen(serverListener);
 socketio.on("connection", function(socket) {
 	socket.on("outgoingMessage", function(data) {
 		client.say(data.channel, data.message);
+
+		socket.emit("incomingMessage", {
+			name: client.myself,
+			//attributes: user.special,
+			//color: user.color,
+			message: data.message,
+			channel: data.channel
+		});
 	});
 
 	socket.on("joinChannel", function(data) {
@@ -227,9 +234,16 @@ function setupConnection(initialChannel) {
 
 			socketio.sockets.emit("incomingMessage", {
 				name: user.username,
-				attributes: user.special,
+				attributes: _.uniq(user.special),
 				color: user.color,
 				message: parsedMessage,
+				channel: channel.replace("#", "")
+			});
+		});
+
+		client.addListener("join", function(channel, user) {
+			socketio.sockets.emit("channelJoined", {
+				name: user,
 				channel: channel.replace("#", "")
 			});
 		});

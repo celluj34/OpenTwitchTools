@@ -1,5 +1,4 @@
 .body-content {
-	display: none;
 	padding-bottom: 55px;
 	padding-top: 55px;
 }
@@ -14,7 +13,7 @@
 }
 
 .singleComment {
-	margin: 3px 0 3px 7px;
+	margin: 3px 7px;
 	padding: 3px;
 }
 

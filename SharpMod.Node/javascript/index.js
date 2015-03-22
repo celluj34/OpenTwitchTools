@@ -33,7 +33,10 @@ function getLoginInfo() {
 			}
 		},
 		minimumInputLength: 4,
-		placeholder: "Select a Channel",
+		placeholder: {
+			name: "Search",
+			id: null
+		},
 		templateResult: function(channel) {
 			return channel.name;
 		},
@@ -178,10 +181,12 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
-					self.Channels.push(newChannel);
-					self.SelectedChannel(newChannel);
-					getBadges(selectedChannel);
+					if(self.LoginSelectedChannel()) {
+						var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
+						self.Channels.push(newChannel);
+						self.SelectedChannel(newChannel);
+						getBadges(selectedChannel);
+					}
 
 					$("#loginModal").modal("hide");
 				}

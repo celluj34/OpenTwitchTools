@@ -186,7 +186,7 @@ socketio.on("connection", function(socket) {
 
 function setupConnection(initialChannel) {
 	if(!client) {
-		client = new irc.client({
+		var clientSettings = {
 			options: {
 				debug: true,
 				debugIgnore: ["ping", "chat", "action"],
@@ -196,9 +196,14 @@ function setupConnection(initialChannel) {
 			identity: {
 				username: settingsProvider.Username(),
 				password: "oauth:" + settingsProvider.Password()
-			},
-			channels: [initialChannel]
-		});
+			}
+		};
+
+		if(initialChannel) {
+			clientSettings.channels = [initialChannel];
+		}
+
+		client = new irc.client(clientSettings);
 
 		client.connect();
 

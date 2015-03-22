@@ -189,5 +189,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 .ntvs_analysis.dat
-node-webkit*
-SharpMod*.exe
+SharpMod.exe

@@ -166,6 +166,12 @@ function initializeKnockout() {
 			$("#joinChannelModal").modal("show");
 		};
 
+		self.showUsers = function() {
+			if(self.SelectedChannel()) {
+				alert("show users for " + self.SelectedChannel().ChannelName);
+			}
+		};
+
 		self.login = function() {
 			var selectedChannel = self.LoginSelectedChannel();
 			self.LoginSelectedChannel({});
@@ -181,7 +187,7 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					if(self.LoginSelectedChannel()) {
+					if(selectedChannel) {
 						var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
 						self.Channels.push(newChannel);
 						self.SelectedChannel(newChannel);
@@ -194,9 +200,7 @@ function initializeKnockout() {
 		};
 
 		self.addComment = function(data) {
-			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === data.channel;
-			});
+			var matchingChannel = findMatchingChannel(data.channel);
 
 			if(matchingChannel) {
 				matchingChannel.addComment(data);
@@ -204,33 +208,29 @@ function initializeKnockout() {
 		};
 
 		self.joinChannel = function() {
-			var channelToJoin = self.LoginSelectedChannel();
+			var selectedChannel = self.LoginSelectedChannel();
 			self.LoginSelectedChannel({});
 
-			if(channelToJoin) {
+			if(selectedChannel) {
 				$("#joinChannelModal").modal("hide");
 
-				var matchingChannel = _.find(self.Channels(), function(channel) {
-					return channel.ChannelName === channelToJoin;
-				});
+				var matchingChannel = findMatchingChannel(selectedChannel);
 
 				if(!matchingChannel) {
-					var newChannel = new channelViewModel(channelToJoin, self.SelectedChannel);
+					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
 					self.Channels.push(newChannel);
 					self.SelectedChannel(newChannel);
-					getBadges(channelToJoin);
+					getBadges(selectedChannel);
 
 					window.socket.emit("joinChannel", {
-						channel: channelToJoin
+						channel: selectedChannel
 					});
 				}
 			}
 		};
 
 		self.channelJoined = function(data) {
-			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === data.channel;
-			});
+			var matchingChannel = findMatchingChannel(data.channel);
 
 			if(matchingChannel) {
 				matchingChannel.Joined(true);
@@ -238,18 +238,12 @@ function initializeKnockout() {
 		};
 
 		self.leaveChannel = function() {
-			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === self.SelectedChannel().ChannelName;
+			socket.emit("leaveChannel", {
+				channel: self.SelectedChannel().ChannelName
 			});
 
-			if(matchingChannel) {
-				self.Channels.remove(matchingChannel);
-				self.SelectedChannel({});
-
-				socket.emit("leaveChannel", {
-					channel: matchingChannel.ChannelName
-				});
-			}
+			self.Channels.remove(self.SelectedChannel());
+			self.SelectedChannel({});
 		};
 
 		self.sendMessage = function() {
@@ -264,9 +258,7 @@ function initializeKnockout() {
 		};
 
 		self.setBadges = function(data) {
-			var matchingChannel = _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === data.channel;
-			});
+			var matchingChannel = findMatchingChannel(data.channel);
 
 			if(matchingChannel) {
 				matchingChannel.Badges = data.badges;
@@ -285,6 +277,12 @@ function initializeKnockout() {
 			self.SelectedComment(null);
 			self.AlreadyClicked(false);
 			$("#commentModal").modal("hide");
+		};
+
+		function findMatchingChannel(channelName) {
+			return _.find(self.Channels(), function(channel) {
+				return channel.ChannelName === channelName;
+			});
 		};
 	};
 

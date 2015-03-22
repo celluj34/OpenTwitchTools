@@ -168,7 +168,7 @@ function initializeKnockout() {
 
 		self.showUsers = function() {
 			if(self.SelectedChannel()) {
-				alert("show users for " + self.SelectedChannel().ChannelName);
+				alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
 			}
 		};
 

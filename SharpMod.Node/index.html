@@ -13,7 +13,7 @@
 <div class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
-			<button class="collapsed navbar-toggle" data-target="#channelNavbar" data-toggle="collapse" type="button">
+			<button class="collapsed navbar-toggle" data-target=".collapse.navbar-collapse" data-toggle="collapse" type="button">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -23,7 +23,7 @@
 			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + SelectedChannel().ChannelName, visible:SelectedChannel().ChannelName" href="#"></a>
 		</div>
 
-		<div class="collapse navbar-collapse" id="channelNavbar">
+		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav" data-bind="foreach: Channels">
 				<li data-bind="css: {active: Selected}" role="presentation">
 					<a data-bind="click: $parent.SelectedChannel" href="#">
@@ -37,14 +37,14 @@
 					<a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Tools <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a data-bind="click:showJoinChannelModal" href="#" id="joinChannel">Join Channel</a>
+							<a data-bind="click:showJoinChannelModal" href="#">Join Channel</a>
 						</li>
 						<li>
-							<a href="#">Users</a>
+							<a data-bind="click:showUsers" href="#">Users</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a data-bind="click:leaveChannel" href="#">Leave Channel</a>
+							<a data-bind="click:leaveChannel" href="#" class="warning">Leave Channel</a>
 						</li>
 					</ul>
 				</li>

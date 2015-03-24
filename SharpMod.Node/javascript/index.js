@@ -1,6 +1,10 @@
 ﻿$(function() {
 	$("#loginModal").modal("show");
 
+	$(".collapse.navbar-collapse").on("click", ".autoClose", function() {
+		$(".collapse.navbar-collapse").collapse("hide");
+	});
+
 	window.socket = io.connect("127.0.0.1:18044");
 
 	getLoginInfo();

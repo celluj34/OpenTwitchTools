@@ -61,8 +61,13 @@ function getLoginInfo() {
 
 function setupSocketHandlers() {
 	socket.on("incomingMessage", function(data) {
-		window.viewModel.addComment(data);
-		window.scrollTo(0, document.body.scrollHeight);
+		var scroll = shouldScroll();
+
+		window.viewModel.addComment(data, scroll);
+
+		if(scroll) {
+			window.scrollTo(0, document.body.scrollHeight);
+		}
 	});
 
 	socket.on("channelJoined", function(data) {
@@ -130,6 +135,7 @@ function initializeKnockout() {
 
 		self.ChannelName = data;
 		self.Comments = ko.observableArray();
+		self.MaxComments = ko.observable(100);
 		self.Joined = ko.observable(false);
 		self.Badges = [];
 
@@ -137,11 +143,12 @@ function initializeKnockout() {
 			return this === selectedChannel();
 		}, this);
 
-		self.addComment = function(comment) {
+		self.addComment = function(comment, scroll) {
 			self.Comments.push(new commentViewModel(comment, self.Badges));
+			var length = self.Comments().length;
 
-			if(self.Comments().length > 100) {
-				self.Comments.shift();
+			if(scroll && length > self.MaxComments()) {
+				self.Comments.splice(0, length - self.MaxComments());
 			}
 		};
 	};
@@ -203,11 +210,11 @@ function initializeKnockout() {
 			});
 		};
 
-		self.addComment = function(data) {
+		self.addComment = function(data, scroll) {
 			var matchingChannel = findMatchingChannel(data.channel);
 
 			if(matchingChannel) {
-				matchingChannel.addComment(data);
+				matchingChannel.addComment(data, scroll);
 			}
 		};
 
@@ -327,4 +334,45 @@ function getTimestamp() {
 	hours = hours ? hours : 12;
 	minutes = minutes < 10 ? "0" + minutes : minutes;
 	return hours + ":" + minutes + "" + period;
+}
+
+function getScroll() {
+	if(typeof (window.pageYOffset) == "number") {
+		//Netscape compliant
+		return window.pageYOffset;
+	}
+	else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+		//DOM compliant
+		return document.body.scrollTop;
+	}
+	else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+		//IE6 standards compliant mode
+		return document.documentElement.scrollTop;
+	}
+}
+
+function getSize() {
+	if(typeof (window.innerWidth) == "number") {
+		//Non-IE
+		return window.innerHeight;
+	}
+	else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+		//IE 6+ in 'standards compliant mode'
+		return document.documentElement.clientHeight;
+	}
+	else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
+		//IE 4 compatible
+		return document.body.clientHeight;
+	}
+}
+
+function shouldScroll() {
+	var a = document.body.scrollHeight - 20;
+	var x = getSize() + getScroll();
+	var b = document.body.scrollHeight;
+	var ss = (x - a) * (x - b) <= 0;
+
+	console.log(a + " < " + x + " < " + b + " = shouldScroll? " + ss);
+
+	return ss;
 }

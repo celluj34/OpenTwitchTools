@@ -168,12 +168,12 @@ function initializeKnockout() {
 
 		self.showJoinChannelModal = function() {
 			$("#joinChannelModal").modal("show");
+			$("body").css("padding-right", 0);
 		};
 
 		self.showUsers = function() {
-			if(self.SelectedChannel()) {
-				alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
-			}
+			alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
+			$("body").css("padding-right", 0);
 		};
 
 		self.login = function() {
@@ -274,6 +274,7 @@ function initializeKnockout() {
 				self.SelectedComment(comment);
 				self.AlreadyClicked(true);
 				$("#commentModal").modal("show");
+				$("body").css("padding-right", 0);
 			}
 		};
 

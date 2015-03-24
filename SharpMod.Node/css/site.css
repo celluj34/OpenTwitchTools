@@ -21,3 +21,11 @@
 	left: inherit;
 	right: 0;
 }
+
+body {
+	overflow-y: scroll;
+}
+
+.modal-open {
+	overflow-y: scroll;
+}

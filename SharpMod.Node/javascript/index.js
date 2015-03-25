@@ -5,6 +5,10 @@
 		$(".collapse.navbar-collapse").collapse("hide");
 	});
 
+	$(".collapse.navbar-collapse").on("click", ".channelClose", function() {
+		window.scrollTo(0, document.body.scrollHeight);
+	});
+
 	window.socket = io.connect("127.0.0.1:18044");
 
 	getLoginInfo();
@@ -185,7 +189,7 @@ function initializeKnockout() {
 
 		self.login = function() {
 			var selectedChannel = self.LoginSelectedChannel();
-			self.LoginSelectedChannel({});
+			self.LoginSelectedChannel("");
 
 			var submitData = {
 				username: self.Username(),
@@ -220,7 +224,7 @@ function initializeKnockout() {
 
 		self.joinChannel = function() {
 			var selectedChannel = self.LoginSelectedChannel();
-			self.LoginSelectedChannel({});
+			self.LoginSelectedChannel("");
 
 			if(selectedChannel) {
 				$("#joinChannelModal").modal("hide");
@@ -367,12 +371,12 @@ function getSize() {
 }
 
 function shouldScroll() {
-	var a = document.body.scrollHeight - 20;
+	var a = document.body.scrollHeight - 40;
 	var x = getSize() + getScroll();
 	var b = document.body.scrollHeight;
 	var ss = (x - a) * (x - b) <= 0;
 
-	console.log(a + " < " + x + " < " + b + " = shouldScroll? " + ss);
+	//console.log(a + " < " + x + " < " + b + " = shouldScroll? " + ss);
 
 	return ss;
 }

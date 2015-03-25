@@ -26,7 +26,7 @@
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav" data-bind="foreach: Channels">
 				<li data-bind="css: {active: Selected}" role="presentation">
-					<a class="autoClose" data-bind="click: $parent.SelectedChannel, text: '#' + ChannelName" href="#"></a>
+					<a class="autoClose channelClose" data-bind="click: $parent.SelectedChannel, text: '#' + ChannelName" href="#"></a>
 				</li>
 			</ul>
 

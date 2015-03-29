@@ -151,6 +151,10 @@ var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
 socketio = socketio.listen(serverListener);
 
 socketio.on("connection", function(socket) {
+	setupOutgoingCommandHandlers(socket);
+});
+
+var setupOutgoingCommandHandlers = function(socket) {
 	socket.on("outgoingMessage", function(data) {
 		client.say(data.channel, data.message);
 
@@ -182,15 +186,15 @@ socketio.on("connection", function(socket) {
 	socket.on("leaveChannel", function(data) {
 		client.part(data.channel);
 	});
-});
+};
 
 function setupConnection(initialChannel) {
 	if(!client) {
 		var clientSettings = {
 			options: {
 				debug: true,
-				debugIgnore: ["ping", "chat", "action"],
-				logging: false,
+				debugIgnore: ["ping", "chat"],
+				logging: true,
 				tc: 3
 			},
 			identity: {
@@ -207,50 +211,54 @@ function setupConnection(initialChannel) {
 
 		client.connect();
 
-		client.addListener("chat", function(channel, user, message) {
-			var parsedMessage = message;
+		setupIncomingEventListeners(client);
+	}
+};
 
-			_.chain(user.emote)
-				.map(function(emote, index) {
-					var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
+function setupIncomingEventListeners(client) {
+	client.addListener("chat", function(channel, user, message) {
+		var parsedMessage = message;
 
-					var charIndex = _.map(emote, function(chars) {
-						var indexes = chars.split("-");
+		_.chain(user.emote)
+			.map(function(emote, index) {
+				var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
 
-						return {
-							url: url,
-							startIndex: parseInt(indexes[0]),
-							endIndex: parseInt(indexes[1]) + 1
-						};
-					});
+				var charIndex = _.map(emote, function(chars) {
+					var indexes = chars.split("-");
 
-					return charIndex;
-				})
-				.flatten()
-				.sortBy(function(item) {
-					return -1 * item.startIndex;
-				}).each(function(emote) {
-					var firstHalf = parsedMessage.substring(0, emote.startIndex);
-					var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
-					var secondHalf = parsedMessage.substring(emote.endIndex);
-
-					parsedMessage = firstHalf + replacement + secondHalf;
+					return {
+						url: url,
+						startIndex: parseInt(indexes[0]),
+						endIndex: parseInt(indexes[1]) + 1
+					};
 				});
 
-			socketio.sockets.emit("incomingMessage", {
-				name: user.username,
-				attributes: _.uniq(user.special),
-				color: user.color,
-				message: parsedMessage,
-				channel: channel.replace("#", "")
-			});
-		});
+				return charIndex;
+			})
+			.flatten()
+			.sortBy(function(item) {
+				return -1 * item.startIndex;
+			}).each(function(emote) {
+				var firstHalf = parsedMessage.substring(0, emote.startIndex);
+				var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+				var secondHalf = parsedMessage.substring(emote.endIndex);
 
-		client.addListener("join", function(channel, user) {
-			socketio.sockets.emit("channelJoined", {
-				name: user,
-				channel: channel.replace("#", "")
+				parsedMessage = firstHalf + replacement + secondHalf;
 			});
+
+		socketio.sockets.emit("incomingMessage", {
+			name: user.username,
+			attributes: _.uniq(user.special),
+			color: user.color,
+			message: parsedMessage,
+			channel: channel.replace("#", "")
 		});
-	}
+	});
+
+	client.addListener("join", function(channel, user) {
+		socketio.sockets.emit("channelJoined", {
+			name: user,
+			channel: channel.replace("#", "")
+		});
+	});
 };

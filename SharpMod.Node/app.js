@@ -216,6 +216,16 @@ function setupConnection(initialChannel) {
 };
 
 function setupIncomingEventListeners(client) {
+	client.addListener("action", function(channel, user, message) {
+		socketio.sockets.emit("incomingMessage", {
+			name: user.username,
+			attributes: _.uniq(user.special),
+			color: user.color,
+			action: message,
+			channel: channel.substring(1)
+		});
+	});
+
 	client.addListener("chat", function(channel, user, message) {
 		socketio.sockets.emit("incomingMessage", {
 			name: user.username,
@@ -226,8 +236,62 @@ function setupIncomingEventListeners(client) {
 		});
 	});
 
+	client.addListener("hosted", function(channel, user, viewers) {
+		//only sent to broadcaster
+		socketio.sockets.emit("hosted", {
+			name: user,
+			channel: channel.substring(1),
+			viewers: viewers
+		});
+	});
+
+	client.addListener("hosting", function(channel, user, viewers) {
+		socketio.sockets.emit("hosting", {
+			name: user,
+			channel: channel.substring(1),
+			viewers: viewers
+		});
+	});
+
 	client.addListener("join", function(channel, user) {
 		socketio.sockets.emit("channelJoined", {
+			name: user,
+			channel: channel.substring(1)
+		});
+	});
+
+	client.addListener("r9kbeta", function(channel, enabled) {
+		socketio.sockets.emit("r9kbeta", {
+			channel: channel.substring(1),
+			enabled: enabled
+		});
+	});
+
+	client.addListener("slowmode", function(channel, enabled, length) {
+		socketio.sockets.emit("r9kbeta", {
+			channel: channel.substring(1),
+			enabled: enabled,
+			length: length
+		});
+	});
+
+	client.addListener("subanniversary", function(channel, user, months) {
+		socketio.sockets.emit("r9kbeta", {
+			name: user,
+			channel: channel.substring(1),
+			months: months
+		});
+	});
+
+	client.addListener("subscriber", function(channel, enabled) {
+		socketio.sockets.emit("r9kbeta", {
+			channel: channel.substring(1),
+			enabled: enabled
+		});
+	});
+
+	client.addListener("subscription", function(channel, user) {
+		socketio.sockets.emit("r9kbeta", {
 			name: user,
 			channel: channel.substring(1)
 		});
@@ -240,12 +304,9 @@ function setupIncomingEventListeners(client) {
 		});
 	});
 
-	client.addListener("action", function(channel, user, message) {
-		socketio.sockets.emit("incomingMessage", {
-			name: user.username,
-			attributes: _.uniq(user.special),
-			color: user.color,
-			action: message,
+	client.addListener("unhost", function(channel, viewers) {
+		socketio.sockets.emit("userTimeout", {
+			name: user,
 			channel: channel.substring(1)
 		});
 	});

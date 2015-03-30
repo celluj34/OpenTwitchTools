@@ -77,6 +77,10 @@ function setupSocketHandlers() {
 	socket.on("channelJoined", function(data) {
 		window.viewModel.channelJoined(data);
 	});
+
+	socket.on("userTimeout", function(data) {
+		window.viewModel.userTimeout(data);
+	});
 }
 
 function initializeKnockout() {
@@ -156,6 +160,14 @@ function initializeKnockout() {
 			if(scroll && length > self.MaxComments()) {
 				self.Comments.splice(0, length - self.MaxComments());
 			}
+		};
+
+		self.timeout = function(user) {
+			_.each(self.Comments(), function(comment) {
+				if(comment().Name === user) {
+					comment.Timedout(true);
+				}
+			});
 		};
 	};
 
@@ -251,6 +263,14 @@ function initializeKnockout() {
 
 			if(matchingChannel) {
 				matchingChannel.Joined(true);
+			}
+		};
+
+		self.userTimeout = function(data) {
+			var matchingChannel = findMatchingChannel(data.channel);
+
+			if(matchingChannel) {
+				matchingChannel.timeout(data.user);
 			}
 		};
 

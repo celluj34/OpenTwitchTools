@@ -60,7 +60,9 @@
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
 						<strong data-bind="text: Name, style: {color: Color}"></strong>
-						<span data-bind="html: Message"></span>
+						<span data-bind="text: Action, style: {color: Color}, visible: !Timedout()"></span>
+						<span data-bind="html: Message, visible: !Timedout()"></span>
+						<span data-bind="visible: Timedout">message deleted</span>
 					</div>
 				</div>
 			</div>
@@ -180,6 +182,7 @@
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
 						<strong data-bind="text: Name, style: {color: Color}"></strong>
+						<span data-bind="text: Action, style: {color: Color}"></span>
 						<span data-bind="html: Message"></span>
 					</div>
 				</div>

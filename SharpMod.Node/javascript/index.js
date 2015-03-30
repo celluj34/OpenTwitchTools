@@ -86,8 +86,10 @@ function initializeKnockout() {
 		self.Name = data.name;
 		self.Color = data.color;
 		self.Message = data.message;
+		self.Action = data.action;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = getTimestamp();
+		self.Timedout = ko.observable(false);
 
 		self.showComment = function() {
 			window.viewModel.setComment(self);
@@ -234,7 +236,7 @@ function initializeKnockout() {
 				if(!matchingChannel) {
 					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
 					self.Channels.push(newChannel);
-					self.SelectedChannel(newChannel);
+                    self.SelectedChannel(newChannel);
 					getBadges(selectedChannel);
 
 					window.socket.emit("joinChannel", {
@@ -258,7 +260,7 @@ function initializeKnockout() {
 			});
 
 			self.Channels.remove(self.SelectedChannel());
-			self.SelectedChannel({});
+            self.SelectedChannel({});
 		};
 
 		self.sendMessage = function() {
@@ -371,12 +373,9 @@ function getSize() {
 }
 
 function shouldScroll() {
-	var a = document.body.scrollHeight - 40;
-	var x = getSize() + getScroll();
-	var b = document.body.scrollHeight;
-	var ss = (x - a) * (x - b) <= 0;
+	var minHeight = document.body.scrollHeight - 40;
+	var currentHeight = getSize() + getScroll();
+	var maxHeight = document.body.scrollHeight;
 
-	//console.log(a + " < " + x + " < " + b + " = shouldScroll? " + ss);
-
-	return ss;
+	return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;
 }

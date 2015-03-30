@@ -217,48 +217,67 @@ function setupConnection(initialChannel) {
 
 function setupIncomingEventListeners(client) {
 	client.addListener("chat", function(channel, user, message) {
-		var parsedMessage = message;
-
-		_.chain(user.emote)
-			.map(function(emote, index) {
-				var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
-
-				var charIndex = _.map(emote, function(chars) {
-					var indexes = chars.split("-");
-
-					return {
-						url: url,
-						startIndex: parseInt(indexes[0]),
-						endIndex: parseInt(indexes[1]) + 1
-					};
-				});
-
-				return charIndex;
-			})
-			.flatten()
-			.sortBy(function(item) {
-				return -1 * item.startIndex;
-			}).each(function(emote) {
-				var firstHalf = parsedMessage.substring(0, emote.startIndex);
-				var replacement = "<img title='" + parsedMessage.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
-				var secondHalf = parsedMessage.substring(emote.endIndex);
-
-				parsedMessage = firstHalf + replacement + secondHalf;
-			});
-
 		socketio.sockets.emit("incomingMessage", {
 			name: user.username,
 			attributes: _.uniq(user.special),
 			color: user.color,
-			message: parsedMessage,
-			channel: channel.replace("#", "")
+			message: parseMessage(message, user.emote),
+			channel: channel.substring(1)
 		});
 	});
 
 	client.addListener("join", function(channel, user) {
 		socketio.sockets.emit("channelJoined", {
 			name: user,
-			channel: channel.replace("#", "")
+			channel: channel.substring(1)
 		});
 	});
+
+	client.addListener("timeout", function(channel, user) {
+		socketio.sockets.emit("userTimeout", {
+			name: user,
+			channel: channel.substring(1)
+		});
+	});
+
+	client.addListener("action", function(channel, user, message) {
+		socketio.sockets.emit("incomingMessage", {
+			name: user.username,
+			attributes: _.uniq(user.special),
+			color: user.color,
+			action: message,
+			channel: channel.substring(1)
+		});
+	});
+};
+
+function parseMessage(message, emotes) {
+	_.chain(emotes)
+		.map(function(emote, index) {
+			var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
+
+			var charIndex = _.map(emote, function(chars) {
+				var indexes = chars.split("-");
+
+				return {
+					url: url,
+					startIndex: parseInt(indexes[0]),
+					endIndex: parseInt(indexes[1]) + 1
+				};
+			});
+
+			return charIndex;
+		})
+		.flatten()
+		.sortBy(function(item) {
+			return -1 * item.startIndex;
+		}).each(function(emote) {
+			var firstHalf = message.substring(0, emote.startIndex);
+			var replacement = "<img title='" + message.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+			var secondHalf = message.substring(emote.endIndex);
+
+			message = firstHalf + replacement + secondHalf;
+		});
+
+	return message;
 };

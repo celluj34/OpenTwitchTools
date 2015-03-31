@@ -175,12 +175,12 @@ function initializeKnockout() {
 		var self = this;
 
 		//login information
-		self.Username = ko.observable();
-		self.Password = ko.observable();
-		self.LoginSelectedChannel = ko.observable();
+		self.Username = ko.observable("");
+		self.Password = ko.observable("");
+		self.LoginSelectedChannel = ko.observable("");
 
 		//chat information
-		self.OutgoingMessage = ko.observable();
+		self.OutgoingMessage = ko.observable("");
 		self.Channels = ko.observableArray();
 		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
@@ -188,7 +188,7 @@ function initializeKnockout() {
 		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
 
 		self.showTokenAuthModal = function() {
-			$("#tokenAuthModal").modal("show");
+            $("#tokenAuthModal").modal("show");
 		};
 
 		self.showJoinChannelModal = function() {
@@ -206,9 +206,9 @@ function initializeKnockout() {
 			self.LoginSelectedChannel("");
 
 			var submitData = {
-				username: self.Username(),
-				password: self.Password(),
-				channel: selectedChannel
+				username: self.Username().toLowerCase(),
+				password: self.Password().toLowerCase(),
+				channel: selectedChannel.toLowerCase()
 			};
 
 			$.post("/", submitData).done(function(data) {
@@ -237,7 +237,7 @@ function initializeKnockout() {
 		};
 
 		self.joinChannel = function() {
-			var selectedChannel = self.LoginSelectedChannel();
+			var selectedChannel = self.LoginSelectedChannel().toLowerCase();
 			self.LoginSelectedChannel("");
 
 			if(selectedChannel) {
@@ -248,7 +248,7 @@ function initializeKnockout() {
 				if(!matchingChannel) {
 					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
 					self.Channels.push(newChannel);
-                    self.SelectedChannel(newChannel);
+					self.SelectedChannel(newChannel);
 					getBadges(selectedChannel);
 
 					window.socket.emit("joinChannel", {
@@ -280,7 +280,7 @@ function initializeKnockout() {
 			});
 
 			self.Channels.remove(self.SelectedChannel());
-            self.SelectedChannel({});
+			self.SelectedChannel({});
 		};
 
 		self.sendMessage = function() {

@@ -29,3 +29,7 @@ body {
 .modal-open {
 	overflow-y: scroll;
 }
+
+#webview {
+	height: 400px;
+}

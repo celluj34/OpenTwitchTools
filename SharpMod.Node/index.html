@@ -20,7 +20,7 @@
 				<span class="icon-bar"></span>
 			</button>
 
-			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + SelectedChannel().ChannelName, visible:SelectedChannel().ChannelName" href="#"></a>
+			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + SelectedChannel().ChannelName, visible: SelectedChannel().ChannelName" href="#"></a>
 		</div>
 
 		<div class="collapse navbar-collapse">
@@ -35,14 +35,14 @@
 					<a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Tools <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a class="autoClose" data-bind="click:showJoinChannelModal" href="#">Join Channel</a>
+							<a class="autoClose" data-bind="click: showJoinChannelModal" href="#">Join Channel</a>
 						</li>
 						<li>
-							<a class="autoClose" data-bind="click:showUsers" href="#">Users</a>
+							<a class="autoClose" data-bind="click: showUsers" href="#">Users</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a class="autoClose" data-bind="click:leaveChannel" href="#">Leave Channel</a>
+							<a class="autoClose" data-bind="click: leaveChannel" href="#">Leave Channel</a>
 						</li>
 					</ul>
 				</li>

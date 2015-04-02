@@ -19,6 +19,7 @@ server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
 server.locals.index = path.join(__dirname, "views", "index.html");
 server.locals.database = path.join(__dirname, "sharpdb");
+server.locals.icon = path.join(__dirname, "assets", "icon.png");
 
 server.use(compression());
 server.use(bodyParser.json());
@@ -271,7 +272,7 @@ function setupIncomingEventListeners(client) {
 	});
 
 	client.addListener("slowmode", function(channel, enabled, length) {
-		socketio.sockets.emit("r9kbeta", {
+		socketio.sockets.emit("slowmode", {
 			channel: channel.substring(1),
 			enabled: enabled,
 			length: length
@@ -279,7 +280,7 @@ function setupIncomingEventListeners(client) {
 	});
 
 	client.addListener("subanniversary", function(channel, user, months) {
-		socketio.sockets.emit("r9kbeta", {
+		socketio.sockets.emit("subanniversary", {
 			name: user,
 			channel: channel.substring(1),
 			months: months
@@ -287,14 +288,14 @@ function setupIncomingEventListeners(client) {
 	});
 
 	client.addListener("subscriber", function(channel, enabled) {
-		socketio.sockets.emit("r9kbeta", {
+		socketio.sockets.emit("subscribersOnly", {
 			channel: channel.substring(1),
 			enabled: enabled
 		});
 	});
 
 	client.addListener("subscription", function(channel, user) {
-		socketio.sockets.emit("r9kbeta", {
+		socketio.sockets.emit("subscription", {
 			name: user,
 			channel: channel.substring(1)
 		});
@@ -308,7 +309,7 @@ function setupIncomingEventListeners(client) {
 	});
 
 	client.addListener("unhost", function(channel, viewers) {
-		socketio.sockets.emit("userTimeout", {
+		socketio.sockets.emit("unhost", {
 			name: user,
 			channel: channel.substring(1)
 		});
@@ -360,7 +361,7 @@ app.on("ready", function() {
 		"node-integration": false,
 		show: false,
 		title: "SharpMod",
-		frame: true
+		icon: server.locals.icon
 	});
 
 	mainWindow.on("closed", function() {

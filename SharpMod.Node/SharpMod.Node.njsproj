@@ -30,17 +30,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="javascript\loading.js" />
     <Compile Include="providers\settingsProvider.js" />
     <Compile Include="javascript\index.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\icon.png" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="sharpdb\settings.json" />
     <Content Include="index.html" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets\" />
     <Folder Include="providers\" />
     <Folder Include="javascript\" />
     <Folder Include="css\" />

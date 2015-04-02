@@ -188,7 +188,7 @@ function initializeKnockout() {
 		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
 
 		self.showTokenAuthModal = function() {
-            $("#tokenAuthModal").modal("show");
+			$("#tokenAuthModal").modal("show");
 		};
 
 		self.showJoinChannelModal = function() {
@@ -203,25 +203,23 @@ function initializeKnockout() {
 
 		self.login = function() {
 			var selectedChannel = self.LoginSelectedChannel();
-			self.LoginSelectedChannel("");
 
 			var submitData = {
 				username: self.Username().toLowerCase(),
-				password: self.Password().toLowerCase(),
-				channel: selectedChannel.toLowerCase()
+				password: self.Password().toLowerCase()
 			};
+
+			if(self.LoginSelectedChannel()) {
+				submitData.channel = selectedChannel.toLowerCase();
+				self.LoginSelectedChannel("");
+			}
 
 			$.post("/", submitData).done(function(data) {
 				if(!data.isValid) {
 					alert(data.error);
 				}
 				else {
-					if(selectedChannel) {
-						var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
-						self.Channels.push(newChannel);
-						self.SelectedChannel(newChannel);
-						getBadges(selectedChannel);
-					}
+					addChannel(selectedChannel);
 
 					$("#loginModal").modal("hide");
 				}
@@ -237,19 +235,16 @@ function initializeKnockout() {
 		};
 
 		self.joinChannel = function() {
-			var selectedChannel = self.LoginSelectedChannel().toLowerCase();
-			self.LoginSelectedChannel("");
-
-			if(selectedChannel) {
+			if(self.LoginSelectedChannel()) {
 				$("#joinChannelModal").modal("hide");
+
+				var selectedChannel = self.LoginSelectedChannel().toLowerCase();
+				self.LoginSelectedChannel("");
 
 				var matchingChannel = findMatchingChannel(selectedChannel);
 
 				if(!matchingChannel) {
-					var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
-					self.Channels.push(newChannel);
-					self.SelectedChannel(newChannel);
-					getBadges(selectedChannel);
+					addChannel(selectedChannel);
 
 					window.socket.emit("joinChannel", {
 						channel: selectedChannel
@@ -322,6 +317,17 @@ function initializeKnockout() {
 				return channel.ChannelName === channelName;
 			});
 		};
+
+		function addChannel(selectedChannel) {
+			if(!selectedChannel) {
+				return;
+			}
+
+			var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
+			self.Channels.push(newChannel);
+			self.SelectedChannel(newChannel);
+			getBadges(selectedChannel);
+		}
 	};
 
 	window.viewModel = new windowViewModel();
@@ -333,6 +339,12 @@ function getBadges(channel) {
 		window.viewModel.setBadges(data);
 	}, "json");
 }
+
+//function getUsers(channel) {
+//	$.get("/users", {channel: channel}, function(data) {
+//		window.viewModel.setUsers(data);
+//	}, "json");
+//}
 
 function parseAttributes(attributes, availableBadges) {
 	if(!attributes || attributes.length === 0 || availableBadges.length === 0) {

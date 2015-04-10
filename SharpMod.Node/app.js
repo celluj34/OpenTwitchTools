@@ -37,7 +37,7 @@ router.route("/")
 		var username = req.body.username;
 		var password = req.body.password;
 		var channel = req.body.channel;
-		var url = "https://api.twitch.tv/kraken/?oauth_token=" + password;
+		var url = "https://api.twitch.tv/kraken?oauth_token=" + password;
 
 		request(url, function(err, resp, body) {
 			var data = JSON.parse(body);

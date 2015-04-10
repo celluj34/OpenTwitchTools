@@ -38,12 +38,15 @@
 						<li>
 							<a class="autoClose" data-bind="click: showJoinChannelModal" href="#">Join Channel</a>
 						</li>
-						<li>
-							<a class="autoClose" data-bind="click: showUsers" href="#">Users</a>
+						<li class="divider" data-bind="visible: ChannelIsSelected" role="presentation"></li>
+						<li class="dropdown-header" data-bind="visible: ChannelIsSelected" role="presentation">
+							Channel Tools
 						</li>
-						<li class="divider"></li>
 						<li>
-							<a class="autoClose" data-bind="click: leaveChannel" href="#">Leave Channel</a>
+							<a class="autoClose" data-bind="click: showUsers, visible: ChannelIsSelected" href="#">Users</a>
+						</li>
+						<li>
+							<a class="autoClose" data-bind="click: leaveChannel, visible: ChannelIsSelected" href="#">Leave Channel</a>
 						</li>
 					</ul>
 				</li>

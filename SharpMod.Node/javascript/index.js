@@ -164,7 +164,7 @@ function initializeKnockout() {
 
 		self.timeout = function(user) {
 			_.each(self.Comments(), function(comment) {
-				if(comment().Name === user) {
+				if(comment.Name === user) {
 					comment.Timedout(true);
 				}
 			});
@@ -182,6 +182,7 @@ function initializeKnockout() {
 		//chat information
 		self.OutgoingMessage = ko.observable("");
 		self.Channels = ko.observableArray();
+		self.ChannelIsSelected = ko.observable(false);
 		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
@@ -275,7 +276,16 @@ function initializeKnockout() {
 			});
 
 			self.Channels.remove(self.SelectedChannel());
-			self.SelectedChannel({});
+			var firstChannel = _.first(self.Channels());
+
+			if(firstChannel) {
+				self.SelectedChannel(firstChannel);
+				self.ChannelIsSelected(true);
+			}
+			else {
+				self.SelectedChannel({});
+				self.ChannelIsSelected(false);
+			}
 		};
 
 		self.sendMessage = function() {
@@ -327,6 +337,7 @@ function initializeKnockout() {
 			self.Channels.push(newChannel);
 			self.SelectedChannel(newChannel);
 			getBadges(selectedChannel);
+			self.ChannelIsSelected(true);
 		}
 	};
 

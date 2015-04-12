@@ -338,7 +338,7 @@ function initializeKnockout() {
 			self.SelectedChannel(newChannel);
 			getBadges(selectedChannel);
 			self.ChannelIsSelected(true);
-		}
+		};
 	};
 
 	window.viewModel = new windowViewModel();

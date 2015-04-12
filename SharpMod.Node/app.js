@@ -47,7 +47,10 @@ router.route("/")
 			else {
 				settingsProvider.saveLogin(_, username, password, function(error) {
 					if(error) {
-						response.json({isValid: false, error: error});
+						response.json({
+							isValid: false,
+							error: error
+						});
 					}
 					else {
 						setupConnection(channel);
@@ -165,7 +168,7 @@ socketio.on("connection", function(socket) {
 	setupOutgoingCommandHandlers(socket);
 });
 
-var setupOutgoingCommandHandlers = function(socket) {
+function setupOutgoingCommandHandlers(socket) {
 	socket.on("outgoingMessage", function(data) {
 		client.say(data.channel, data.message);
 
@@ -197,7 +200,7 @@ var setupOutgoingCommandHandlers = function(socket) {
 	socket.on("leaveChannel", function(data) {
 		client.part(data.channel);
 	});
-};
+}
 
 function setupConnection(initialChannel) {
 	if(!client) {
@@ -224,7 +227,7 @@ function setupConnection(initialChannel) {
 
 		setupIncomingEventListeners(client);
 	}
-};
+}
 
 function setupIncomingEventListeners(client) {
 	client.addListener("action", function(channel, user, message) {
@@ -321,7 +324,7 @@ function setupIncomingEventListeners(client) {
 			channel: channel.substring(1)
 		});
 	});
-};
+}
 
 function parseMessage(message, emotes) {
 	_.chain(emotes)
@@ -352,7 +355,7 @@ function parseMessage(message, emotes) {
 		});
 
 	return message;
-};
+}
 
 app.on("window-all-closed", function() {
 	app.quit();

@@ -1,5 +1,5 @@
 ﻿$(function() {
-	$("#loginModal").modal("show");
+	showModal("loginModal");
 
 	$(".collapse.navbar-collapse").on("click", ".autoClose", function() {
 		$(".collapse.navbar-collapse").collapse("hide");
@@ -8,8 +8,6 @@
 	$(".collapse.navbar-collapse").on("click", ".channelClose", function() {
 		window.scrollTo(0, document.body.scrollHeight);
 	});
-
-	window.socket = io.connect("127.0.0.1:18044");
 
 	getLoginInfo();
 	setupSocketHandlers();
@@ -68,7 +66,9 @@ function getLoginInfo() {
 }
 
 function setupSocketHandlers() {
-	socket.on("incomingMessage", function(data) {
+	window.socket = io.connect("127.0.0.1:18044");
+
+	window.socket.on("incomingMessage", function(data) {
 		var scroll = shouldScroll();
 
 		window.viewModel.addComment(data, scroll);
@@ -78,11 +78,11 @@ function setupSocketHandlers() {
 		}
 	});
 
-	socket.on("channelJoined", function(data) {
+	window.socket.on("channelJoined", function(data) {
 		window.viewModel.channelJoined(data);
 	});
 
-	socket.on("userTimeout", function(data) {
+	window.socket.on("userTimeout", function(data) {
 		window.viewModel.userTimeout(data);
 	});
 }
@@ -179,8 +179,8 @@ function initializeKnockout() {
 		var self = this;
 
 		//login information
-		self.Username = ko.observable("");
-		self.Password = ko.observable("");
+		self.Username = ko.observable();
+		self.Password = ko.observable();
 		self.LoginSelectedChannel = ko.observable("");
 
 		//chat information
@@ -194,22 +194,20 @@ function initializeKnockout() {
 		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
 
 		self.showTokenAuthModal = function() {
-			$("#tokenAuthModal").modal("show");
+			showModal("tokenAuthModal");
 		};
 
 		self.showJoinChannelModal = function() {
-			$("#joinChannelModal").modal("show");
-			$("body").css("padding-right", 0);
+			showModal("joinChannelModal");
 		};
 
 		self.showKeywordModal = function() {
-			$("#keywordModal").modal("show");
-			$("body").css("padding-right", 0);
+			showModal("keywordModal");
 		};
 
 		self.showUsers = function() {
 			alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
-			$("body").css("padding-right", 0);
+			//showModal("usersModal");
 		};
 
 		self.login = function() {
@@ -281,7 +279,7 @@ function initializeKnockout() {
 		};
 
 		self.leaveChannel = function() {
-			socket.emit("leaveChannel", {
+			window.socket.emit("leaveChannel", {
 				channel: self.SelectedChannel().ChannelName
 			});
 
@@ -321,8 +319,7 @@ function initializeKnockout() {
 			if(!self.AlreadyClicked()) {
 				self.SelectedComment(comment);
 				self.AlreadyClicked(true);
-				$("#commentModal").modal("show");
-				$("body").css("padding-right", 0);
+				showModal("commentModal");
 			}
 		};
 
@@ -336,7 +333,7 @@ function initializeKnockout() {
 			return _.find(self.Channels(), function(channel) {
 				return channel.ChannelName === channelName;
 			});
-		};
+		}
 
 		function addChannel(selectedChannel) {
 			if(!selectedChannel) {
@@ -352,7 +349,7 @@ function initializeKnockout() {
 	};
 
 	window.viewModel = new windowViewModel();
-	ko.applyBindings(viewModel);
+	ko.applyBindings(window.viewModel);
 }
 
 function getBadges(channel) {
@@ -384,6 +381,11 @@ function parseAttributes(attributes, availableBadges) {
 	return attributeString;
 }
 
+function showModal(modal) {
+	$("#" + modal).modal("show");
+	$("body").css("padding-right", 0);
+}
+
 function getTimestamp() {
 	var date = new Date();
 	var hours = date.getHours();
@@ -408,6 +410,8 @@ function getScroll() {
 		//IE6 standards compliant mode
 		return document.documentElement.scrollTop;
 	}
+
+	return 0;
 }
 
 function getSize() {
@@ -423,6 +427,8 @@ function getSize() {
 		//IE 4 compatible
 		return document.body.clientHeight;
 	}
+
+	return 0;
 }
 
 function shouldScroll() {

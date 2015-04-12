@@ -67,9 +67,9 @@
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
 						<strong data-bind="text: Name, style: {color: Color}"></strong>
-						<span data-bind="text: Action, style: {color: Color}, visible: !Timedout()"></span>
-						<span data-bind="html: Message, visible: !Timedout()"></span>
-						<span data-bind="visible: Timedout">message deleted</span>
+						<span data-bind="text: Action, style: {color: Color}, visible: !Timeout()"></span>
+						<span data-bind="html: Message, visible: !Timeout()"></span>
+						<span data-bind="visible: Timeout">message deleted. click to view</span>
 					</div>
 				</div>
 			</div>

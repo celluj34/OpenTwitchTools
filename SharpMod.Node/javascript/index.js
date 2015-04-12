@@ -97,7 +97,7 @@ function initializeKnockout() {
 		self.Action = data.action;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = getTimestamp();
-		self.Timedout = ko.observable(false);
+		self.Timeout = ko.observable(false);
 
 		self.showComment = function() {
 			window.viewModel.setComment(self);
@@ -169,7 +169,7 @@ function initializeKnockout() {
 		self.timeout = function(user) {
 			_.each(self.Comments(), function(comment) {
 				if(comment.Name === user) {
-					comment.Timedout(true);
+					comment.Timeout(true);
 				}
 			});
 		};

@@ -33,8 +33,41 @@ SettingsProvider.prototype.saveLogin = function(_, username, password, callback)
 
 	this.settings.update({Key: "Username"}, {Value: username});
 	this.settings.update({Key: "Password"}, {Value: password});
-    
+
 	callback(null);
+};
+
+SettingsProvider.prototype.addKeyword = function(_, keyword, callback) {
+	var error = null;
+
+	if(_.isUndefined(keyword) || _.isEmpty(keyword.trim())) {
+		error = "Keyword must not be empty.";
+	}
+	else {
+		var matchingKeyword = _.where(this.Keywords(), {Value: keyword});
+
+		if(matchingKeyword.length === 0) {
+			this.settings.save({Key: "Keyword", Value: keyword});
+		}
+		else {
+			error = "Keyword is already defined.";
+		}
+	}
+
+	callback(error);
+};
+
+SettingsProvider.prototype.removeKeyword = function(_, keyword, callback) {
+	var error = null;
+
+	if(_.isUndefined(keyword) || _.isEmpty(keyword.trim())) {
+		error = "Keyword must not be empty.";
+	}
+	else {
+		this.settings.remove({Key: "Keyword", Value: keyword});
+	}
+
+	callback(error);
 };
 
 // Helper Methods

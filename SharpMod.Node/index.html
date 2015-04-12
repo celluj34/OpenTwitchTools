@@ -237,16 +237,23 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
+						<form data-bind="submit: addKeyword">
+							<div class="form-group">
+								<label for="newKeyword">Add New Keyword</label>
+								<input class="form-control" data-bind="value: NewKeyword" id="newKeyword" required type="text" />
+							</div>
+						</form>
+					</div>
+					<div class="col-md-12">
+						<label>Existing Keywords</label>
 						<table class="table">
-							<thead>
-								<tr>
-									<th>Keyword</th>
-								</tr>
-							</thead>
 							<tbody data-bind="foreach: Keywords">
 								<tr>
 									<td>
 										<span data-bind="text: $data"></span>
+									</td>
+									<td>
+										<a href="#" data-bind="click: function(){$parent.removeKeyword($data);}">Remove</a>
 									</td>
 								</tr>
 							</tbody>

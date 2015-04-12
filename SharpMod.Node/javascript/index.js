@@ -181,7 +181,6 @@ function initializeKnockout() {
 		//login information
 		self.Username = ko.observable();
 		self.Password = ko.observable();
-		self.LoginSelectedChannel = ko.observable("");
 
 		//chat information
 		self.OutgoingMessage = ko.observable("");
@@ -192,6 +191,10 @@ function initializeKnockout() {
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
 		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
+
+		//input information
+		self.LoginSelectedChannel = ko.observable();
+		self.NewKeyword = ko.observable();
 
 		self.showTokenAuthModal = function() {
 			showModal("tokenAuthModal");
@@ -241,6 +244,41 @@ function initializeKnockout() {
 			if(matchingChannel) {
 				matchingChannel.addComment(data, scroll);
 			}
+		};
+
+		self.addKeyword = function() {
+			var keyword = self.NewKeyword();
+			self.NewKeyword(null);
+
+			$.ajax({
+				url: "/keywords",
+				type: "PUT",
+				data: {keyword: keyword},
+				success: function(result) {
+					if(result.isValid) {
+						self.Keywords.push(keyword);
+					}
+					else {
+						alert(result.error);
+					}
+				}
+			});
+		};
+
+		self.removeKeyword = function(word) {
+			$.ajax({
+				url: "/keywords",
+				type: "DELETE",
+				data: {keyword: word},
+				success: function(result) {
+					if(result.isValid) {
+						self.Keywords.remove(word);
+					}
+					else {
+						alert(result.error);
+					}
+				}
+			});
 		};
 
 		self.joinChannel = function() {
@@ -345,7 +383,7 @@ function initializeKnockout() {
 			self.SelectedChannel(newChannel);
 			getBadges(selectedChannel);
 			self.ChannelIsSelected(true);
-		};
+		}
 	};
 
 	window.viewModel = new windowViewModel();

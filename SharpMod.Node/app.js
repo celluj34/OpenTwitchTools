@@ -93,6 +93,13 @@ router.route("/search")
 		});
 	});
 
+router.route("/keywords")
+	.get(function(req, response) {
+		var keywords = _.pluck(settingsProvider.Keywords(), "Value");
+
+		response.json({keywords: keywords});
+	});
+
 router.route("/badges")
 	.get(function(req, response) {
 		var url = "https://api.twitch.tv/kraken/chat/" + req.query.channel + "/badges";

@@ -22,6 +22,10 @@ function getLoginInfo() {
 		window.viewModel.Password(data.password);
 	}, "json");
 
+	$.get("/keywords", function(data) {
+		window.viewModel.Keywords(data.keywords);
+	}, "json");
+
 	var select2Settings = {
 		ajax: {
 			delay: 200,
@@ -182,6 +186,7 @@ function initializeKnockout() {
 		//chat information
 		self.OutgoingMessage = ko.observable("");
 		self.Channels = ko.observableArray();
+		self.Keywords = ko.observableArray();
 		self.ChannelIsSelected = ko.observable(false);
 		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
@@ -194,6 +199,11 @@ function initializeKnockout() {
 
 		self.showJoinChannelModal = function() {
 			$("#joinChannelModal").modal("show");
+			$("body").css("padding-right", 0);
+		};
+
+		self.showKeywordModal = function() {
+			$("#keywordModal").modal("show");
 			$("body").css("padding-right", 0);
 		};
 

@@ -14,6 +14,10 @@ SettingsProvider.prototype.Password = function() {
 	return single(this.settings, "Password");
 };
 
+SettingsProvider.prototype.Keywords = function() {
+	return all(this.settings, "Keyword");
+};
+
 // Public Methods
 
 SettingsProvider.prototype.saveLogin = function(_, username, password, callback) {

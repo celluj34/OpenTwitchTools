@@ -79,8 +79,8 @@ function single(settings, key) {
 	}
 
 	return null;
-};
+}
 
 function all(settings, key) {
 	return settings.find({Key: key});
-};
+}

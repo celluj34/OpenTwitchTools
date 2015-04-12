@@ -350,7 +350,6 @@ function setupIncomingEventListeners(client) {
 
 	client.addListener("unhost", function(channel, viewers) {
 		socketio.sockets.emit("unhost", {
-			name: user,
 			channel: channel.substring(1)
 		});
 	});

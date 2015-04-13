@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "body-parser": "1.12.2",
-    "compression": "1.4.3",
     "diskdb": "0.1.14",
     "express": "4.12.3",
     "request": "^2.55.0",

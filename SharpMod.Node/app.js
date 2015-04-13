@@ -7,7 +7,6 @@
     settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
     socketio = require("socket.io"),
     request = require("request"),
-    compression = require("compression"),
     bodyParser = require("body-parser"),
     router = express.Router(),
     app = require("app"),
@@ -21,7 +20,6 @@ server.locals.index = path.join(__dirname, "views", "index.html");
 server.locals.database = path.join(__dirname, "sharpdb");
 server.locals.icon = path.join(__dirname, "assets", "icon.png");
 
-server.use(compression());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));

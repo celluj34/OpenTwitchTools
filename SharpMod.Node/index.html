@@ -63,12 +63,11 @@
 		<div class="tab-content" data-bind="foreach: Channels">
 			<div class="tab-pane" data-bind="attr: {id: ChannelName}, css: {active: Selected}">
 				<div data-bind="foreach: Comments">
-					<div class="singleComment well well-sm" data-bind="click: showComment">
+					<div class="singleComment well well-sm" data-bind="click: showComment, style: {background: BackgroundColor}">
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
 						<strong data-bind="text: Name, style: {color: Color}"></strong>
-						<span data-bind="text: Action, style: {color: Color}, visible: !Timeout()"></span>
-						<span data-bind="html: Message, visible: !Timeout()"></span>
+						<span data-bind="html: Message, visible: !Timeout(), style: {color: MessageColor}"></span>
 						<span data-bind="visible: Timeout">message deleted. click to view</span>
 					</div>
 				</div>
@@ -187,8 +186,7 @@
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
 						<strong data-bind="text: Name, style: {color: Color}"></strong>
-						<span data-bind="text: Action, style: {color: Color}"></span>
-						<span data-bind="html: Message"></span>
+						<span data-bind="html: Message, visible: !Timeout(), style: {color: MessageColor}"></span>
 					</div>
 				</div>
 			</div>
@@ -253,7 +251,7 @@
 										<span data-bind="text: $data"></span>
 									</td>
 									<td>
-										<a href="#" data-bind="click: function(){$parent.removeKeyword($data);}">Remove</a>
+										<a data-bind="click: function(){$parent.removeKeyword($data);}">Remove</a>
 									</td>
 								</tr>
 							</tbody>

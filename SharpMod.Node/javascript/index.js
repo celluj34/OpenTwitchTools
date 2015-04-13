@@ -94,10 +94,11 @@ function initializeKnockout() {
 		self.Name = data.name;
 		self.Color = data.color;
 		self.Message = data.message;
-		self.Action = data.action;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = getTimestamp();
 		self.Timeout = ko.observable(false);
+		self.BackgroundColor = data.highlight ? "lightgray" : "#F5F5F5";
+		self.MessageColor = data.isAction ? data.color : "inherit";
 
 		self.showComment = function() {
 			window.viewModel.setComment(self);
@@ -136,11 +137,11 @@ function initializeKnockout() {
 		};
 
 		self.op = function() {
-            alert("This feature is currently in development. 'mod " + self.Name + "'.");
+			alert("This feature is currently in development. 'mod " + self.Name + "'.");
 		};
 
 		self.deop = function() {
-            alert("This feature is currently in development. 'unmod " + self.Name + "'.");
+			alert("This feature is currently in development. 'unmod " + self.Name + "'.");
 		};
 	};
 
@@ -257,8 +258,6 @@ function initializeKnockout() {
 				success: function(result) {
 					if(result.isValid) {
 						self.Keywords.push(keyword);
-
-						//resetHighlightedComments();
 					}
 					else {
 						alert(result.error);
@@ -275,8 +274,6 @@ function initializeKnockout() {
 				success: function(result) {
 					if(result.isValid) {
 						self.Keywords.remove(word);
-
-						//resetHighlightedComments();
 					}
 					else {
 						alert(result.error);
@@ -388,14 +385,6 @@ function initializeKnockout() {
 			getBadges(selectedChannel);
 			self.ChannelIsSelected(true);
 		}
-
-		//function resetHighlightedComments() {
-		//	_.each(self.Channels(), function(channel) {
-		//		_.each(channel.Comments(), function(comment) {
-		//			highlightComment(comment, self.Keywords());
-		//		});
-		//	});
-		//}
 	};
 
 	window.viewModel = new windowViewModel();
@@ -430,12 +419,6 @@ function parseAttributes(attributes, availableBadges) {
 
 	return attributeString;
 }
-
-//function highlightComment(comment, keywords) {
-//	_.each(keywords, function(keyword) {
-//		comment.Highlight((comment.Message && comment.Message.contains(keyword)) || (comment.Action && comment.Action.contains(keyword)));
-//	});
-//}
 
 function showModal(modal) {
 	$("#" + modal).modal("show");

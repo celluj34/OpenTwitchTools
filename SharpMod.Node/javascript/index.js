@@ -136,11 +136,11 @@ function initializeKnockout() {
 		};
 
 		self.op = function() {
-			alert("mod " + self.Name);
+            alert("This feature is currently in development. 'mod " + self.Name + "'.");
 		};
 
 		self.deop = function() {
-			alert("unmod " + self.Name);
+            alert("This feature is currently in development. 'unmod " + self.Name + "'.");
 		};
 	};
 

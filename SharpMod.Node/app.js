@@ -259,23 +259,11 @@ function setupConnection(initialChannel) {
 
 function setupIncomingEventListeners(client) {
 	client.addListener("action", function(channel, user, message) {
-		socketio.sockets.emit("incomingMessage", {
-			name: user.username,
-			attributes: _.uniq(user.special),
-			color: user.color,
-			action: message,
-			channel: channel.substring(1)
-		});
+		emitMessage(channel, user, message, true);
 	});
 
 	client.addListener("chat", function(channel, user, message) {
-		socketio.sockets.emit("incomingMessage", {
-			name: user.username,
-			attributes: _.uniq(user.special),
-			color: user.color,
-			message: parseMessage(message, user.emote),
-			channel: channel.substring(1)
-		});
+		emitMessage(channel, user, message, false);
 	});
 
 	client.addListener("hosted", function(channel, user, viewers) {
@@ -353,6 +341,20 @@ function setupIncomingEventListeners(client) {
 	});
 }
 
+function emitMessage(channel, user, message, action) {
+	var data = {
+		name: user.username,
+		attributes: user.special,
+		color: user.color,
+		message: parseMessage(message, user.emote),
+		channel: channel.substring(1),
+		highlight: highlightMessage(message),
+		isAction: action
+	};
+
+	socketio.sockets.emit("incomingMessage", data);
+}
+
 function parseMessage(message, emotes) {
 	_.chain(emotes)
 		.map(function(emote, index) {
@@ -382,6 +384,17 @@ function parseMessage(message, emotes) {
 		});
 
 	return message;
+}
+
+function highlightMessage(comment) {
+	var casedComment = comment.toLowerCase();
+
+	var highlight = _.find(settingsProvider.Keywords(), function(keyword) {
+		return casedComment.indexOf(keyword.Value.toLowerCase()) > -1;
+	});
+
+	//goofy hack required because _.find returns undefined instead of false
+	return !_.isUndefined(highlight);
 }
 
 app.on("window-all-closed", function() {

@@ -257,6 +257,8 @@ function initializeKnockout() {
 				success: function(result) {
 					if(result.isValid) {
 						self.Keywords.push(keyword);
+
+						//resetHighlightedComments();
 					}
 					else {
 						alert(result.error);
@@ -273,6 +275,8 @@ function initializeKnockout() {
 				success: function(result) {
 					if(result.isValid) {
 						self.Keywords.remove(word);
+
+						//resetHighlightedComments();
 					}
 					else {
 						alert(result.error);
@@ -384,6 +388,14 @@ function initializeKnockout() {
 			getBadges(selectedChannel);
 			self.ChannelIsSelected(true);
 		}
+
+		//function resetHighlightedComments() {
+		//	_.each(self.Channels(), function(channel) {
+		//		_.each(channel.Comments(), function(comment) {
+		//			highlightComment(comment, self.Keywords());
+		//		});
+		//	});
+		//}
 	};
 
 	window.viewModel = new windowViewModel();
@@ -418,6 +430,12 @@ function parseAttributes(attributes, availableBadges) {
 
 	return attributeString;
 }
+
+//function highlightComment(comment, keywords) {
+//	_.each(keywords, function(keyword) {
+//		comment.Highlight((comment.Message && comment.Message.contains(keyword)) || (comment.Action && comment.Action.contains(keyword)));
+//	});
+//}
 
 function showModal(modal) {
 	$("#" + modal).modal("show");

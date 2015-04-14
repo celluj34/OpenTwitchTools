@@ -199,14 +199,6 @@ socketio.on("connection", function(socket) {
 function setupOutgoingCommandHandlers(socket) {
 	socket.on("outgoingMessage", function(data) {
 		client.say(data.channel, data.message);
-
-		socket.emit("incomingMessage", {
-			name: client.myself,
-			//attributes: user.special,
-			//color: user.color,
-			message: data.message,
-			channel: data.channel
-		});
 	});
 
 	socket.on("joinChannel", function(data) {
@@ -235,9 +227,9 @@ function setupConnection(initialChannel) {
 		var clientSettings = {
 			options: {
 				debug: true,
-				debugIgnore: ["ping", "chat"],
-				logging: true,
-				tc: 3
+				debugIgnore: ["ping", "chat", "action"],
+				emitSelf: true,
+				logging: true
 			},
 			identity: {
 				username: settingsProvider.Username(),

@@ -96,7 +96,7 @@ function initializeKnockout() {
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = getTimestamp();
-		self.Timeout = ko.observable(false);
+		self.Hidden = ko.observable(false);
 		self.BackgroundColor = data.highlight ? "lightgray" : "#F5F5F5";
 		self.MessageColor = data.isAction ? data.color : "inherit";
 
@@ -170,7 +170,7 @@ function initializeKnockout() {
 		self.timeout = function(user) {
 			_.each(self.Comments(), function(comment) {
 				if(comment.Name === user) {
-					comment.Timeout(true);
+					comment.Hidden(true);
 				}
 			});
 		};
@@ -313,7 +313,7 @@ function initializeKnockout() {
 			var matchingChannel = findMatchingChannel(data.channel);
 
 			if(matchingChannel) {
-				matchingChannel.timeout(data.user);
+				matchingChannel.timeout(data.name);
 			}
 		};
 

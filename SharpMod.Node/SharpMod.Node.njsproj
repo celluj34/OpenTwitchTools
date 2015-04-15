@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\icon.png" />
+    <Content Include="css\theme.css" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="sharpdb\settings.json" />

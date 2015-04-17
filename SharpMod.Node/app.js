@@ -4,6 +4,7 @@
     diskdb = require("diskdb"),
     irc = require("twitch-irc"),
     _ = require("underscore"),
+    _s = require("underscore.string"),
     settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
     socketio = require("socket.io"),
     request = require("request"),
@@ -12,7 +13,8 @@
     app = require("app"),
     BrowserWindow = require("browser-window"),
     client,
-    mainWindow;
+    mainWindow,
+    badges;
 
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
@@ -40,7 +42,10 @@ router.route("/")
 		request(url, function(err, resp, body) {
 			var data = JSON.parse(body);
 			if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
-				response.json({isValid: false, error: "Token is expired or it is registered to another user."});
+				response.json({
+					isValid: false,
+					error: "Token is expired or it is registered to another user."
+				});
 			}
 			else {
 				settingsProvider.saveLogin(_, username, password, function(error) {
@@ -198,7 +203,16 @@ socketio.on("connection", function(socket) {
 
 function setupOutgoingCommandHandlers(socket) {
 	socket.on("outgoingMessage", function(data) {
-		client.say(data.channel, data.message);
+		if(_s.startsWith(data.message, "/me ")) {
+			var message = data.message.substring(4);
+
+			if(message.length > 0) {
+				client.action(data.channel, message);
+			}
+		}
+		else {
+			client.say(data.channel, data.message);
+		}
 	});
 
 	socket.on("joinChannel", function(data) {
@@ -226,10 +240,10 @@ function setupConnection(initialChannel) {
 	if(!client) {
 		var clientSettings = {
 			options: {
-				debug: true,
+				debug: false,
 				debugIgnore: ["ping", "chat", "action"],
 				emitSelf: true,
-				logging: true
+				logging: false
 			},
 			identity: {
 				username: settingsProvider.Username(),
@@ -328,7 +342,8 @@ function setupIncomingEventListeners(client) {
 
 	client.addListener("unhost", function(channel, viewers) {
 		socketio.sockets.emit("unhost", {
-			channel: channel.substring(1)
+			channel: channel.substring(1),
+			viewers: viewers
 		});
 	});
 }
@@ -370,7 +385,7 @@ function parseMessage(message, emotes) {
 			return -1 * item.startIndex;
 		}).each(function(emote) {
 			var firstHalf = message.substring(0, emote.startIndex);
-			var replacement = "<img title='" + message.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' />";
+			var replacement = "<img title='" + message.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' alt='" + emote.url + "' />";
 			var secondHalf = message.substring(emote.endIndex);
 
 			message = firstHalf + replacement + secondHalf;
@@ -383,7 +398,7 @@ function highlightMessage(comment) {
 	var casedComment = comment.toLowerCase();
 
 	var highlight = _.find(settingsProvider.Keywords(), function(keyword) {
-		return casedComment.indexOf(keyword.Value.toLowerCase()) > -1;
+		return _s.contains(casedComment, keyword);
 	});
 
 	//goofy hack required because _.find returns undefined instead of false

@@ -14,7 +14,7 @@
     BrowserWindow = require("browser-window"),
     client,
     mainWindow,
-    badges;
+    badges = [];
 
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
@@ -136,61 +136,6 @@ router.route("/keywords")
 		});
 	});
 
-router.route("/badges")
-	.get(function(req, response) {
-		var url = "https://api.twitch.tv/kraken/chat/" + req.query.channel + "/badges";
-
-		request(url, function(err, resp, body) {
-			body = JSON.parse(body);
-
-			var badgeList = [];
-
-			badgeList.push({
-				role: "global_mod",
-				url: body.global_mod.image
-			});
-
-			badgeList.push({
-				role: "admin",
-				url: body.admin.image
-			});
-
-			badgeList.push({
-				role: "broadcaster",
-				url: body.broadcaster.image
-			});
-
-			badgeList.push({
-				role: "mod",
-				url: body.mod.image
-			});
-
-			badgeList.push({
-				role: "staff",
-				url: body.staff.image
-			});
-
-			badgeList.push({
-				role: "turbo",
-				url: body.turbo.image
-			});
-
-			if(body.subscriber) {
-				var subscriber = {
-					role: "subscriber",
-					url: body.subscriber.image
-				};
-
-				badgeList.push(subscriber);
-			}
-
-			response.send({
-				channel: req.query.channel,
-				badges: badgeList
-			});
-		});
-	});
-
 server.use("/", router);
 
 var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
@@ -290,10 +235,14 @@ function setupIncomingEventListeners(client) {
 	});
 
 	client.addListener("join", function(channel, user) {
+		var channelName = channel.substring(1);
+
 		socketio.sockets.emit("channelJoined", {
 			name: user,
-			channel: channel.substring(1)
+			channel: channelName
 		});
+
+		getBadges(channelName);
 	});
 
 	client.addListener("r9kbeta", function(channel, enabled) {
@@ -348,10 +297,61 @@ function setupIncomingEventListeners(client) {
 	});
 }
 
+function getBadges(channel) {
+	var url = "https://api.twitch.tv/kraken/chat/" + channel + "/badges";
+
+	request(url, function(err, resp, body) {
+		body = JSON.parse(body);
+
+		var badgeList = [];
+
+		badgeList.push({
+			role: "global_mod",
+			url: body.global_mod.image
+		});
+
+		badgeList.push({
+			role: "admin",
+			url: body.admin.image
+		});
+
+		badgeList.push({
+			role: "broadcaster",
+			url: body.broadcaster.image
+		});
+
+		badgeList.push({
+			role: "mod",
+			url: body.mod.image
+		});
+
+		badgeList.push({
+			role: "staff",
+			url: body.staff.image
+		});
+
+		badgeList.push({
+			role: "turbo",
+			url: body.turbo.image
+		});
+
+		if(body.subscriber) {
+			var subscriber = {
+				role: "subscriber",
+				url: body.subscriber.image
+			};
+
+			badgeList.push(subscriber);
+		}
+
+		badges[channel] = badgeList;
+	});
+}
+
 function emitMessage(channel, user, message, action) {
 	var data = {
 		name: user.username,
-		attributes: user.special,
+		badges: parseAttributes(user.special, channel.substring(1)),
 		color: user.color,
 		message: parseMessage(message, user.emote),
 		channel: channel.substring(1),
@@ -384,14 +384,41 @@ function parseMessage(message, emotes) {
 		.sortBy(function(item) {
 			return -1 * item.startIndex;
 		}).each(function(emote) {
-			var firstHalf = message.substring(0, emote.startIndex);
-			var replacement = "<img title='" + message.substring(emote.startIndex, emote.endIndex) + "' src='" + emote.url + "' alt='" + emote.url + "' />";
-			var secondHalf = message.substring(emote.endIndex);
+			var emoteName = message.substring(emote.startIndex, emote.endIndex);
 
-			message = firstHalf + replacement + secondHalf;
+			var leftPart = message.substring(0, emote.startIndex);
+			var middlePart = makeImage(emoteName, emote.url);
+			var rightPart = message.substring(emote.endIndex);
+
+			message = leftPart + middlePart + rightPart;
 		});
 
 	return message;
+}
+
+function parseAttributes(attributes, channel) {
+	var availableBadges = badges[channel];
+
+	if(!attributes || attributes.length === 0 || !availableBadges || availableBadges.length === 0) {
+		return null;
+	}
+
+	var attributeString = _.chain(attributes)
+		.map(function(attribute) {
+			var matchingBadge = _.find(availableBadges, function(badge) {
+				return badge.role === attribute;
+			});
+
+			return makeImage(matchingBadge.role, matchingBadge.url);
+		})
+		.value()
+		.join(" ");
+
+	return attributeString;
+}
+
+function makeImage(name, url) {
+	return "<img alt='" + name + "' title='" + name + "' src='" + url + "' />";
 }
 
 function highlightMessage(comment) {

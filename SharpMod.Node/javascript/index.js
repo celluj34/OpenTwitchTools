@@ -91,13 +91,13 @@ function setupSocketHandlers() {
 }
 
 function initializeKnockout() {
-	var commentViewModel = function(data, channelBadges) {
+	var commentViewModel = function(data) {
 		var self = this;
 
 		self.Name = data.name;
 		self.Color = data.color;
 		self.Message = data.message;
-		self.Badges = parseAttributes(data.attributes, channelBadges);
+		self.Badges = data.badges;
 		self.Timestamp = data.timestamp;
 		self.Highlight = data.highlight;
 		self.MessageColor = data.isAction ? data.color : "inherit";
@@ -152,14 +152,13 @@ function initializeKnockout() {
 		self.Comments = ko.observableArray();
 		self.MaxComments = ko.observable(100);
 		self.Joined = ko.observable(false);
-		self.Badges = [];
-
+		
 		self.Selected = ko.computed(function() {
 			return this === selectedChannel();
 		}, this);
 
 		self.addComment = function(comment, scroll) {
-			self.Comments.push(new commentViewModel(comment, self.Badges));
+			self.Comments.push(new commentViewModel(comment));
 			var length = self.Comments().length;
 
 			if(scroll && length > self.MaxComments()) {
@@ -346,14 +345,6 @@ function initializeKnockout() {
 			}
 		};
 
-		self.setBadges = function(data) {
-			var matchingChannel = findMatchingChannel(data.channel);
-
-			if(matchingChannel) {
-				matchingChannel.Badges = data.badges;
-			}
-		};
-
 		self.setComment = function(comment) {
 			if(!self.AlreadyClicked()) {
 				self.SelectedComment(comment);
@@ -382,7 +373,6 @@ function initializeKnockout() {
 			var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
 			self.Channels.push(newChannel);
 			self.SelectedChannel(newChannel);
-			getBadges(selectedChannel);
 			self.ChannelIsSelected(true);
 		}
 	};
@@ -391,34 +381,11 @@ function initializeKnockout() {
 	ko.applyBindings(window.viewModel);
 }
 
-function getBadges(channel) {
-	$.get("/badges", {channel: channel}, function(data) {
-		window.viewModel.setBadges(data);
-	}, "json");
-}
-
 //function getUsers(channel) {
 //	$.get("/users", {channel: channel}, function(data) {
 //		window.viewModel.setUsers(data);
 //	}, "json");
 //}
-
-function parseAttributes(attributes, availableBadges) {
-	if(!attributes || attributes.length === 0 || availableBadges.length === 0) {
-		return "";
-	}
-
-	var attributeString = "";
-	_.each(attributes, function(attribute) {
-		var matchingBadge = _.find(availableBadges, function(badge) {
-			return badge.role === attribute;
-		});
-
-		attributeString = attributeString + "<img title='" + matchingBadge.role + "' src='" + matchingBadge.url + "' /> ";
-	});
-
-	return attributeString;
-}
 
 function showModal(modal) {
 	$("#" + modal).modal("show");

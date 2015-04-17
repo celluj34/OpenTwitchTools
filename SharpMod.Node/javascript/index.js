@@ -99,7 +99,7 @@ function initializeKnockout() {
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = data.timestamp;
-		self.BackgroundColor = data.highlight ? "lightgray" : "#F5F5F5";
+		self.Highlight = data.highlight;
 		self.MessageColor = data.isAction ? data.color : "inherit";
 		self.Hidden = ko.observable(false);
 

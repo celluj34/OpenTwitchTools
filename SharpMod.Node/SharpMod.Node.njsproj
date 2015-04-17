@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>SharpMod.Node</Name>
     <RootNamespace>SharpMod.Node</RootNamespace>
-    <NodeExePath>C:/atom-shell-v0.22.3-win32-ia32/atom.exe</NodeExePath>
+    <NodeExePath>"C:\atom-shell v0.23.0 x64\atom.exe"</NodeExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

@@ -99,9 +99,9 @@ function initializeKnockout() {
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
 		self.Timestamp = data.timestamp;
-		self.Hidden = ko.observable(false);
 		self.BackgroundColor = data.highlight ? "lightgray" : "#F5F5F5";
 		self.MessageColor = data.isAction ? data.color : "inherit";
+		self.Hidden = ko.observable(false);
 
 		self.showComment = function() {
 			window.viewModel.setComment(self);
@@ -112,40 +112,37 @@ function initializeKnockout() {
 		};
 
 		self.timeout = function(seconds) {
-			window.socket.emit("timeoutUser", {
-				user: self.Name,
-				channel: window.viewModel.SelectedChannel().ChannelName,
-				seconds: seconds
-			});
-
-			self.closeComment();
+			doAction("timeoutUser", {seconds: seconds});
 		};
 
 		self.ban = function() {
-			window.socket.emit("banUser", {
-				user: self.Name,
-				channel: window.viewModel.SelectedChannel().ChannelName
-			});
-
-			self.closeComment();
+			doAction("banUser");
 		};
 
 		self.unban = function() {
-			window.socket.emit("unbanUser", {
-				user: self.Name,
-				channel: window.viewModel.SelectedChannel().ChannelName
-			});
-
-			self.closeComment();
+			doAction("unbanUser");
 		};
 
 		self.op = function() {
-			alert("This feature is currently in development. 'mod " + self.Name + "'.");
+			doAction("mod");
 		};
 
 		self.deop = function() {
-			alert("This feature is currently in development. 'unmod " + self.Name + "'.");
+			doAction("unmod");
 		};
+
+		function doAction(action, properties) {
+			var sendData = {
+				user: self.Name,
+				channel: window.viewModel.SelectedChannel().ChannelName
+			};
+
+			$.extend(sendData, properties);
+
+			window.socket.emit(action, sendData);
+
+			self.closeComment();
+		}
 	};
 
 	var channelViewModel = function(data, selectedChannel) {

@@ -9,12 +9,13 @@
 		window.scrollTo(0, document.body.scrollHeight);
 	});
 
-	getLoginInfo();
+	loadInfo();
+	setupCustomControls();
 	setupSocketHandlers();
 	initializeKnockout();
 });
 
-function getLoginInfo() {
+function loadInfo() {
 	$.get("/loginInfo", function(data) {
 		window.viewModel.Username(data.username);
 		window.viewModel.Password(data.password);
@@ -23,7 +24,9 @@ function getLoginInfo() {
 	$.get("/keywords", function(data) {
 		window.viewModel.Keywords(data.keywords);
 	}, "json");
+}
 
+function setupCustomControls() {
 	var select2Settings = {
 		ajax: {
 			delay: 200,
@@ -95,7 +98,7 @@ function initializeKnockout() {
 		self.Color = data.color;
 		self.Message = data.message;
 		self.Badges = parseAttributes(data.attributes, channelBadges);
-		self.Timestamp = getTimestamp();
+		self.Timestamp = data.timestamp;
 		self.Hidden = ko.observable(false);
 		self.BackgroundColor = data.highlight ? "lightgray" : "#F5F5F5";
 		self.MessageColor = data.isAction ? data.color : "inherit";
@@ -423,17 +426,6 @@ function parseAttributes(attributes, availableBadges) {
 function showModal(modal) {
 	$("#" + modal).modal("show");
 	$("body").css("padding-right", 0);
-}
-
-function getTimestamp() {
-	var date = new Date();
-	var hours = date.getHours();
-	var minutes = date.getMinutes();
-	var period = hours < 12 ? "AM" : "PM";
-	hours = hours % 12;
-	hours = hours ? hours : 12;
-	minutes = minutes < 10 ? "0" + minutes : minutes;
-	return hours + ":" + minutes + "" + period;
 }
 
 function getScroll() {

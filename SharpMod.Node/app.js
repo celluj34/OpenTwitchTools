@@ -341,7 +341,8 @@ function emitMessage(channel, user, message, action) {
 		message: parseMessage(message, user.emote),
 		channel: channel.substring(1),
 		highlight: highlightMessage(message),
-		isAction: action
+		isAction: action,
+		timestamp: getTimestamp()
 	};
 
 	socketio.sockets.emit("incomingMessage", data);
@@ -387,6 +388,17 @@ function highlightMessage(comment) {
 
 	//goofy hack required because _.find returns undefined instead of false
 	return !_.isUndefined(highlight);
+}
+
+function getTimestamp() {
+	var date = new Date();
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+	var period = hours < 12 ? "AM" : "PM";
+	hours = hours % 12;
+	hours = hours ? hours : 12;
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+	return hours + ":" + minutes + "" + period;
 }
 
 app.on("window-all-closed", function() {

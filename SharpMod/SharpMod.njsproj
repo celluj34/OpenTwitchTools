@@ -13,7 +13,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>563ca7c5-d0b4-4e4b-9498-e9dd8d042cf4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>package.json</StartupFile>
+    <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>

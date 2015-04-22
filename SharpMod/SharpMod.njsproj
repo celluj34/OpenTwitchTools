@@ -30,7 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="providers\settingsProvider.js" />
+    <Compile Include="database\databaseProvider.js" />
     <Compile Include="javascript\index.js" />
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +38,7 @@
     <Content Include="css\theme.css" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
-    <Content Include="sharpdb\settings.json" />
+    <Content Include="database\settings.json" />
     <Content Include="index.html" />
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +46,7 @@
     <Folder Include="providers\" />
     <Folder Include="javascript\" />
     <Folder Include="css\" />
-    <Folder Include="sharpdb\" />
+    <Folder Include="database\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

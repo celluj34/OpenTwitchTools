@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\" />
-    <Folder Include="providers\" />
     <Folder Include="javascript\" />
     <Folder Include="css\" />
     <Folder Include="database\" />

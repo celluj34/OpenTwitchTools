@@ -1,11 +1,9 @@
 ﻿var express = require("express"),
     server = express(),
     path = require("path"),
-    diskdb = require("diskdb"),
     irc = require("twitch-irc"),
     _ = require("underscore"),
     _s = require("underscore.string"),
-    settingsProvider = require("./providers/settingsProvider.js").SettingsProvider,
     socketio = require("socket.io"),
     request = require("request"),
     bodyParser = require("body-parser"),
@@ -18,16 +16,17 @@
 
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
-server.locals.index = path.join(__dirname, "views", "index.html");
-server.locals.database = path.join(__dirname, "sharpdb");
+server.locals.index = path.join(__dirname, "index.html");
+server.locals.database = path.join(__dirname, "database");
+server.locals.databaseProvider = path.join(__dirname, "database", "databaseProvider.js");
 server.locals.icon = path.join(__dirname, "assets", "icon.png");
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
-diskdb.connect(server.locals.database, ["settings"]);
-var settingsProvider = new SettingsProvider(diskdb);
+settingsProvider = require(server.locals.databaseProvider).DatabaseProvider;
+settingsProvider = new DatabaseProvider(server.locals.database, "settings");
 
 router.route("/")
 	.get(function(req, response) {

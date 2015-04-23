@@ -152,7 +152,7 @@ function initializeKnockout() {
 		self.Comments = ko.observableArray();
 		self.MaxComments = ko.observable(100);
 		self.Joined = ko.observable(false);
-		
+
 		self.Selected = ko.computed(function() {
 			return this === selectedChannel();
 		}, this);

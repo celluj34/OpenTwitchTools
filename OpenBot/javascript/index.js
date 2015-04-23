@@ -190,7 +190,7 @@ function initializeKnockout() {
 		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
-		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
+		self.TokenAuthUrl = "http://sharpbot.azurewebsites.net/";
 
 		//input information
 		self.LoginSelectedChannel = ko.observable();

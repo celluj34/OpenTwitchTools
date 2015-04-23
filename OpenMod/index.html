@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<title>SharpMod</title>
+	<title>OpenMod</title>
 	<meta charset="utf-8" />
 	<meta content="width=device-width" initial-scale="1.0 " name="viewport" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -89,7 +89,7 @@
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Login to SharpMod</h4>
+				<h4 class="modal-title">Login to OpenMod</h4>
 			</div>
 			<form data-bind="submit: login">
 				<div class="modal-body">
@@ -133,7 +133,7 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-12" id="webview">
-						<webview src="http://sharpmod.azurewebsites.net"></webview>
+						<webview data-bind="attr: {src: TokenAuthUrl}"></webview>
 					</div>
 				</div>
 			</div>

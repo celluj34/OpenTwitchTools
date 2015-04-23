@@ -1,7 +1,6 @@
 {
-  "name": "SharpMod",
-  "version": "0.10.1",
-  "description": "SharpMod",
+  "name": "OpenBot",
+  "description": "OpenBot",
   "main": "app.js",
   "author": {
     "name": "Joseph Cellucci",

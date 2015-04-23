@@ -455,7 +455,7 @@ app.on("ready", function() {
 		center: true,
 		"node-integration": false,
 		show: false,
-		title: "SharpMod",
+		title: "OpenMod",
 		icon: server.locals.icon
 	});
 

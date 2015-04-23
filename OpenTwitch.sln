@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SharpMod", "SharpMod\SharpMod.njsproj", "{563CA7C5-D0B4-4E4B-9498-E9DD8D042CF4}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "OpenMod", "OpenMod\OpenMod.njsproj", "{563CA7C5-D0B4-4E4B-9498-E9DD8D042CF4}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SharpBot", "SharpBot\SharpBot.njsproj", "{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "OpenBot", "OpenBot\OpenBot.njsproj", "{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

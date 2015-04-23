@@ -18,7 +18,7 @@ server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
 server.locals.index = path.join(__dirname, "index.html");
 server.locals.database = path.join(__dirname, "database");
-server.locals.databaseProvider = path.join(__dirname, "database", "databaseProvider.js");
+server.locals.databaseProvider = path.join(server.locals.database, "databaseProvider.js");
 server.locals.icon = path.join(__dirname, "assets", "icon.png");
 
 server.use(bodyParser.json());
@@ -464,6 +464,6 @@ app.on("ready", function() {
 	});
 
 	//mainWindow.openDevTools();
-	mainWindow.loadUrl("http://127.0.0.1:18044");
+	mainWindow.loadUrl(server.locals.ipAddress + ":" + server.locals.port);
 	mainWindow.show();
 });

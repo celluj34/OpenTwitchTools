@@ -364,15 +364,13 @@ function emitMessage(channel, user, message, action) {
 }
 
 function parseMessage(message, emotes) {
-	_.chain(emotes)
+	var emoteArray = _.chain(emotes)
 		.map(function(emote, index) {
-			var url = "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0";
-
 			var charIndex = _.map(emote, function(chars) {
 				var indexes = chars.split("-");
 
 				return {
-					url: url,
+					url: "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0",
 					startIndex: parseInt(indexes[0]),
 					endIndex: parseInt(indexes[1]) + 1
 				};
@@ -383,17 +381,26 @@ function parseMessage(message, emotes) {
 		.flatten()
 		.sortBy(function(item) {
 			return -1 * item.startIndex;
-		}).each(function(emote) {
-			var emoteName = message.substring(emote.startIndex, emote.endIndex);
+		})
+		.value();
 
-			var leftPart = message.substring(0, emote.startIndex);
-			var middlePart = makeImage(emoteName, emote.url);
-			var rightPart = message.substring(emote.endIndex);
+	if(emoteArray.length === 0) {
+		return message;
+	}
 
-			message = leftPart + middlePart + rightPart;
-		});
+	var newMessage = message;
 
-	return message;
+	_.each(emoteArray, function(emote) {
+		var emoteName = newMessage.substring(emote.startIndex, emote.endIndex);
+
+		var leftPart = newMessage.substring(0, emote.startIndex);
+		var middlePart = makeImage(emoteName, emote.url);
+		var rightPart = newMessage.substring(emote.endIndex);
+
+		newMessage = leftPart + middlePart + rightPart;
+	});
+
+	return newMessage;
 }
 
 function parseAttributes(attributes, channel) {

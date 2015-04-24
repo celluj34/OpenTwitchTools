@@ -91,7 +91,7 @@ function initializeKnockout() {
 		function doAction(action, properties) {
 			var sendData = {
 				user: self.Name,
-				channel: window.viewModel.SelectedChannel().ChannelName
+				channel: window.viewModel.Channel().ChannelName
 			};
 
 			$.extend(sendData, properties);
@@ -102,17 +102,13 @@ function initializeKnockout() {
 		}
 	};
 
-	var channelViewModel = function(data, selectedChannel) {
+	var channelViewModel = function(data) {
 		var self = this;
 
 		self.ChannelName = data;
 		self.Comments = ko.observableArray();
 		self.MaxComments = ko.observable(100);
 		self.Joined = ko.observable(false);
-
-		self.Selected = ko.computed(function() {
-			return this === selectedChannel();
-		}, this);
 
 		self.addComment = function(comment, scroll) {
 			self.Comments.push(new commentViewModel(comment));
@@ -141,10 +137,8 @@ function initializeKnockout() {
 
 		//chat information
 		self.OutgoingMessage = ko.observable("");
-		self.Channels = ko.observableArray();
+		self.Channel = ko.observable({});
 		self.Keywords = ko.observableArray();
-		self.ChannelIsSelected = ko.observable(false);
-		self.SelectedChannel = ko.observable({});
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
 		self.TokenAuthUrl = "http://sharpbot.azurewebsites.net/";
@@ -166,7 +160,7 @@ function initializeKnockout() {
 		};
 
 		self.showUsers = function() {
-			alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
+			alert("This feature is currently in development. 'Show users for " + self.Channel().ChannelName + "'.");
 			//showModal("usersModal");
 		};
 
@@ -182,7 +176,7 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					addChannel(selectedChannel);
+					self.Channel(new channelViewModel(submitData.channel));
 
 					$("#loginModal").modal("hide");
 				}
@@ -190,10 +184,8 @@ function initializeKnockout() {
 		};
 
 		self.addComment = function(data, scroll) {
-			var matchingChannel = findMatchingChannel(data.channel);
-
-			if(matchingChannel) {
-				matchingChannel.addComment(data, scroll);
+			if(self.Channel()) {
+				self.Channel().addComment(data, scroll);
 			}
 		};
 
@@ -260,11 +252,7 @@ function initializeKnockout() {
 		};
 
 		self.userTimeout = function(data) {
-			var matchingChannel = findMatchingChannel(data.channel);
-
-			if(matchingChannel) {
-				matchingChannel.timeout(data.name);
-			}
+			self.Channel().timeout(data.name);
 		};
 
 		self.leaveChannel = function() {
@@ -289,7 +277,7 @@ function initializeKnockout() {
 			if(self.OutgoingMessage().length > 0) {
 				window.socket.emit("outgoingMessage", {
 					message: self.OutgoingMessage(),
-					channel: self.SelectedChannel().ChannelName
+					channel: self.Channel().ChannelName
 				});
 
 				self.OutgoingMessage("");

@@ -10,7 +10,6 @@
 	});
 
 	loadInfo();
-	setupCustomControls();
 	setupSocketHandlers();
 	initializeKnockout();
 });
@@ -24,48 +23,6 @@ function loadInfo() {
 	$.get("/keywords", function(data) {
 		window.viewModel.Keywords(data.keywords);
 	}, "json");
-}
-
-function setupCustomControls() {
-	var select2Settings = {
-		ajax: {
-			delay: 200,
-			dataType: "json",
-			url: "/search",
-			data: function(params) {
-				return {
-					channel: params.term,
-					page: params.page
-				};
-			},
-			method: "POST",
-			processResults: function(data) {
-				return {
-					results: data
-				};
-			}
-		},
-		minimumInputLength: 4,
-		placeholder: {
-			name: "Search",
-			id: null
-		},
-		templateResult: function(channel) {
-			return channel.name;
-		},
-		templateSelection: function(channel) {
-			return channel.name;
-		},
-		escapeMarkup: function(markup) {
-			return markup;
-		},
-		id: function(channel) {
-			return channel.id;
-		}
-	};
-
-	$("#channel").select2(select2Settings);
-	$("#newChannel").select2(select2Settings);
 }
 
 function setupSocketHandlers() {
@@ -214,17 +171,11 @@ function initializeKnockout() {
 		};
 
 		self.login = function() {
-			var selectedChannel = self.LoginSelectedChannel();
-
 			var submitData = {
 				username: self.Username().toLowerCase(),
-				password: self.Password().toLowerCase()
+				password: self.Password().toLowerCase(),
+				channel: self.LoginSelectedChannel().toLowerCase()
 			};
-
-			if(self.LoginSelectedChannel()) {
-				submitData.channel = selectedChannel.toLowerCase();
-				self.LoginSelectedChannel("");
-			}
 
 			$.post("/", submitData).done(function(data) {
 				if(!data.isValid) {

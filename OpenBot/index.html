@@ -132,35 +132,6 @@
 	</div>
 </div>
 
-<div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="joinChannelModal" role="dialog">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button aria-label="Close" class="close" data-dismiss="modal" type="button">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title">Join Channel</h4>
-			</div>
-			<form data-bind="submit: joinChannel">
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<label for="newChannel">Channel</label>
-								<select class="select2" data-bind="value: LoginSelectedChannel" id="newChannel"></select>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-default" data-dismiss="modal" type="button">Cancel</button>
-					<button class="btn btn-primary" type="submit">Join</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
 <div aria-hidden="true" class="fade in modal" data-backdrop="static" data-bind="with: SelectedComment" data-keyboard="false" id="commentModal" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">

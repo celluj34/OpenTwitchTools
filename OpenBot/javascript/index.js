@@ -38,10 +38,6 @@ function setupSocketHandlers() {
 		}
 	});
 
-	window.socket.on("channelJoined", function(data) {
-		window.viewModel.channelJoined(data);
-	});
-
 	window.socket.on("userTimeout", function(data) {
 		window.viewModel.userTimeout(data);
 	});
@@ -136,7 +132,7 @@ function initializeKnockout() {
 		self.Password = ko.observable();
 
 		//chat information
-		self.OutgoingMessage = ko.observable("");
+		self.OutgoingMessage = ko.observable();
 		self.Channel = ko.observable({});
 		self.Keywords = ko.observableArray();
 		self.SelectedComment = ko.observable();
@@ -149,10 +145,6 @@ function initializeKnockout() {
 
 		self.showTokenAuthModal = function() {
 			showModal("tokenAuthModal");
-		};
-
-		self.showJoinChannelModal = function() {
-			showModal("joinChannelModal");
 		};
 
 		self.showKeywordModal = function() {
@@ -224,53 +216,8 @@ function initializeKnockout() {
 			});
 		};
 
-		self.joinChannel = function() {
-			if(self.LoginSelectedChannel()) {
-				$("#joinChannelModal").modal("hide");
-
-				var selectedChannel = self.LoginSelectedChannel().toLowerCase();
-				self.LoginSelectedChannel("");
-
-				var matchingChannel = findMatchingChannel(selectedChannel);
-
-				if(!matchingChannel) {
-					addChannel(selectedChannel);
-
-					window.socket.emit("joinChannel", {
-						channel: selectedChannel
-					});
-				}
-			}
-		};
-
-		self.channelJoined = function(data) {
-			var matchingChannel = findMatchingChannel(data.channel);
-
-			if(matchingChannel) {
-				matchingChannel.Joined(true);
-			}
-		};
-
 		self.userTimeout = function(data) {
 			self.Channel().timeout(data.name);
-		};
-
-		self.leaveChannel = function() {
-			window.socket.emit("leaveChannel", {
-				channel: self.SelectedChannel().ChannelName
-			});
-
-			self.Channels.remove(self.SelectedChannel());
-			var firstChannel = _.first(self.Channels());
-
-			if(firstChannel) {
-				self.SelectedChannel(firstChannel);
-				self.ChannelIsSelected(true);
-			}
-			else {
-				self.SelectedChannel({});
-				self.ChannelIsSelected(false);
-			}
 		};
 
 		self.sendMessage = function() {
@@ -297,23 +244,6 @@ function initializeKnockout() {
 			self.AlreadyClicked(false);
 			$("#commentModal").modal("hide");
 		};
-
-		function findMatchingChannel(channelName) {
-			return _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === channelName;
-			});
-		}
-
-		function addChannel(selectedChannel) {
-			if(!selectedChannel) {
-				return;
-			}
-
-			var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
-			self.Channels.push(newChannel);
-			self.SelectedChannel(newChannel);
-			self.ChannelIsSelected(true);
-		}
 	};
 
 	window.viewModel = new windowViewModel();

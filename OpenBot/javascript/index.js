@@ -87,7 +87,7 @@ function initializeKnockout() {
 		function doAction(action, properties) {
 			var sendData = {
 				user: self.Name,
-				channel: window.viewModel.Channel().ChannelName
+				channel: window.viewModel.Channel()
 			};
 
 			$.extend(sendData, properties);
@@ -98,51 +98,29 @@ function initializeKnockout() {
 		}
 	};
 
-	var channelViewModel = function(data) {
-		var self = this;
-
-		self.ChannelName = data;
-		self.Comments = ko.observableArray();
-		self.MaxComments = ko.observable(100);
-		self.Joined = ko.observable(false);
-
-		self.addComment = function(comment, scroll) {
-			self.Comments.push(new commentViewModel(comment));
-			var length = self.Comments().length;
-
-			if(scroll && length > self.MaxComments()) {
-				self.Comments.splice(0, length - self.MaxComments());
-			}
-		};
-
-		self.timeout = function(user) {
-			_.each(self.Comments(), function(comment) {
-				if(comment.Name === user) {
-					comment.Hidden(true);
-				}
-			});
-		};
-	};
-
 	var windowViewModel = function() {
 		var self = this;
 
 		//login information
 		self.Username = ko.observable();
 		self.Password = ko.observable();
+		self.Channel = ko.observable();
 
 		//chat information
-		self.OutgoingMessage = ko.observable();
-		self.Channel = ko.observable({});
 		self.Keywords = ko.observableArray();
 		self.SelectedComment = ko.observable();
 		self.AlreadyClicked = ko.observable(false);
 		self.TokenAuthUrl = "http://sharpbot.azurewebsites.net/";
 
-		//input information
-		self.LoginSelectedChannel = ko.observable();
-		self.NewKeyword = ko.observable();
+		//channel information
+		self.Comments = ko.observableArray();
+		self.MaxComments = ko.observable(100);
 
+		//input information
+		self.NewKeyword = ko.observable();
+		self.OutgoingMessage = ko.observable();
+
+		//modals
 		self.showTokenAuthModal = function() {
 			showModal("tokenAuthModal");
 		};
@@ -152,15 +130,16 @@ function initializeKnockout() {
 		};
 
 		self.showUsers = function() {
-			alert("This feature is currently in development. 'Show users for " + self.Channel().ChannelName + "'.");
+			alert("This feature is currently in development. 'Show users for " + self.Channel() + "'.");
 			//showModal("usersModal");
 		};
 
+		//functions
 		self.login = function() {
 			var submitData = {
 				username: self.Username().toLowerCase(),
 				password: self.Password().toLowerCase(),
-				channel: self.LoginSelectedChannel().toLowerCase()
+				channel: self.Channel().toLowerCase()
 			};
 
 			$.post("/", submitData).done(function(data) {
@@ -168,16 +147,17 @@ function initializeKnockout() {
 					alert(data.error);
 				}
 				else {
-					self.Channel(new channelViewModel(submitData.channel));
-
-					$("#loginModal").modal("hide");
+					hideModal("loginModal");
 				}
 			});
 		};
 
 		self.addComment = function(data, scroll) {
-			if(self.Channel()) {
-				self.Channel().addComment(data, scroll);
+			self.Comments.push(new commentViewModel(data));
+			var length = self.Comments().length;
+
+			if(scroll && length > self.MaxComments()) {
+				self.Comments.splice(0, length - self.MaxComments());
 			}
 		};
 
@@ -217,14 +197,18 @@ function initializeKnockout() {
 		};
 
 		self.userTimeout = function(data) {
-			self.Channel().timeout(data.name);
+			_.each(self.Comments(), function(comment) {
+				if(comment.Name === data.user) {
+					comment.Hidden(true);
+				}
+			});
 		};
 
 		self.sendMessage = function() {
 			if(self.OutgoingMessage().length > 0) {
 				window.socket.emit("outgoingMessage", {
 					message: self.OutgoingMessage(),
-					channel: self.Channel().ChannelName
+					channel: self.Channel()
 				});
 
 				self.OutgoingMessage("");
@@ -242,7 +226,7 @@ function initializeKnockout() {
 		self.unsetComment = function() {
 			self.SelectedComment(null);
 			self.AlreadyClicked(false);
-			$("#commentModal").modal("hide");
+			hideModal("commentModal");
 		};
 	};
 
@@ -258,6 +242,11 @@ function initializeKnockout() {
 
 function showModal(modal) {
 	$("#" + modal).modal("show");
+	$("body").css("padding-right", 0);
+}
+
+function hideModal(modal) {
+	$("#" + modal).modal("hide");
 	$("body").css("padding-right", 0);
 }
 

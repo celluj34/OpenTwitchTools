@@ -20,19 +20,19 @@
 				<span class="icon-bar"></span>
 			</button>
 
-			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + Channel().ChannelName, visible: Channel().ChannelName" href="#"></a>
+			<a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: '#' + Channel()" href="#"></a>
 		</div>
 
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li class="active" role="presentation">
-					<a aria-controls="settings" data-toggle="tab" href="#settings" role="tab">Settings</a>
+					<a aria-controls="settings" class="autoClose" data-toggle="tab" href="#settings" role="tab">Settings</a>
 				</li>
 				<li role="presentation">
-					<a aria-controls="users" data-toggle="tab" href="#users" role="tab">Users</a>
+					<a aria-controls="users" class="autoClose" data-toggle="tab" href="#users" role="tab">Users</a>
 				</li>
 				<li role="presentation">
-					<a aria-controls="chat" data-toggle="tab" href="#chat" role="tab">Chat</a>
+					<a aria-controls="chat" class="autoClose" data-toggle="tab" href="#chat" role="tab">Chat</a>
 				</li>
 			</ul>
 		</div>
@@ -43,13 +43,17 @@
 	<div class="row">
 		<div class="tab-content">
 			<div class="active tab-pane" id="settings">
-				Show settings here!
+				<div class="col-md-12">
+					Show settings here!
+				</div>
 			</div>
 			<div class="tab-pane" id="users">
-				Show users here!
+				<div class="col-md-12">
+					Show users here!
+				</div>
 			</div>
 			<div class="tab-pane" id="chat">
-				<div data-bind="foreach: Channel().Comments">
+				<div data-bind="foreach: Comments">
 					<div class="singleComment well well-sm" data-bind="click: showComment, css: {'bg-danger': Highlight}">
 						<span data-bind="text: Timestamp"></span>
 						<span data-bind="html: Badges"></span>
@@ -93,7 +97,7 @@
 
 							<div class="form-group">
 								<label for="channel">Channel</label>
-								<input class="form-control" data-bind="value: LoginSelectedChannel" id="channel" name="channel" required type="text" />
+								<input class="form-control" data-bind="value: Channel" id="channel" name="channel" required type="text" />
 							</div>
 						</div>
 					</div>

@@ -33,6 +33,7 @@
   <ItemGroup>
     <Content Include="assets\icon.png" />
     <Content Include="css\site.css" />
+    <Content Include="database\users.json" />
     <Content Include="index.html" />
     <Content Include="package.json" />
     <Content Include="database\settings.json" />

@@ -41,40 +41,36 @@ router.route("/")
 
 		request(url, function(err, resp, body) {
 			var data = JSON.parse(body);
+			var error = null;
+
 			if(!data || !data.token || !data.token.valid || data.token.user_name !== username) {
-				response.json({
-					isValid: false,
-					error: "Token is expired or it is registered to another user."
-				});
+				error = "Token is expired or it is registered to another user.";
 			}
 			else {
-				settingsProvider.saveLogin(_, username, password, function(error) {
-					if(error) {
-						response.json({
-							isValid: false,
-							error: error
-						});
-					}
-					else {
-						setupConnection(channel);
+				settingsProvider.Update("Username", username);
+				settingsProvider.Update("Password", password);
+				settingsProvider.Update("Channel", channel);
 
-						response.json({
-							isValid: true
-						});
-					}
-				});
+				setupConnection(channel);
 			}
+
+			response.json({
+				isValid: error == null,
+				error: error
+			});
 		});
 	});
 
 router.route("/loginInfo")
 	.get(function(req, response) {
-		var username = settingsProvider.Username();
-		var password = settingsProvider.Password();
+		var username = settingsProvider.Single("Username");
+		var password = settingsProvider.Single("Password");
+		var channel = settingsProvider.Single("Channel");
 
 		response.send({
 			username: username,
-			password: password
+			password: password,
+			channel: channel
 		});
 	});
 
@@ -101,39 +97,19 @@ router.route("/search")
 
 router.route("/keywords")
 	.get(function(req, response) {
-		var keywords = _.pluck(settingsProvider.Keywords(), "Value");
+		var keywords = _.pluck(settingsProvider.Many("Keyword"), "Value");
 
 		response.json({keywords: keywords});
 	})
 	.put(function(req, response) {
-		settingsProvider.addKeyword(_, req.body.keyword, function(error) {
-			if(error) {
-				response.json({
-					isValid: false,
-					error: error
-				});
-			}
-			else {
-				response.json({
-					isValid: true
-				});
-			}
-		});
+		settingsProvider.Insert("Keyword", req.body.keyword);
+
+		response.status(200).end();
 	})
 	.delete(function(req, response) {
-		settingsProvider.removeKeyword(_, req.body.keyword, function(error) {
-			if(error) {
-				response.json({
-					isValid: false,
-					error: error
-				});
-			}
-			else {
-				response.json({
-					isValid: true
-				});
-			}
-		});
+		settingsProvider.Remove("Keyword", req.body.keyword);
+
+		response.status(200).end();
 	});
 
 server.use("/", router);
@@ -191,14 +167,11 @@ function setupConnection(initialChannel) {
 				logging: false
 			},
 			identity: {
-				username: settingsProvider.Username(),
-				password: "oauth:" + settingsProvider.Password()
-			}
+				username: settingsProvider.Single("Username"),
+				password: "oauth:" + settingsProvider.Single("Password")
+			},
+			channels: [initialChannel]
 		};
-
-		if(initialChannel) {
-			clientSettings.channels = [initialChannel];
-		}
 
 		client = new irc.client(clientSettings);
 
@@ -431,7 +404,7 @@ function makeImage(name, url) {
 function highlightMessage(comment) {
 	var casedComment = comment.toLowerCase();
 
-	var highlight = _.find(settingsProvider.Keywords(), function(keyword) {
+	var highlight = _.find(settingsProvider.Many("Keyword"), function(keyword) {
 		return _s.contains(casedComment, keyword);
 	});
 

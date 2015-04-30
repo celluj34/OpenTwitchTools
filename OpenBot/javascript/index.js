@@ -18,6 +18,7 @@ function loadInfo() {
 	$.get("/loginInfo", function(data) {
 		window.viewModel.Username(data.username);
 		window.viewModel.Password(data.password);
+		window.viewModel.Channel(data.channel);
 	}, "json");
 
 	$.get("/keywords", function(data) {
@@ -169,13 +170,8 @@ function initializeKnockout() {
 				url: "/keywords",
 				type: "PUT",
 				data: {keyword: keyword},
-				success: function(result) {
-					if(result.isValid) {
-						self.Keywords.push(keyword);
-					}
-					else {
-						alert(result.error);
-					}
+				success: function() {
+                    self.Keywords.push(keyword);
 				}
 			});
 		};
@@ -185,13 +181,8 @@ function initializeKnockout() {
 				url: "/keywords",
 				type: "DELETE",
 				data: {keyword: word},
-				success: function(result) {
-					if(result.isValid) {
-						self.Keywords.remove(word);
-					}
-					else {
-						alert(result.error);
-					}
+				success: function() {
+                    self.Keywords.remove(word);
 				}
 			});
 		};

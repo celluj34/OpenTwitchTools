@@ -67,12 +67,32 @@ router.route("/")
 		});
 	});
 
+router.route("/users")
+	.get(function(req, response) {
+		var channel = req.body.channel;
+		var url = "http://tmi.twitch.tv/group/user/scarfino/chatters"; // "http://tmi.twitch.tv/group/user/" + channel + "/chatters";
+
+		request(url, function(err, resp, body) {
+			var data = JSON.parse(body);
+
+			var users =
+				_.chain(data.chatters)
+					.map(function(group, index) {
+						return group;
+					})
+					.flatten()
+					.value();
+
+			response.json(users);
+		});
+	});
+
 router.route("/loginInfo")
 	.get(function(req, response) {
 		var username = settingsProvider.Username();
 		var password = settingsProvider.Password();
 
-		response.send({
+		response.json({
 			username: username,
 			password: password
 		});

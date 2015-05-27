@@ -30,6 +30,6 @@ body {
 	overflow-y: scroll;
 }
 
-#webview {
+#webviewWrapper {
 	height: 400px;
 }

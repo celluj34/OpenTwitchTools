@@ -1,0 +1,113 @@
+﻿.mentions-input-box {
+    background: #fff;
+    position: relative;
+}
+
+.mentions-input-box textarea {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    background: transparent;
+    border: 1px solid #dcdcdc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: block;
+    height: 18px;
+    outline: 0;
+    overflow: hidden;
+    padding: 9px;
+    position: relative;
+    resize: none;
+    width: 100%;
+}
+
+.mentions-input-box .mentions-autocomplete-list {
+    -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+    background: #fff;
+    border: 1px solid #b2b2b2;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+    display: none;
+    left: 0;
+    margin-top: -2px;
+    position: absolute;
+    right: 0;
+    z-index: 10000;
+}
+
+.mentions-input-box .mentions-autocomplete-list ul {
+    margin: 0;
+    padding: 0;
+}
+
+.mentions-input-box .mentions-autocomplete-list li {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    height: 26px;
+    line-height: 26px;
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0 5px;
+    white-space: nowrap;
+    width: auto;
+}
+
+.mentions-input-box .mentions-autocomplete-list li:last-child {
+    border-radius: 5px;
+}
+
+.mentions-input-box .mentions-autocomplete-list li > img, .mentions-input-box .mentions-autocomplete-list li > div.icon {
+    -moz-background-origin: 3px;
+    border-radius: 3px;
+    float: left;
+    height: 16px;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 16px;
+}
+
+.mentions-input-box .mentions-autocomplete-list li em {
+    font-style: none;
+    font-weight: bold;
+}
+
+.mentions-input-box .mentions-autocomplete-list li:hover, .mentions-input-box .mentions-autocomplete-list li.active {
+    background-color: #f2f2f2;
+}
+
+.mentions-input-box .mentions-autocomplete-list li b {
+    background: #ffff99;
+    font-weight: normal;
+}
+
+.mentions-input-box .mentions {
+    bottom: 0;
+    color: #fff;
+    left: 1px;
+    overflow: hidden;
+    padding: 9px;
+    position: absolute;
+    right: 0;
+    top: 1px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.mentions-input-box .mentions > div {
+    color: #fff;
+    white-space: pre-wrap;
+    width: 100%;
+}
+
+.mentions-input-box .mentions > div > strong {
+    background: #d8dfea;
+    font-weight: normal;
+}
+
+.mentions-input-box .mentions > div > strong > span {
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}

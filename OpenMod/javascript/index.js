@@ -1,384 +1,418 @@
 ﻿$(function() {
-	showModal("loginModal");
+    showModal("loginModal");
 
-	$(".collapse.navbar-collapse").on("click", ".autoClose", function() {
-		$(".collapse.navbar-collapse").collapse("hide");
-	});
+    $(".collapse.navbar-collapse").on("click", ".autoClose", function() {
+        $(".collapse.navbar-collapse").collapse("hide");
+    });
 
-	$(".collapse.navbar-collapse").on("click", ".channelClose", function() {
-		window.scrollTo(0, document.body.scrollHeight);
-	});
+    $(".collapse.navbar-collapse").on("click", ".channelClose", function() {
+        window.scrollTo(0, document.body.scrollHeight);
+    });
 
-	loadInfo();
-	setupCustomControls();
-	setupSocketHandlers();
-	initializeKnockout();
+    loadInfo();
+    setupCustomControls();
+    setupSocketHandlers();
+    initializeKnockout();
 });
 
 function loadInfo() {
-	$.get("/loginInfo", function(data) {
-		window.viewModel.Username(data.username);
-		window.viewModel.Password(data.password);
-	}, "json");
+    $.get("/loginInfo", function(data) {
+        window.viewModel.Username(data.username);
+        window.viewModel.Password(data.password);
+    }, "json");
 
-	$.get("/keywords", function(data) {
-		window.viewModel.Keywords(data.keywords);
-	}, "json");
+    $.get("/keywords", function(data) {
+        window.viewModel.Keywords(data.keywords);
+    }, "json");
 }
 
 function setupCustomControls() {
-	var select2Settings = {
-		ajax: {
-			delay: 200,
-			dataType: "json",
-			url: "/search",
-			data: function(params) {
-				return {
-					channel: params.term,
-					page: params.page
-				};
-			},
-			method: "POST",
-			processResults: function(data) {
-				return {
-					results: data
-				};
-			}
-		},
-		minimumInputLength: 4,
-		placeholder: {
-			name: "Search",
-			id: null
-		},
-		templateResult: function(channel) {
-			return channel.name;
-		},
-		templateSelection: function(channel) {
-			return channel.name;
-		},
-		escapeMarkup: function(markup) {
-			return markup;
-		},
-		id: function(channel) {
-			return channel.id;
-		}
-	};
+    var select2Settings = {
+        ajax: {
+            delay: 200,
+            dataType: "json",
+            url: "/search",
+            data: function(params) {
+                return {
+                    channel: params.term,
+                    page: params.page
+                };
+            },
+            method: "POST",
+            processResults: function(data) {
+                return {
+                    results: data
+                };
+            }
+        },
+        minimumInputLength: 4,
+        placeholder: {
+            name: "Search",
+            id: null
+        },
+        templateResult: function(channel) {
+            return channel.name;
+        },
+        templateSelection: function(channel) {
+            return channel.name;
+        },
+        escapeMarkup: function(markup) {
+            return markup;
+        },
+        id: function(channel) {
+            return channel.id;
+        }
+    };
 
-	$("#channel").select2(select2Settings);
-	$("#newChannel").select2(select2Settings);
+    $("#channel").select2(select2Settings);
+    $("#newChannel").select2(select2Settings);
+
+    var textArea = $("#chatMessage");
+    textArea.mentionsInput({
+        onDataRequest: function(mode, query, callback) {
+            $.get("/users", {
+                channel: window.viewModel.SelectedChannel().ChannelName,
+                query: query
+            }, function(data) {
+                data = _.map(data, function(item) {
+                    return {
+                        id: item,
+                        name: item,
+                        type: "contact"
+                    };
+                });
+
+                callback.call(this, data);
+
+                window.viewModel.Keywords(data.keywords);
+            }, "json");
+        },
+        triggerChar: "@",
+        minChars: 3,
+        showAvatars: false,
+        elastic: false
+    });
+
+    textArea.keypress(function(event) {
+        if(event.which === 13) {
+            window.viewModel.sendMessage();
+            $(".mentions").empty();
+            event.preventDefault();
+        }
+    });
 }
 
 function setupSocketHandlers() {
-	window.socket = io.connect("127.0.0.1:18044");
+    window.socket = io.connect("127.0.0.1:18044");
 
-	window.socket.on("incomingMessage", function(data) {
-		var scroll = shouldScroll();
+    window.socket.on("incomingMessage", function(data) {
+        var scroll = shouldScroll();
 
-		window.viewModel.addComment(data, scroll);
+        window.viewModel.addComment(data, scroll);
 
-		if(scroll) {
-			window.scrollTo(0, document.body.scrollHeight);
-		}
-	});
+        if(scroll) {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
 
-	window.socket.on("channelJoined", function(data) {
-		window.viewModel.channelJoined(data);
-	});
+    window.socket.on("channelJoined", function(data) {
+        window.viewModel.channelJoined(data);
+    });
 
-	window.socket.on("userTimeout", function(data) {
-		window.viewModel.userTimeout(data);
-	});
+    window.socket.on("userTimeout", function(data) {
+        window.viewModel.userTimeout(data);
+    });
 }
 
 function initializeKnockout() {
-	var commentViewModel = function(data) {
-		var self = this;
+    var commentViewModel = function(data) {
+        var self = this;
 
-		self.Name = data.name;
-		self.Color = data.color;
-		self.Message = data.message;
-		self.Badges = data.badges;
-		self.Timestamp = data.timestamp;
-		self.Highlight = data.highlight;
-		self.MessageColor = data.isAction ? data.color : "inherit";
-		self.Hidden = ko.observable(false);
+        self.Name = data.name;
+        self.Color = data.color;
+        self.Message = data.message;
+        self.Badges = data.badges;
+        self.Timestamp = data.timestamp;
+        self.Highlight = data.highlight;
+        self.MessageColor = data.isAction ? data.color : "inherit";
+        self.Hidden = ko.observable(false);
 
-		self.showComment = function() {
-			window.viewModel.setComment(self);
-		};
+        self.showComment = function() {
+            window.viewModel.setComment(self);
+        };
 
-		self.closeComment = function() {
-			window.viewModel.unsetComment();
-		};
+        self.closeComment = function() {
+            window.viewModel.unsetComment();
+        };
 
-		self.timeout = function(seconds) {
-			doAction("timeoutUser", {seconds: seconds});
-		};
+        self.timeout = function(seconds) {
+            doAction("timeoutUser", {seconds: seconds});
+        };
 
-		self.ban = function() {
-			doAction("banUser");
-		};
+        self.ban = function() {
+            doAction("banUser");
+        };
 
-		self.unban = function() {
-			doAction("unbanUser");
-		};
+        self.unban = function() {
+            doAction("unbanUser");
+        };
 
-		self.op = function() {
-			doAction("mod");
-		};
+        self.op = function() {
+            doAction("mod");
+        };
 
-		self.deop = function() {
-			doAction("unmod");
-		};
+        self.deop = function() {
+            doAction("unmod");
+        };
 
-		function doAction(action, properties) {
-			var sendData = {
-				user: self.Name,
-				channel: window.viewModel.SelectedChannel().ChannelName
-			};
+        function doAction(action, properties) {
+            var sendData = {
+                user: self.Name,
+                channel: window.viewModel.SelectedChannel().ChannelName
+            };
 
-			$.extend(sendData, properties);
+            $.extend(sendData, properties);
 
-			window.socket.emit(action, sendData);
+            window.socket.emit(action, sendData);
 
-			self.closeComment();
-		}
-	};
+            self.closeComment();
+        }
+    };
 
-	var channelViewModel = function(data, selectedChannel) {
-		var self = this;
+    var channelViewModel = function(data, selectedChannel) {
+        var self = this;
 
-		self.ChannelName = data;
-		self.Comments = ko.observableArray();
-		self.MaxComments = ko.observable(100);
-		self.Joined = ko.observable(false);
-		
-		self.Selected = ko.computed(function() {
-			return this === selectedChannel();
-		}, this);
+        self.ChannelName = data;
+        self.Comments = ko.observableArray();
+        self.MaxComments = ko.observable(100);
+        self.Joined = ko.observable(false);
 
-		self.addComment = function(comment, scroll) {
-			self.Comments.push(new commentViewModel(comment));
-			var length = self.Comments().length;
+        self.Selected = ko.computed(function() {
+            return this === selectedChannel();
+        }, this);
 
-			if(scroll && length > self.MaxComments()) {
-				self.Comments.splice(0, length - self.MaxComments());
-			}
-		};
+        self.addComment = function(comment, scroll) {
+            self.Comments.push(new commentViewModel(comment));
+            var length = self.Comments().length;
 
-		self.timeout = function(user) {
-			_.each(self.Comments(), function(comment) {
-				if(comment.Name === user) {
-					comment.Hidden(true);
-				}
-			});
-		};
-	};
+            if(scroll && length > self.MaxComments()) {
+                self.Comments.splice(0, length - self.MaxComments());
+            }
+        };
 
-	var windowViewModel = function() {
-		var self = this;
+        self.timeout = function(user) {
+            _.each(self.Comments(), function(comment) {
+                if(comment.Name === user) {
+                    comment.Hidden(true);
+                }
+            });
+        };
+    };
 
-		//login information
-		self.Username = ko.observable();
-		self.Password = ko.observable();
+    var windowViewModel = function() {
+        var self = this;
 
-		//chat information
-		self.OutgoingMessage = ko.observable("");
-		self.Channels = ko.observableArray();
-		self.Keywords = ko.observableArray();
-		self.ChannelIsSelected = ko.observable(false);
-		self.SelectedChannel = ko.observable({});
-		self.SelectedComment = ko.observable();
-		self.AlreadyClicked = ko.observable(false);
-		self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
+        //login information
+        self.Username = ko.observable();
+        self.Password = ko.observable();
 
-		//input information
-		self.LoginSelectedChannel = ko.observable();
-		self.NewKeyword = ko.observable();
+        //chat information
+        self.OutgoingMessage = ko.observable("");
+        self.Channels = ko.observableArray();
+        self.Keywords = ko.observableArray();
+        self.ChannelIsSelected = ko.observable(false);
+        self.SelectedChannel = ko.observable({});
+        self.SelectedComment = ko.observable();
+        self.AlreadyClicked = ko.observable(false);
+        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
 
-		self.showTokenAuthModal = function() {
-			showModal("tokenAuthModal");
-		};
+        //input information
+        self.LoginSelectedChannel = ko.observable();
+        self.NewKeyword = ko.observable();
 
-		self.showJoinChannelModal = function() {
-			showModal("joinChannelModal");
-		};
+        self.showTokenAuthModal = function() {
+            showModal("tokenAuthModal");
+        };
 
-		self.showKeywordModal = function() {
-			showModal("keywordModal");
-		};
+        self.showJoinChannelModal = function() {
+            showModal("joinChannelModal");
+        };
 
-		self.showUsers = function() {
-			alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
-			//showModal("usersModal");
-		};
+        self.showKeywordModal = function() {
+            showModal("keywordModal");
+        };
 
-		self.login = function() {
-			var selectedChannel = self.LoginSelectedChannel();
+        self.showUsers = function() {
+            alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
+            //showModal("usersModal");
+        };
 
-			var submitData = {
-				username: self.Username().toLowerCase(),
-				password: self.Password().toLowerCase()
-			};
+        self.login = function() {
+            var selectedChannel = self.LoginSelectedChannel();
 
-			if(self.LoginSelectedChannel()) {
-				submitData.channel = selectedChannel.toLowerCase();
-				self.LoginSelectedChannel("");
-			}
+            var submitData = {
+                username: self.Username().toLowerCase(),
+                password: self.Password().toLowerCase()
+            };
 
-			$.post("/", submitData).done(function(data) {
-				if(!data.isValid) {
-					alert(data.error);
-				}
-				else {
-					addChannel(selectedChannel);
+            if(self.LoginSelectedChannel()) {
+                submitData.channel = selectedChannel.toLowerCase();
+                self.LoginSelectedChannel("");
+            }
 
-					$("#loginModal").modal("hide");
-				}
-			});
-		};
+            $.post("/", submitData).done(function(data) {
+                if(!data.isValid) {
+                    alert(data.error);
+                }
+                else {
+                    addChannel(selectedChannel);
 
-		self.addComment = function(data, scroll) {
-			var matchingChannel = findMatchingChannel(data.channel);
+                    $("#loginModal").modal("hide");
+                }
+            });
+        };
 
-			if(matchingChannel) {
-				matchingChannel.addComment(data, scroll);
-			}
-		};
+        self.addComment = function(data, scroll) {
+            var matchingChannel = findMatchingChannel(data.channel);
 
-		self.addKeyword = function() {
-			var keyword = self.NewKeyword();
-			self.NewKeyword(null);
+            if(matchingChannel) {
+                matchingChannel.addComment(data, scroll);
+            }
+        };
 
-			$.ajax({
-				url: "/keywords",
-				type: "PUT",
-				data: {keyword: keyword},
-				success: function(result) {
-					if(result.isValid) {
-						self.Keywords.push(keyword);
-					}
-					else {
-						alert(result.error);
-					}
-				}
-			});
-		};
+        self.addKeyword = function() {
+            var keyword = self.NewKeyword();
+            self.NewKeyword(null);
 
-		self.removeKeyword = function(word) {
-			$.ajax({
-				url: "/keywords",
-				type: "DELETE",
-				data: {keyword: word},
-				success: function(result) {
-					if(result.isValid) {
-						self.Keywords.remove(word);
-					}
-					else {
-						alert(result.error);
-					}
-				}
-			});
-		};
+            $.ajax({
+                url: "/keywords",
+                type: "PUT",
+                data: {keyword: keyword},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.Keywords.push(keyword);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
 
-		self.joinChannel = function() {
-			if(self.LoginSelectedChannel()) {
-				$("#joinChannelModal").modal("hide");
+        self.removeKeyword = function(word) {
+            $.ajax({
+                url: "/keywords",
+                type: "DELETE",
+                data: {keyword: word},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.Keywords.remove(word);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
 
-				var selectedChannel = self.LoginSelectedChannel().toLowerCase();
-				self.LoginSelectedChannel("");
+        self.joinChannel = function() {
+            if(self.LoginSelectedChannel()) {
+                $("#joinChannelModal").modal("hide");
 
-				var matchingChannel = findMatchingChannel(selectedChannel);
+                var selectedChannel = self.LoginSelectedChannel().toLowerCase();
+                self.LoginSelectedChannel("");
 
-				if(!matchingChannel) {
-					addChannel(selectedChannel);
+                var matchingChannel = findMatchingChannel(selectedChannel);
 
-					window.socket.emit("joinChannel", {
-						channel: selectedChannel
-					});
-				}
-			}
-		};
+                if(!matchingChannel) {
+                    addChannel(selectedChannel);
 
-		self.channelJoined = function(data) {
-			var matchingChannel = findMatchingChannel(data.channel);
+                    window.socket.emit("joinChannel", {
+                        channel: selectedChannel
+                    });
+                }
+            }
+        };
 
-			if(matchingChannel) {
-				matchingChannel.Joined(true);
-			}
-		};
+        self.channelJoined = function(data) {
+            var matchingChannel = findMatchingChannel(data.channel);
 
-		self.userTimeout = function(data) {
-			var matchingChannel = findMatchingChannel(data.channel);
+            if(matchingChannel) {
+                matchingChannel.Joined(true);
+            }
+        };
 
-			if(matchingChannel) {
-				matchingChannel.timeout(data.name);
-			}
-		};
+        self.userTimeout = function(data) {
+            var matchingChannel = findMatchingChannel(data.channel);
 
-		self.leaveChannel = function() {
-			window.socket.emit("leaveChannel", {
-				channel: self.SelectedChannel().ChannelName
-			});
+            if(matchingChannel) {
+                matchingChannel.timeout(data.name);
+            }
+        };
 
-			self.Channels.remove(self.SelectedChannel());
-			var firstChannel = _.first(self.Channels());
+        self.leaveChannel = function() {
+            window.socket.emit("leaveChannel", {
+                channel: self.SelectedChannel().ChannelName
+            });
 
-			if(firstChannel) {
-				self.SelectedChannel(firstChannel);
-				self.ChannelIsSelected(true);
-			}
-			else {
-				self.SelectedChannel({});
-				self.ChannelIsSelected(false);
-			}
-		};
+            self.Channels.remove(self.SelectedChannel());
+            var firstChannel = _.first(self.Channels());
 
-		self.sendMessage = function() {
-			if(self.OutgoingMessage().length > 0) {
-				window.socket.emit("outgoingMessage", {
-					message: self.OutgoingMessage(),
-					channel: self.SelectedChannel().ChannelName
-				});
+            if(firstChannel) {
+                self.SelectedChannel(firstChannel);
+                self.ChannelIsSelected(true);
+            }
+            else {
+                self.SelectedChannel({});
+                self.ChannelIsSelected(false);
+            }
+        };
 
-				self.OutgoingMessage("");
-			}
-		};
+        self.sendMessage = function() {
+            if(self.OutgoingMessage().length > 0) {
+                window.socket.emit("outgoingMessage", {
+                    message: self.OutgoingMessage(),
+                    channel: self.SelectedChannel().ChannelName
+                });
 
-		self.setComment = function(comment) {
-			if(!self.AlreadyClicked()) {
-				self.SelectedComment(comment);
-				self.AlreadyClicked(true);
-				showModal("commentModal");
-			}
-		};
+                self.OutgoingMessage("");
+            }
+        };
 
-		self.unsetComment = function() {
-			self.SelectedComment(null);
-			self.AlreadyClicked(false);
-			$("#commentModal").modal("hide");
-		};
+        self.setComment = function(comment) {
+            if(!self.AlreadyClicked()) {
+                self.SelectedComment(comment);
+                self.AlreadyClicked(true);
+                showModal("commentModal");
+            }
+        };
 
-		function findMatchingChannel(channelName) {
-			return _.find(self.Channels(), function(channel) {
-				return channel.ChannelName === channelName;
-			});
-		}
+        self.unsetComment = function() {
+            self.SelectedComment(null);
+            self.AlreadyClicked(false);
+            $("#commentModal").modal("hide");
+        };
 
-		function addChannel(selectedChannel) {
-			if(!selectedChannel) {
-				return;
-			}
+        function findMatchingChannel(channelName) {
+            return _.find(self.Channels(), function(channel) {
+                return channel.ChannelName === channelName;
+            });
+        }
 
-			var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
-			self.Channels.push(newChannel);
-			self.SelectedChannel(newChannel);
-			self.ChannelIsSelected(true);
-		}
-	};
+        function addChannel(selectedChannel) {
+            if(!selectedChannel) {
+                return;
+            }
 
-	window.viewModel = new windowViewModel();
-	ko.applyBindings(window.viewModel);
+            var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
+            self.Channels.push(newChannel);
+            self.SelectedChannel(newChannel);
+            self.ChannelIsSelected(true);
+        }
+    };
+
+    window.viewModel = new windowViewModel();
+    ko.applyBindings(window.viewModel);
 }
 
 //function getUsers(channel) {
@@ -388,48 +422,48 @@ function initializeKnockout() {
 //}
 
 function showModal(modal) {
-	$("#" + modal).modal("show");
-	$("body").css("padding-right", 0);
+    $("#" + modal).modal("show");
+    $("body").css("padding-right", 0);
 }
 
 function getScroll() {
-	if(typeof (window.pageYOffset) == "number") {
-		//Netscape compliant
-		return window.pageYOffset;
-	}
-	else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
-		//DOM compliant
-		return document.body.scrollTop;
-	}
-	else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
-		//IE6 standards compliant mode
-		return document.documentElement.scrollTop;
-	}
+    if(typeof (window.pageYOffset) == "number") {
+        //Netscape compliant
+        return window.pageYOffset;
+    }
+    else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
+        //DOM compliant
+        return document.body.scrollTop;
+    }
+    else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
+        //IE6 standards compliant mode
+        return document.documentElement.scrollTop;
+    }
 
-	return 0;
+    return 0;
 }
 
 function getSize() {
-	if(typeof (window.innerWidth) == "number") {
-		//Non-IE
-		return window.innerHeight;
-	}
-	else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-		//IE 6+ in 'standards compliant mode'
-		return document.documentElement.clientHeight;
-	}
-	else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
-		//IE 4 compatible
-		return document.body.clientHeight;
-	}
+    if(typeof (window.innerWidth) == "number") {
+        //Non-IE
+        return window.innerHeight;
+    }
+    else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+        //IE 6+ in 'standards compliant mode'
+        return document.documentElement.clientHeight;
+    }
+    else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
+        //IE 4 compatible
+        return document.body.clientHeight;
+    }
 
-	return 0;
+    return 0;
 }
 
 function shouldScroll() {
-	var minHeight = document.body.scrollHeight - 40;
-	var currentHeight = getSize() + getScroll();
-	var maxHeight = document.body.scrollHeight;
+    var minHeight = document.body.scrollHeight - 40;
+    var currentHeight = getSize() + getScroll();
+    var maxHeight = document.body.scrollHeight;
 
-	return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;
+    return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;
 }

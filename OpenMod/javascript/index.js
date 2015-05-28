@@ -67,37 +67,18 @@ function setupCustomControls() {
     $("#channel").select2(select2Settings);
     $("#newChannel").select2(select2Settings);
 
-    var textArea = $("#chatMessage");
-    textArea.mentionsInput({
-        onDataRequest: function(mode, query, callback) {
-            $.get("/users", {
-                channel: window.viewModel.SelectedChannel().ChannelName,
-                query: query
-            }, function(data) {
-                data = _.map(data, function(item) {
-                    return {
-                        id: item,
-                        name: item,
-                        type: "contact"
-                    };
+    $("#chatMessage").atwho({
+        at: "@",
+        displayTimeout: 300,
+        callbacks: {
+            remoteFilter: function(query, callback) {
+                $.get("/users", {
+                    channel: window.viewModel.SelectedChannel().ChannelName,
+                    query: query
+                }, function(data) {
+                    callback(data);
                 });
-
-                callback.call(this, data);
-
-                window.viewModel.Keywords(data.keywords);
-            }, "json");
-        },
-        triggerChar: "@",
-        minChars: 3,
-        showAvatars: false,
-        elastic: false
-    });
-
-    textArea.keypress(function(event) {
-        if(event.which === 13) {
-            window.viewModel.sendMessage();
-            $(".mentions").empty();
-            event.preventDefault();
+            }
         }
     });
 }

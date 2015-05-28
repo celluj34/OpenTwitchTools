@@ -88,6 +88,7 @@ router.route("/users")
                     .sortBy(function(item) {
                         return item;
                     })
+                    .first(5)
                     .value();
 
             response.json(users);

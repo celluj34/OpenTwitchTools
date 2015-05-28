@@ -32,11 +32,12 @@
     <Compile Include="app.js" />
     <Compile Include="database\databaseProvider.js" />
     <Compile Include="javascript\index.js" />
-    <Compile Include="javascript\jquery.mentionsInput.js" />
+    <Compile Include="javascript\jquery.atwho.min.js" />
+    <Compile Include="javascript\jquery.caret.min.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\icon.png" />
-    <Content Include="css\jquery.mentionsInput.css" />
+    <Content Include="css\jquery.atwho.min.css" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="database\settings.json" />

@@ -32,11 +32,11 @@
     <Compile Include="app.js" />
     <Compile Include="database\databaseProvider.js" />
     <Compile Include="javascript\index.js" />
-    <Compile Include="javascript\jquery-mentions-input.js" />
+    <Compile Include="javascript\jquery.mentionsInput.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\icon.png" />
-    <Content Include="css\jquery-mentions-input.css" />
+    <Content Include="css\jquery.mentionsInput.css" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="database\settings.json" />

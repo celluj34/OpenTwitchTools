@@ -164,6 +164,43 @@ router.route("/keywords")
         });
     });
 
+//router.route("/localCommands")
+//    .get(function(req, response) {
+//        var keywords = _.pluck(settingsProvider.Keywords(), "Value");
+
+//        response.json({keywords: keywords});
+//    })
+//    .put(function(req, response) {
+//        settingsProvider.addKeyword(_, req.body.keyword, function(error) {
+//            if(error) {
+//                response.json({
+//                    isValid: false,
+//                    error: error
+//                });
+//            }
+//            else {
+//                response.json({
+//                    isValid: true
+//                });
+//            }
+//        });
+//    })
+//    .delete(function(req, response) {
+//        settingsProvider.removeKeyword(_, req.body.keyword, function(error) {
+//            if(error) {
+//                response.json({
+//                    isValid: false,
+//                    error: error
+//                });
+//            }
+//            else {
+//                response.json({
+//                    isValid: true
+//                });
+//            }
+//        });
+//    });
+
 server.use("/", router);
 
 var serverListener = server.listen(server.locals.port, server.locals.ipAddress);

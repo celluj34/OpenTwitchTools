@@ -81,13 +81,27 @@ function setupCustomControls() {
             }
         }
     });
+
     //.atwho({
     //    at: "!",
     //    displayTimeout: 300,
     //    callbacks: {
     //        remoteFilter: function (query, callback) {
     //            $.get("/localCommands", {
-    //                channel: window.viewModel.SelectedChannel().ChannelName,
+    //                query: query
+    //            }, function (data) {
+    //                callback(data);
+    //            });
+    //        }
+    //    }
+    //});
+
+    //.atwho({
+    //    at: "$",
+    //    displayTimeout: 300,
+    //    callbacks: {
+    //        remoteFilter: function (query, callback) {
+    //            $.get("/emotes", {
     //                query: query
     //            }, function (data) {
     //                callback(data);

@@ -185,6 +185,24 @@ router.route("/keywords")
 //            }
 //        });
 //    })
+//    .post(function (req, response) {
+//    var channel = req.body.channel;
+//    var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
+
+//    request(url, function (err, resp, body) {
+//        var data = JSON.parse(body);
+
+//        var channels = _.chain(data.channels)
+//                .map(function (item) {
+//            return {
+//                id: item.name,
+//                name: item.name
+//            };
+//        })
+//                .value();
+
+//        response.json(channels);
+//    })
 //    .delete(function(req, response) {
 //        settingsProvider.removeKeyword(_, req.body.keyword, function(error) {
 //            if(error) {
@@ -200,6 +218,27 @@ router.route("/keywords")
 //            }
 //        });
 //    });
+
+//router.route("/emotes")
+//    .post(function (req, response) {
+//      //use emoteset?
+//    var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
+    
+//    request(url, function (err, resp, body) {
+//        var data = JSON.parse(body);
+        
+//        var channels = _.chain(data.channels)
+//                .map(function (item) {
+//            return {
+//                id: item.name,
+//                name: item.name
+//            };
+//        })
+//                .value();
+        
+//        response.json(channels);
+//    });
+//});
 
 server.use("/", router);
 

@@ -1,5 +1,6 @@
 ﻿var express = require("express"),
     server = express(),
+    router = express.Router(),
     path = require("path"),
     irc = require("twitch-irc"),
     _ = require("underscore"),
@@ -7,7 +8,6 @@
     socketio = require("socket.io"),
     request = require("request"),
     bodyParser = require("body-parser"),
-    router = express.Router(),
     app = require("app"),
     BrowserWindow = require("browser-window"),
     client,
@@ -28,6 +28,9 @@ server.use(express.static(__dirname));
 
 settingsProvider = require(server.locals.databaseProvider).DatabaseProvider;
 settingsProvider = new DatabaseProvider(server.locals.database, "settings");
+
+keywordsProvider = require(server.locals.databaseProvider).DatabaseProvider;
+keywordsProvider = new DatabaseProvider(server.locals.database, "keywords");
 
 router.route("/")
     .get(function(req, response) {

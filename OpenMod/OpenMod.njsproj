@@ -40,6 +40,9 @@
   <ItemGroup>
     <Content Include="assets\icon.png" />
     <Content Include="css\jquery.atwho.min.css" />
+    <Content Include="database\simpleCommands.json" />
+    <Content Include="database\keywords.json" />
+    <Content Include="database\complexCommands.json" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
     <Content Include="database\settings.json" />

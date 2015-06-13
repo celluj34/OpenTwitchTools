@@ -19,7 +19,7 @@
 server.locals.appName = "OpenMod";
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
-server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
+server.locals.startupUrl = _s.sprintf("http://%s:%s", server.locals.ipAddress, server.locals.port);
 server.locals.index = path.join(__dirname, "index.html");
 server.locals.database = path.join(__dirname, "assets", "database.json");
 server.locals.icon = path.join(__dirname, "assets", "images", "icon.png");
@@ -78,7 +78,7 @@ router.route("/users")
     .get(function(req, response) {
         var channel = req.query.channel;
         var query = req.query.query;
-        var url = "http://tmi.twitch.tv/group/user/" + channel + "/chatters";
+        var url = _s.sprintf("http://tmi.twitch.tv/group/user/%s/chatters", channel);
 
         request(url, function(err, resp, body) {
             var data = JSON.parse(body);
@@ -116,8 +116,7 @@ router.route("/loginInfo")
 
 router.route("/search")
     .post(function(req, response) {
-        var channel = req.body.channel;
-        var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
+        var url = _s.sprintf("https://api.twitch.tv/kraken/search/channels?q=%s", req.body.channel);
 
         request(url, function(err, resp, body) {
             var data = JSON.parse(body);
@@ -408,51 +407,21 @@ function setupIncomingEventListeners(client) {
 }
 
 function getBadges(channel) {
-    var url = "https://api.twitch.tv/kraken/chat/" + channel + "/badges";
+    var url = _s.sprintf("https://api.twitch.tv/kraken/chat/%s/badges", channel);
 
     request(url, function(err, resp, body) {
         body = JSON.parse(body);
 
-        var badgeList = [];
+        var badges = _.chain(body)
+            .map(function(badge, index) {
+                return {
+                    role: index,
+                    url: badge.image
+                };
+            })
+            .value();
 
-        badgeList.push({
-            role: "global_mod",
-            url: body.global_mod.image
-        });
-
-        badgeList.push({
-            role: "admin",
-            url: body.admin.image
-        });
-
-        badgeList.push({
-            role: "broadcaster",
-            url: body.broadcaster.image
-        });
-
-        badgeList.push({
-            role: "mod",
-            url: body.mod.image
-        });
-
-        badgeList.push({
-            role: "staff",
-            url: body.staff.image
-        });
-
-        badgeList.push({
-            role: "turbo",
-            url: body.turbo.image
-        });
-
-        if(body.subscriber) {
-            badgeList.push({
-                role: "subscriber",
-                url: body.subscriber.image
-            });
-        }
-
-        badges[channel] = badgeList;
+        badges[channel] = badges;
     });
 }
 

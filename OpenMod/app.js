@@ -19,8 +19,8 @@ server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
 server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
 server.locals.index = path.join(__dirname, "index.html");
-server.locals.database = path.join(__dirname, "database", "newdb.json");
-server.locals.icon = path.join(__dirname, "assets", "icon.png");
+server.locals.database = path.join(__dirname, "assets", "database.json");
+server.locals.icon = path.join(__dirname, "assets","images", "icon.png");
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));

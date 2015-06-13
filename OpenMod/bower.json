@@ -5,7 +5,7 @@
     "bootstrap": "3.3.4",
     "jquery": "2.1.4",
     "select2": "4.0.0",
-    "jquery.atwho": "1.2.0",
+    "jquery.atwho": "1.3.0",
     "socket.io": "1.3.5",
     "underscore": "1.8.3",
     "jquery.caret": "1.5.2",

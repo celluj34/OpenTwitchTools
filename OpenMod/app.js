@@ -532,7 +532,7 @@ function parseAttributes(attributes, channel) {
 }
 
 function makeImage(name, url) {
-    return "<img alt='" + name + "' title='" + name + "' src='" + url + "' />";
+    return _s.sprintf("<img alt='%1$s' title='%1$s' src='%2$s' />", name, url);
 }
 
 function highlightMessage(comment) {

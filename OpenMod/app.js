@@ -27,7 +27,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
-var newDB = lowdb(server.locals.database);
+var database = lowdb(server.locals.database);
 
 router.route("/")
     .get(function(req, response) {
@@ -48,19 +48,19 @@ router.route("/")
                 });
             }
             else {
-                newDB("settings")
+                database("settings")
                     .chain()
                     .find({id: "Username"})
                     .assign({value: username})
                     .value();
 
-                newDB("settings")
+                database("settings")
                     .chain()
                     .find({id: "Password"})
                     .assign({value: password})
                     .value();
 
-                newDB.save();
+                database.save();
 
                 setupConnection(channel, username, password);
 
@@ -102,8 +102,8 @@ router.route("/users")
 router.route("/loginInfo")
     .get(function(req, response) {
 
-        var username = newDB("settings").find({id: "Username"});
-        var password = newDB("settings").find({id: "Password"});
+        var username = database("settings").find({id: "Username"});
+        var password = database("settings").find({id: "Password"});
 
         response.json({
             username: username.value,
@@ -134,17 +134,17 @@ router.route("/search")
 
 router.route("/keywords")
     .get(function(req, response) {
-        var keywords = newDB("keywords").pluck("value");
+        var keywords = database("keywords").pluck("value");
 
         response.json({keywords: keywords});
     })
     .put(function(req, response) {
-        var keyword = newDB("keywords").find({value: req.body.keyword});
+        var keyword = database("keywords").find({value: req.body.keyword});
 
         if(_.isUndefined(keyword)) {
-            newDB("keywords").push({value: req.body.keyword});
+            database("keywords").push({value: req.body.keyword});
 
-            newDB.save();
+            database.save();
 
             response.json({
                 isValid: true
@@ -158,9 +158,9 @@ router.route("/keywords")
         }
     })
     .delete(function(req, response) {
-        newDB("keywords").remove({value: req.body.keyword});
+        database("keywords").remove({value: req.body.keyword});
 
-        newDB.save();
+        database.save();
 
         response.json({
             isValid: true
@@ -538,8 +538,8 @@ function makeImage(name, url) {
 function highlightMessage(comment) {
     var casedComment = comment.toLowerCase();
     
-    var highlight = newDB("keywords").find(function(keyword) {
-        return _s.contains(casedComment, keyword.toLowerCase());
+    var highlight = database("keywords").find(function (keyword) {
+        return _s.contains(casedComment, keyword.value.toLowerCase());
     });
 
     //required because _.find returns undefined instead of false

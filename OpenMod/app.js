@@ -16,18 +16,21 @@
     mainWindow,
     badges = [];
 
+server.locals.appName = "OpenMod";
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
 server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
 server.locals.index = path.join(__dirname, "index.html");
 server.locals.database = path.join(__dirname, "assets", "database.json");
-server.locals.icon = path.join(__dirname, "assets","images", "icon.png");
+server.locals.icon = path.join(__dirname, "assets", "images", "icon.png");
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
 var database = lowdb(server.locals.database);
+var settings = database("settings");
+var keywords = database("keywords");
 
 router.route("/")
     .get(function(req, response) {
@@ -48,13 +51,13 @@ router.route("/")
                 });
             }
             else {
-                database("settings")
+                settings
                     .chain()
                     .find({id: "Username"})
                     .assign({value: username})
                     .value();
 
-                database("settings")
+                settings
                     .chain()
                     .find({id: "Password"})
                     .assign({value: password})
@@ -102,8 +105,8 @@ router.route("/users")
 router.route("/loginInfo")
     .get(function(req, response) {
 
-        var username = database("settings").find({id: "Username"});
-        var password = database("settings").find({id: "Password"});
+        var username = settings.find({id: "Username"});
+        var password = settings.find({id: "Password"});
 
         response.json({
             username: username.value,
@@ -134,15 +137,15 @@ router.route("/search")
 
 router.route("/keywords")
     .get(function(req, response) {
-        var keywords = database("keywords").pluck("value");
+        var keywordValues = keywords.pluck("value");
 
-        response.json({keywords: keywords});
+        response.json({keywords: keywordValues});
     })
     .put(function(req, response) {
-        var keyword = database("keywords").find({value: req.body.keyword});
+        var keyword = keywords.find({value: req.body.keyword});
 
         if(_.isUndefined(keyword)) {
-            database("keywords").push({value: req.body.keyword});
+            keywords.push({value: req.body.keyword});
 
             database.save();
 
@@ -158,7 +161,7 @@ router.route("/keywords")
         }
     })
     .delete(function(req, response) {
-        database("keywords").remove({value: req.body.keyword});
+        keywords.remove({value: req.body.keyword});
 
         database.save();
 
@@ -443,12 +446,10 @@ function getBadges(channel) {
         });
 
         if(body.subscriber) {
-            var subscriber = {
+            badgeList.push({
                 role: "subscriber",
                 url: body.subscriber.image
-            };
-
-            badgeList.push(subscriber);
+            });
         }
 
         badges[channel] = badgeList;
@@ -537,8 +538,8 @@ function makeImage(name, url) {
 
 function highlightMessage(comment) {
     var casedComment = comment.toLowerCase();
-    
-    var highlight = database("keywords").find(function (keyword) {
+
+    var highlight = keywords.find(function(keyword) {
         return _s.contains(casedComment, keyword.value.toLowerCase());
     });
 
@@ -553,14 +554,14 @@ app.on("window-all-closed", function() {
 app.on("ready", function() {
     mainWindow = new BrowserWindow({
         "min-width": 400,
-        width: 800,
+        "width": 800,
         "min-height": 400,
-        height: 600,
-        center: true,
+        "height": 600,
+        "center": true,
         "node-integration": false,
-        show: false,
-        title: "OpenMod",
-        icon: server.locals.icon
+        "show": false,
+        "title": server.locals.appName,
+        "icon": server.locals.icon
     });
 
     mainWindow.on("closed", function() {

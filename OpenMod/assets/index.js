@@ -122,6 +122,8 @@ function setupSocketHandlers() {
 
         if(scroll) {
             window.scrollTo(0, document.body.scrollHeight);
+
+            $("#chatMessage").atwho("reposition");
         }
     });
 
@@ -234,7 +236,7 @@ function initializeKnockout() {
         self.SelectedChannel = ko.observable({});
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
-        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";// "https://twitchtokenauth.azurewebsites.net/OpenMod";
+        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
 
         //input information
         self.LoginSelectedChannel = ko.observable();
@@ -277,7 +279,7 @@ function initializeKnockout() {
                     addChannel(selectedChannel);
 
                     $("#loginModal").modal("hide");
-                    
+
                     self.LoginSelectedChannel("");
                 }
             });

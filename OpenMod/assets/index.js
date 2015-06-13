@@ -45,6 +45,7 @@ function setupCustomControls() {
                 };
             }
         },
+        allowClear: true,
         minimumInputLength: 4,
         placeholder: {
             name: "Search",
@@ -233,7 +234,7 @@ function initializeKnockout() {
         self.SelectedChannel = ko.observable({});
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
-        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";
+        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/";// "https://twitchtokenauth.azurewebsites.net/OpenMod";
 
         //input information
         self.LoginSelectedChannel = ko.observable();
@@ -266,7 +267,6 @@ function initializeKnockout() {
 
             if(self.LoginSelectedChannel()) {
                 submitData.channel = selectedChannel.toLowerCase();
-                self.LoginSelectedChannel("");
             }
 
             $.post("/", submitData).done(function(data) {
@@ -277,6 +277,8 @@ function initializeKnockout() {
                     addChannel(selectedChannel);
 
                     $("#loginModal").modal("hide");
+                    
+                    self.LoginSelectedChannel("");
                 }
             });
         };

@@ -5,6 +5,7 @@
     irc = require("twitch-irc"),
     _ = require("underscore"),
     _s = require("underscore.string"),
+    lowdb = require("lowdb"),
     socketio = require("socket.io"),
     request = require("request"),
     bodyParser = require("body-parser"),
@@ -18,19 +19,14 @@ server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18044;
 server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
 server.locals.index = path.join(__dirname, "index.html");
-server.locals.database = path.join(__dirname, "database");
-server.locals.databaseProvider = path.join(server.locals.database, "databaseProvider.js");
+server.locals.database = path.join(__dirname, "database", "newdb.json");
 server.locals.icon = path.join(__dirname, "assets", "icon.png");
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
-settingsProvider = require(server.locals.databaseProvider).DatabaseProvider;
-settingsProvider = new DatabaseProvider(server.locals.database, "settings");
-
-keywordsProvider = require(server.locals.databaseProvider).DatabaseProvider;
-keywordsProvider = new DatabaseProvider(server.locals.database, "keywords");
+var newDB = lowdb(server.locals.database);
 
 router.route("/")
     .get(function(req, response) {
@@ -51,20 +47,24 @@ router.route("/")
                 });
             }
             else {
-                settingsProvider.saveLogin(_, username, password, function(error) {
-                    if(error) {
-                        response.json({
-                            isValid: false,
-                            error: error
-                        });
-                    }
-                    else {
-                        setupConnection(channel);
+                newDB("settings")
+                    .chain()
+                    .find({id: "Username"})
+                    .assign({value: username})
+                    .value();
 
-                        response.json({
-                            isValid: true
-                        });
-                    }
+                newDB("settings")
+                    .chain()
+                    .find({id: "Password"})
+                    .assign({value: password})
+                    .value();
+
+                newDB.save();
+
+                setupConnection(channel, username, password);
+
+                response.json({
+                    isValid: true
                 });
             }
         });
@@ -81,7 +81,7 @@ router.route("/users")
 
             var users =
                 _.chain(data.chatters)
-                    .map(function(group, index) {
+                    .map(function(group) {
                         return group;
                     })
                     .flatten()
@@ -100,12 +100,13 @@ router.route("/users")
 
 router.route("/loginInfo")
     .get(function(req, response) {
-        var username = settingsProvider.Username();
-        var password = settingsProvider.Password();
+
+        var username = newDB("settings").find({id: "Username"});
+        var password = newDB("settings").find({id: "Password"});
 
         response.json({
-            username: username,
-            password: password
+            username: username.value,
+            password: password.value
         });
     });
 
@@ -132,38 +133,36 @@ router.route("/search")
 
 router.route("/keywords")
     .get(function(req, response) {
-        var keywords = _.pluck(settingsProvider.Keywords(), "Value");
+        var keywords = newDB("keywords").pluck("value");
 
         response.json({keywords: keywords});
     })
     .put(function(req, response) {
-        settingsProvider.addKeyword(_, req.body.keyword, function(error) {
-            if(error) {
-                response.json({
-                    isValid: false,
-                    error: error
-                });
-            }
-            else {
-                response.json({
-                    isValid: true
-                });
-            }
-        });
+        var keyword = newDB("keywords").find({value: req.body.keyword});
+
+        if(_.isUndefined(keyword)) {
+            newDB("keywords").push({value: req.body.keyword});
+
+            newDB.save();
+
+            response.json({
+                isValid: true
+            });
+        }
+        else {
+            response.json({
+                isValid: false,
+                error: "Keyword is already defined."
+            });
+        }
     })
     .delete(function(req, response) {
-        settingsProvider.removeKeyword(_, req.body.keyword, function(error) {
-            if(error) {
-                response.json({
-                    isValid: false,
-                    error: error
-                });
-            }
-            else {
-                response.json({
-                    isValid: true
-                });
-            }
+        newDB("keywords").remove({value: req.body.keyword});
+
+        newDB.save();
+
+        response.json({
+            isValid: true
         });
     });
 
@@ -226,10 +225,10 @@ router.route("/keywords")
 //    .post(function (req, response) {
 //      //use emoteset?
 //    var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
-    
+
 //    request(url, function (err, resp, body) {
 //        var data = JSON.parse(body);
-        
+
 //        var channels = _.chain(data.channels)
 //                .map(function (item) {
 //            return {
@@ -238,7 +237,7 @@ router.route("/keywords")
 //            };
 //        })
 //                .value();
-        
+
 //        response.json(channels);
 //    });
 //});
@@ -288,7 +287,7 @@ function setupOutgoingCommandHandlers(socket) {
     });
 }
 
-function setupConnection(initialChannel) {
+function setupConnection(initialChannel, username, password) {
     if(!client) {
         var clientSettings = {
             options: {
@@ -298,8 +297,8 @@ function setupConnection(initialChannel) {
                 logging: false
             },
             identity: {
-                username: settingsProvider.Username(),
-                password: "oauth:" + settingsProvider.Password()
+                username: username,
+                password: "oauth:" + password
             }
         };
 
@@ -537,12 +536,12 @@ function makeImage(name, url) {
 
 function highlightMessage(comment) {
     var casedComment = comment.toLowerCase();
-
-    var highlight = _.find(settingsProvider.Keywords(), function(keyword) {
-        return _s.contains(casedComment, keyword);
+    
+    var highlight = newDB("keywords").find(function(keyword) {
+        return _s.contains(casedComment, keyword.toLowerCase());
     });
 
-    //goofy hack required because _.find returns undefined instead of false
+    //required because _.find returns undefined instead of false
     return !_.isUndefined(highlight);
 }
 

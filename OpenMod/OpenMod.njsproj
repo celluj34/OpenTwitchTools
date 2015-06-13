@@ -30,7 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="database\databaseProvider.js" />
     <Compile Include="bower.json" />
     <Compile Include="gulpfile.js" />
     <Compile Include="javascript\index.js" />
@@ -40,12 +39,9 @@
   <ItemGroup>
     <Content Include="assets\icon.png" />
     <Content Include="css\jquery.atwho.min.css" />
-    <Content Include="database\simpleCommands.json" />
-    <Content Include="database\keywords.json" />
-    <Content Include="database\complexCommands.json" />
+    <Content Include="database\newdb.json" />
     <Content Include="package.json" />
     <Content Include="css\site.css" />
-    <Content Include="database\settings.json" />
     <Content Include="index.html" />
   </ItemGroup>
   <ItemGroup>

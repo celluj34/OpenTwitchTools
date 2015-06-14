@@ -196,7 +196,7 @@ function initializeKnockout() {
         }
     };
 
-    var channelViewModel = function(data, selectedChannel) {
+    var channelViewModel = function(data) {
         var self = this;
 
         self.ChannelName = data;
@@ -204,10 +204,7 @@ function initializeKnockout() {
         self.Comments = ko.observableArray();
         self.MaxComments = ko.observable(100);
         self.Joined = ko.observable(false);
-
-        self.Selected = ko.computed(function() {
-            return this === selectedChannel();
-        }, this);
+        self.Selected = ko.observable(false);
 
         self.addComment = function(comment, scroll) {
             self.Comments.push(new commentViewModel(comment));
@@ -239,9 +236,10 @@ function initializeKnockout() {
         self.Channels = ko.observableArray();
         self.Keywords = ko.observableArray();
         self.PersonalCommands = ko.observableArray();
-        self.SelectedChannel = ko.observable();
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
+
+        //settings and stuff
         self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
 
         //input information
@@ -249,6 +247,13 @@ function initializeKnockout() {
         self.NewKeyword = ko.observable();
         self.NewPersonalCommand = ko.observable();
         self.NewPersonalCommandText = ko.observable();
+
+        //computed values
+        self.SelectedChannel = ko.computed(function() {
+            return _.find(self.Channels(), function(channel) {
+                return channel.Selected();
+            });
+        });
 
         self.ChannelIsSelected = ko.computed(function() {
             return !_.isUndefined(self.SelectedChannel());
@@ -261,6 +266,13 @@ function initializeKnockout() {
 
             return "";
         });
+
+        //functions
+        self.Select = function(channelName) {
+            _.each(self.Channels(), function(channel) {
+                channel.Selected(channel.ChannelName === channelName);
+            });
+        };
 
         self.showTokenAuthModal = function() {
             showModal("tokenAuthModal");
@@ -406,6 +418,8 @@ function initializeKnockout() {
                         channel: selectedChannel
                     });
                 }
+
+                self.Select(selectedChannel);
             }
         };
 
@@ -433,7 +447,9 @@ function initializeKnockout() {
             self.Channels.remove(self.SelectedChannel());
             var firstChannel = _.first(self.Channels());
 
-            self.SelectedChannel(firstChannel);
+            if(!_.isUndefined(firstChannel)) {
+                self.Select(firstChannel.ChannelName);
+            }
         };
 
         self.sendMessage = function() {
@@ -472,9 +488,9 @@ function initializeKnockout() {
                 return;
             }
 
-            var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
+            var newChannel = new channelViewModel(selectedChannel);
             self.Channels.push(newChannel);
-            self.SelectedChannel(newChannel);
+            self.Select(newChannel.ChannelName);
         }
     };
 

@@ -508,43 +508,9 @@ function showModal(modal) {
     $("body").css("padding-right", 0);
 }
 
-function getScroll() {
-    if(typeof (window.pageYOffset) == "number") {
-        //Netscape compliant
-        return window.pageYOffset;
-    }
-    else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
-        //DOM compliant
-        return document.body.scrollTop;
-    }
-    else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
-        //IE6 standards compliant mode
-        return document.documentElement.scrollTop;
-    }
-
-    return 0;
-}
-
-function getSize() {
-    if(typeof (window.innerWidth) == "number") {
-        //Non-IE
-        return window.innerHeight;
-    }
-    else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-        //IE 6+ in 'standards compliant mode'
-        return document.documentElement.clientHeight;
-    }
-    else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
-        //IE 4 compatible
-        return document.body.clientHeight;
-    }
-
-    return 0;
-}
-
 function shouldScroll() {
     var minHeight = document.body.scrollHeight - 40;
-    var currentHeight = getSize() + getScroll();
+    var currentHeight = window.innerHeight + window.pageYOffset;
     var maxHeight = document.body.scrollHeight;
 
     return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;

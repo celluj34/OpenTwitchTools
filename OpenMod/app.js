@@ -204,7 +204,8 @@ router.route("/personalCommands")
                 .map(function(item) {
                     return {
                         id: item.id,
-                        name: _s.truncate(item.value, 67)
+                        preview: _s.truncate(item.value, 50),
+                        text: item.value
                     };
                 })
                 .filter(function(item) {
@@ -557,7 +558,7 @@ app.on("ready", function() {
         mainWindow = null;
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     mainWindow.loadUrl(server.locals.startupUrl);
     mainWindow.show();
 });

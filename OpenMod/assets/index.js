@@ -98,8 +98,9 @@ function setupCustomControls() {
                     });
                 }
             },
-            displayTpl: "<li>${id} - ${name}</li>",
-            insertTpl: "${name}"
+            displayTpl: "<li>${id} - ${preview}</li>",
+            insertTpl: "${text}",
+            searchKey: "id"
         });
 
     //.atwho({

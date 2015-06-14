@@ -13,8 +13,7 @@
     BrowserWindow = require("browser-window"),
     moment = require("moment"),
     client,
-    mainWindow,
-    badges = [];
+    mainWindow;
 
 server.locals.appName = "OpenMod";
 server.locals.ipAddress = "127.0.0.1";
@@ -29,6 +28,7 @@ server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(__dirname));
 
 var database = lowdb(server.locals.database);
+var badges = lowdb();
 var settings = database("settings");
 var keywords = database("keywords");
 var personalCommands = database("personalCommands");
@@ -292,6 +292,8 @@ function setupOutgoingCommandHandlers(socket) {
     });
 
     socket.on("leaveChannel", function(data) {
+        badges(data.channel).remove();
+
         client.part(data.channel);
     });
 }
@@ -415,16 +417,26 @@ function getBadges(channel) {
     request(url, function(err, resp, body) {
         body = JSON.parse(body);
 
-        var badges = _.chain(body)
-            .map(function(badge, index) {
+        _.chain(body)
+            .map(function(item, index) {
+                if(_.isNull(item)) {
+                    return null;
+                }
+
                 return {
-                    role: index,
-                    url: badge.image
+                    id: index,
+                    url: item.image
                 };
             })
-            .value();
-
-        badges[channel] = badges;
+            .filter(function(item) {
+                return !_.isNull(item) && !_.isUndefined(item.url);
+            })
+            .each(function(badge) {
+                badges(channel).push({
+                    id: badge.id,
+                    url: badge.url
+                });
+            });
     });
 }
 
@@ -484,19 +496,24 @@ function parseMessage(message, emotes) {
 }
 
 function parseAttributes(attributes, channel) {
-    var availableBadges = badges[channel];
-
-    if(!attributes || attributes.length === 0 || !availableBadges || availableBadges.length === 0) {
+    if(!attributes || attributes.length === 0) {
         return null;
     }
 
     var attributeString = _.chain(attributes)
         .map(function(attribute) {
-            var matchingBadge = _.find(availableBadges, function(badge) {
-                return badge.role === attribute;
+            var matchingBadge = badges(channel).find(function(badge) {
+                return badge.id === attribute;
             });
 
-            return makeImage(matchingBadge.role, matchingBadge.url);
+            if(_.isUndefined(matchingBadge)) {
+                return null;
+            }
+
+            return makeImage(matchingBadge.id, matchingBadge.url);
+        })
+        .filter(function(item) {
+            return !_.isNull(item);
         })
         .value()
         .join(" ");

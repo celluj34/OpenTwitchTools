@@ -173,7 +173,7 @@ router.route("/keywords")
 router.route("/personalCommands")
     .get(function(req, response) {
         response.json(personalCommands.cloneDeep());
-    })     
+    })
     .put(function(req, response) {
         var command = personalCommands.find({id: req.body.command});
 
@@ -541,7 +541,7 @@ app.on("ready", function() {
         mainWindow = null;
     });
 
-    //mainWindow.openDevTools();
+    mainWindow.openDevTools();
     mainWindow.loadUrl(server.locals.startupUrl);
     mainWindow.show();
 });

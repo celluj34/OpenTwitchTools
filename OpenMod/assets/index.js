@@ -200,6 +200,7 @@ function initializeKnockout() {
         var self = this;
 
         self.ChannelName = data;
+        self.ChannelHashName = "#" + data;
         self.Comments = ko.observableArray();
         self.MaxComments = ko.observable(100);
         self.Joined = ko.observable(false);
@@ -218,11 +219,11 @@ function initializeKnockout() {
         };
 
         self.timeout = function(user) {
-            _.each(self.Comments(), function(comment) {
-                if(comment.Name === user) {
+            _.chain(self.Comments())
+                .where({Name: user})
+                .each(function(comment) {
                     comment.Hidden(true);
-                }
-            });
+                });
         };
     };
 
@@ -238,8 +239,7 @@ function initializeKnockout() {
         self.Channels = ko.observableArray();
         self.Keywords = ko.observableArray();
         self.PersonalCommands = ko.observableArray();
-        self.ChannelIsSelected = ko.observable(false);
-        self.SelectedChannel = ko.observable({});
+        self.SelectedChannel = ko.observable();
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
         self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
@@ -249,6 +249,18 @@ function initializeKnockout() {
         self.NewKeyword = ko.observable();
         self.NewPersonalCommand = ko.observable();
         self.NewPersonalCommandText = ko.observable();
+
+        self.ChannelIsSelected = ko.computed(function() {
+            return !_.isUndefined(self.SelectedChannel());
+        });
+
+        self.Brand = ko.computed(function() {
+            if(self.ChannelIsSelected()) {
+                return "#" + self.SelectedChannel().ChannelName;
+            }
+
+            return "";
+        });
 
         self.showTokenAuthModal = function() {
             showModal("tokenAuthModal");
@@ -420,15 +432,8 @@ function initializeKnockout() {
 
             self.Channels.remove(self.SelectedChannel());
             var firstChannel = _.first(self.Channels());
-            
-            if(firstChannel) {
+
             self.SelectedChannel(firstChannel);
-                self.ChannelIsSelected(true);
-            }
-            else {
-                self.SelectedChannel({});
-                self.ChannelIsSelected(false);
-            }
         };
 
         self.sendMessage = function() {
@@ -470,7 +475,6 @@ function initializeKnockout() {
             var newChannel = new channelViewModel(selectedChannel, self.SelectedChannel);
             self.Channels.push(newChannel);
             self.SelectedChannel(newChannel);
-            self.ChannelIsSelected(true);
         }
     };
 

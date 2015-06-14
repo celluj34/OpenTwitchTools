@@ -237,6 +237,7 @@ function initializeKnockout() {
         self.OutgoingMessage = ko.observable("");
         self.Channels = ko.observableArray();
         self.Keywords = ko.observableArray();
+        self.PersonalCommands = ko.observableArray();
         self.ChannelIsSelected = ko.observable(false);
         self.SelectedChannel = ko.observable({});
         self.SelectedComment = ko.observable();

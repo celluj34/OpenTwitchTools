@@ -77,7 +77,7 @@ function setupCustomControls() {
             displayTimeout: 300,
             callbacks: {
                 remoteFilter: function(query, callback) {
-                $.get("/users", {
+                    $.post("/users", {
                         channel: window.viewModel.SelectedChannel().ChannelName,
                         query: query
                     }, function(data) {

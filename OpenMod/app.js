@@ -76,9 +76,9 @@ router.route("/")
     });
 
 router.route("/users")
-    .get(function(req, response) {
-        var channel = req.query.channel;
-        var query = req.query.query;
+    .post(function(req, response) {
+        var channel = req.body.channel;
+        var query = req.body.query;
         var url = _s.sprintf("http://tmi.twitch.tv/group/user/%s/chatters", channel);
 
         request(url, function(err, resp, body) {

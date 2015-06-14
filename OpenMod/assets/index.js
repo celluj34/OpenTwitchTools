@@ -24,6 +24,10 @@ function loadInfo() {
     $.get("/keywords", function(data) {
         window.viewModel.Keywords(data.keywords);
     }, "json");
+
+    $.get("/personalCommands", function(data) {
+        window.viewModel.PersonalCommands(data);
+    }, "json");
 }
 
 function setupCustomControls() {
@@ -69,33 +73,34 @@ function setupCustomControls() {
     $("#newChannel").select2(select2Settings);
 
     $("#chatMessage").atwho({
-        at: "@",
-        displayTimeout: 300,
-        callbacks: {
-            remoteFilter: function(query, callback) {
+            at: "@",
+            displayTimeout: 300,
+            callbacks: {
+                remoteFilter: function(query, callback) {
                 $.get("/users", {
-                    channel: window.viewModel.SelectedChannel().ChannelName,
-                    query: query
-                }, function(data) {
-                    callback(data);
-                });
+                        channel: window.viewModel.SelectedChannel().ChannelName,
+                        query: query
+                    }, function(data) {
+                        callback(data);
+                    });
+                }
             }
-        }
-    });
-
-    //.atwho({
-    //    at: "!",
-    //    displayTimeout: 300,
-    //    callbacks: {
-    //        remoteFilter: function (query, callback) {
-    //            $.get("/localCommands", {
-    //                query: query
-    //            }, function (data) {
-    //                callback(data);
-    //            });
-    //        }
-    //    }
-    //});
+        })
+        .atwho({
+            at: "!",
+            displayTimeout: 300,
+            callbacks: {
+                remoteFilter: function(query, callback) {
+                    $.post("/personalCommands", {
+                        query: query
+                    }, function(data) {
+                        callback(data);
+                    });
+                }
+            },
+            displayTpl: "<li>${id} - ${name}</li>",
+            insertTpl: "${name}"
+        });
 
     //.atwho({
     //    at: "$",
@@ -241,6 +246,8 @@ function initializeKnockout() {
         //input information
         self.LoginSelectedChannel = ko.observable();
         self.NewKeyword = ko.observable();
+        self.NewPersonalCommand = ko.observable();
+        self.NewPersonalCommandText = ko.observable();
 
         self.showTokenAuthModal = function() {
             showModal("tokenAuthModal");
@@ -252,6 +259,10 @@ function initializeKnockout() {
 
         self.showKeywordModal = function() {
             showModal("keywordModal");
+        };
+
+        self.showPersonalCommandModal = function() {
+            showModal("personalCommandModal");
         };
 
         self.showUsers = function() {
@@ -294,16 +305,14 @@ function initializeKnockout() {
         };
 
         self.addKeyword = function() {
-            var keyword = self.NewKeyword();
-            self.NewKeyword(null);
-
             $.ajax({
                 url: "/keywords",
                 type: "PUT",
-                data: {keyword: keyword},
+                data: {keyword: self.NewKeyword()},
                 success: function(result) {
                     if(result.isValid) {
-                        self.Keywords.push(keyword);
+                        self.Keywords.push(self.NewKeyword());
+                        self.NewKeyword(null);
                     }
                     else {
                         alert(result.error);
@@ -312,14 +321,54 @@ function initializeKnockout() {
             });
         };
 
-        self.removeKeyword = function(word) {
+        self.removeKeyword = function(keyword) {
             $.ajax({
                 url: "/keywords",
                 type: "DELETE",
-                data: {keyword: word},
+                data: {keyword: keyword},
                 success: function(result) {
                     if(result.isValid) {
-                        self.Keywords.remove(word);
+                        self.Keywords.remove(keyword);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
+
+        self.addPersonalCommand = function() {
+            $.ajax({
+                url: "/personalCommands",
+                type: "PUT",
+                data: {command: command},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.PersonalCommands.push({
+                            id: self.NewPersonalCommand(),
+                            text: self.NewPersonalCommandText()
+                        });
+
+                        self.NewPersonalCommand(null);
+                        self.NewPersonalCommandText(null);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
+
+        self.removePersonalCommand = function(command) {
+            $.ajax({
+                url: "/personalCommands",
+                type: "DELETE",
+                data: {command: command},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.PersonalCommands.remove(function(item) {
+                            return item.id === command;
+                        });
                     }
                     else {
                         alert(result.error);
@@ -370,9 +419,9 @@ function initializeKnockout() {
 
             self.Channels.remove(self.SelectedChannel());
             var firstChannel = _.first(self.Channels());
-
+            
             if(firstChannel) {
-                self.SelectedChannel(firstChannel);
+            self.SelectedChannel(firstChannel);
                 self.ChannelIsSelected(true);
             }
             else {

@@ -41,6 +41,9 @@
                         <li>
                             <a class="autoClose" data-bind="click: showKeywordModal" href="#">Manage Keywords</a>
                         </li>
+                        <li>
+                            <a class="autoClose" data-bind="click: showPersonalCommandModal" href="#">Manage Personal Commands</a>
+                        </li>
                         <li class="divider" data-bind="visible: ChannelIsSelected" role="presentation"></li>
                         <li class="dropdown-header" data-bind="visible: ChannelIsSelected" role="presentation">
                             Channel Tools
@@ -252,6 +255,56 @@
                                     </td>
                                     <td>
                                         <a data-bind="click: function(){$parent.removeKeyword($data);}">Remove</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="personalCommandModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Personal Commands</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form data-bind="submit: addPersonalCommand">
+                            <div class="form-group">
+                                <label for="newPersonalCommand">Command</label>
+                                <input class="form-control" data-bind="value: NewPersonalCommand" id="newPersonalCommand" required type="text" />
+                            </div>
+                            <div class="form-group">
+                                <label for="newPersonalCommandText">Text</label>
+                                <input class="form-control" data-bind="value: NewPersonalCommandText" id="newPersonalCommandText" required type="text" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Existing Commands</label>
+                        <table class="table">
+                            <tbody data-bind="foreach: PersonalCommands">
+                                <tr>
+                                    <td>
+                                        <span data-bind="text: id"></span>
+                                    </td>
+                                    <td>
+                                        <span data-bind="text: value"></span>
+                                    </td>
+                                    <td>
+                                        <a data-bind="click: function(){$parent.removePersonalCommand(id);}">Remove</a>
                                     </td>
                                 </tr>
                             </tbody>

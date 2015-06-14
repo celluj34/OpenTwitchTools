@@ -31,6 +31,7 @@ server.use(express.static(__dirname));
 var database = lowdb(server.locals.database);
 var settings = database("settings");
 var keywords = database("keywords");
+var personalCommands = database("personalCommands");
 
 router.route("/")
     .get(function(req, response) {
@@ -169,60 +170,63 @@ router.route("/keywords")
         });
     });
 
-//router.route("/localCommands")
-//    .get(function(req, response) {
-//        var keywords = _.pluck(settingsProvider.Keywords(), "Value");
+router.route("/personalCommands")
+    .get(function(req, response) {
+        response.json(personalCommands.cloneDeep());
+    })     
+    .put(function(req, response) {
+        var command = personalCommands.find({id: req.body.command});
 
-//        response.json({keywords: keywords});
-//    })
-//    .put(function(req, response) {
-//        settingsProvider.addKeyword(_, req.body.keyword, function(error) {
-//            if(error) {
-//                response.json({
-//                    isValid: false,
-//                    error: error
-//                });
-//            }
-//            else {
-//                response.json({
-//                    isValid: true
-//                });
-//            }
-//        });
-//    })
-//    .post(function (req, response) {
-//    var channel = req.body.channel;
-//    var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
+        if(_.isUndefined(command)) {
+            personalCommands.push({
+                id: req.body.command,
+                value: req.body.value
+            });
 
-//    request(url, function (err, resp, body) {
-//        var data = JSON.parse(body);
+            database.save();
 
-//        var channels = _.chain(data.channels)
-//                .map(function (item) {
-//            return {
-//                id: item.name,
-//                name: item.name
-//            };
-//        })
-//                .value();
+            response.json({
+                isValid: true
+            });
+        }
+        else {
+            response.json({
+                isValid: false,
+                error: "Command is already defined. To update a command you must delete it and re-add it."
+            });
+        }
+    })
+    .post(function(req, response) {
+        var query = req.body.query;
 
-//        response.json(channels);
-//    })
-//    .delete(function(req, response) {
-//        settingsProvider.removeKeyword(_, req.body.keyword, function(error) {
-//            if(error) {
-//                response.json({
-//                    isValid: false,
-//                    error: error
-//                });
-//            }
-//            else {
-//                response.json({
-//                    isValid: true
-//                });
-//            }
-//        });
-//    });
+        var commands =
+            personalCommands.chain()
+                .map(function(item) {
+                    return {
+                        id: item.id,
+                        name: _s.truncate(item.value, 67)
+                    };
+                })
+                .filter(function(item) {
+                    return _s.contains(item.id, query);
+                })
+                .sortBy(function(item) {
+                    return item.id;
+                })
+                .take(5)
+                .value();
+
+        response.json(commands);
+    })
+    .delete(function(req, response) {
+        personalCommands.remove({id: req.body.command});
+
+        database.save();
+
+        response.json({
+            isValid: true
+        });
+    });
 
 //router.route("/emotes")
 //    .post(function (req, response) {

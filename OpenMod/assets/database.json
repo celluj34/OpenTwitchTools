@@ -9,5 +9,15 @@
       "value": "r2v0yvqyt7pqp1avyc05tlvlgai605"
     }
   ],
-  "keywords": []
+  "keywords": [],
+  "personalCommands": [
+    {
+      "id": "scarRAID",
+      "value": "scarMEGA scarLOVE scarLOVE scarfino raid! scarMEGA scarLOVE scarLOVE"
+    },
+    {
+      "id": "tigerRAID",
+      "value": "tigerParty tigerParty tiger raid!! tigerParty tigerParty"
+    }
+  ]
 }

@@ -274,6 +274,8 @@ function setupOutgoingCommandHandlers(socket) {
     });
 
     socket.on("joinChannel", function(data) {
+        getBadges(data.channel);
+
         client.join(data.channel);
     });
 
@@ -330,32 +332,29 @@ function setupIncomingEventListeners(client) {
         emitMessage(channel, user, message, false);
     });
 
+    //only sent to broadcaster
     client.addListener("hosted", function(channel, user, viewers) {
-        //only sent to broadcaster
         socketio.sockets.emit("hosted", {
-            name: user,
             channel: channel.substring(1),
+            name: user,
             viewers: viewers
         });
     });
 
     client.addListener("hosting", function(channel, user, viewers) {
         socketio.sockets.emit("hosting", {
-            name: user,
             channel: channel.substring(1),
+            name: user,
             viewers: viewers
         });
     });
 
     client.addListener("join", function(channel, user) {
-        var channelName = channel.substring(1);
 
         socketio.sockets.emit("channelJoined", {
-            name: user,
-            channel: channelName
+            channel: channel.substring(1),
+            name: user
         });
-
-        getBadges(channelName);
     });
 
     client.addListener("r9kbeta", function(channel, enabled) {
@@ -390,15 +389,15 @@ function setupIncomingEventListeners(client) {
 
     client.addListener("subscription", function(channel, user) {
         socketio.sockets.emit("subscription", {
-            name: user,
-            channel: channel.substring(1)
+            channel: channel.substring(1),
+            name: user
         });
     });
 
     client.addListener("timeout", function(channel, user) {
         socketio.sockets.emit("userTimeout", {
-            name: user,
-            channel: channel.substring(1)
+            channel: channel.substring(1),
+            name: user
         });
     });
 

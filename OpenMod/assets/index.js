@@ -230,20 +230,20 @@ function initializeKnockout() {
         //login information
         self.Username = ko.observable();
         self.Password = ko.observable();
+        self.LoginSelectedChannel = ko.observable();
 
         //chat information
-        self.OutgoingMessage = ko.observable("");
         self.Channels = ko.observableArray();
-        self.Keywords = ko.observableArray();
-        self.PersonalCommands = ko.observableArray();
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
 
         //settings and stuff
+        self.Keywords = ko.observableArray();
+        self.PersonalCommands = ko.observableArray();
         self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
 
         //input information
-        self.LoginSelectedChannel = ko.observable();
+        self.OutgoingMessage = ko.observable();
         self.NewKeyword = ko.observable();
         self.NewPersonalCommand = ko.observable();
         self.NewPersonalCommandText = ko.observable();
@@ -407,7 +407,6 @@ function initializeKnockout() {
                 $("#joinChannelModal").modal("hide");
 
                 var selectedChannel = self.LoginSelectedChannel().toLowerCase();
-                self.LoginSelectedChannel("");
 
                 var matchingChannel = findMatchingChannel(selectedChannel);
 

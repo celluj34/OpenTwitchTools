@@ -251,13 +251,19 @@ function initializeKnockout() {
 
         //computed values
         self.SelectedChannel = ko.computed(function() {
-            return _.find(self.Channels(), function(channel) {
+            var selectedChannel = _.find(self.Channels(), function(channel) {
                 return channel.Selected();
             });
+
+            if(_.isUndefined(selectedChannel)) {
+                return null;
+            }
+
+            return selectedChannel;
         });
 
         self.ChannelIsSelected = ko.computed(function() {
-            return !_.isUndefined(self.SelectedChannel());
+            return !_.isNull(self.SelectedChannel());
         });
 
         self.Brand = ko.computed(function() {

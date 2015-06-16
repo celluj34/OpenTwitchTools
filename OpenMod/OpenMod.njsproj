@@ -31,18 +31,11 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="assets\lib\bootstrap\js\bootstrap.min.js" />
-    <Compile Include="assets\lib\bootstrap\js\bootstrap.js" />
-    <Compile Include="assets\lib\bootstrap\js\npm.js" />
-    <Compile Include="assets\lib\jquery\jquery.js" />
     <Compile Include="assets\lib\jquery\jquery.min.js" />
     <Compile Include="assets\lib\knockout\knockout.js" />
-    <Compile Include="assets\lib\select2\js\select2.full.js" />
-    <Compile Include="assets\lib\select2\js\select2.full.min.js" />
-    <Compile Include="assets\lib\select2\js\select2.js" />
     <Compile Include="assets\lib\select2\js\select2.min.js" />
     <Compile Include="assets\lib\socket.io\socket.io.min.js" />
     <Compile Include="assets\lib\underscore\underscore-min.js" />
-    <Compile Include="assets\lib\underscore\underscore.js" />
     <Compile Include="bower.json" />
     <Compile Include="gulpfile.js" />
     <Compile Include="assets\index.js" />
@@ -52,10 +45,8 @@
   <ItemGroup>
     <Content Include="assets\images\icon.png" />
     <Content Include="assets\lib\jquery.atwho\jquery.atwho.min.css" />
-    <Content Include="assets\lib\bootstrap\css\bootstrap-theme.css" />
     <Content Include="assets\lib\bootstrap\css\bootstrap-theme.css.map" />
     <Content Include="assets\lib\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="assets\lib\bootstrap\css\bootstrap.css" />
     <Content Include="assets\lib\bootstrap\css\bootstrap.css.map" />
     <Content Include="assets\lib\bootstrap\css\bootstrap.min.css" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -64,8 +55,6 @@
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="assets\lib\jquery\jquery.min.map" />
-    <Content Include="assets\lib\select2\css\select2.css" />
-    <Content Include="assets\lib\select2\css\select2.css" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
     <Content Include="assets\lib\underscore\underscore-min.map" />

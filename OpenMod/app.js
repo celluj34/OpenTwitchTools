@@ -64,8 +64,6 @@ router.route("/")
                     .assign({value: password})
                     .value();
 
-                database.save();
-
                 setupConnection(channel, username, password);
 
                 response.json({
@@ -145,8 +143,6 @@ router.route("/keywords")
         if(_.isUndefined(keyword)) {
             keywords.push({value: req.body.keyword});
 
-            database.save();
-
             response.json({
                 isValid: true
             });
@@ -160,8 +156,6 @@ router.route("/keywords")
     })
     .delete(function(req, response) {
         keywords.remove({value: req.body.keyword});
-
-        database.save();
 
         response.json({
             isValid: true
@@ -180,8 +174,6 @@ router.route("/personalCommands")
                 id: req.body.id,
                 value: req.body.value
             });
-
-            database.save();
 
             response.json({
                 isValid: true
@@ -219,8 +211,6 @@ router.route("/personalCommands")
     })
     .delete(function(req, response) {
         personalCommands.remove({id: req.body.id});
-
-        database.save();
 
         response.json({
             isValid: true

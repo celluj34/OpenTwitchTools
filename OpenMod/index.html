@@ -247,6 +247,7 @@
                                 <label for="newKeyword">Add New Keyword</label>
                                 <input class="form-control" data-bind="value: NewKeyword" id="newKeyword" required type="text" />
                             </div>
+                            <button style="display: none" type="submit"></button>
                         </form>
                     </div>
                     <div class="col-md-12">
@@ -258,7 +259,7 @@
                                         <span data-bind="text: value"></span>
                                     </td>
                                     <td>
-                                        <a data-bind="click: function(){$parent.removeKeyword(value);}">Remove</a>
+                                        <a class="btn btn-danger" data-bind="click: function(){$parent.removeKeyword(value);}">Remove</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -294,6 +295,7 @@
                                 <label for="newPersonalCommandText">Text</label>
                                 <input class="form-control" data-bind="value: NewPersonalCommandText" id="newPersonalCommandText" required type="text" />
                             </div>
+                            <button style="display: none" type="submit"></button>
                         </form>
                     </div>
                     <div class="col-md-12">
@@ -308,7 +310,7 @@
                                         <span data-bind="text: value"></span>
                                     </td>
                                     <td>
-                                        <a data-bind="click: function(){$parent.removePersonalCommand(id);}">Remove</a>
+                                        <a class="btn btn-danger" data-bind="click: function(){$parent.removePersonalCommand(id);}">Remove</a>
                                     </td>
                                 </tr>
                             </tbody>

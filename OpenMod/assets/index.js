@@ -343,7 +343,7 @@ function initializeKnockout() {
                 data: {keyword: self.NewKeyword()},
                 success: function(result) {
                     if(result.isValid) {
-                        self.Keywords.push(self.NewKeyword());
+                        self.Keywords.push({value: self.NewKeyword()});
                         self.NewKeyword(null);
                     }
                     else {
@@ -360,7 +360,7 @@ function initializeKnockout() {
                 data: {keyword: keyword},
                 success: function(result) {
                     if(result.isValid) {
-                        self.PersonalCommands.remove(function (item) {
+                        self.Keywords.remove(function(item) {
                             return item.value === keyword;
                         });
                     }
@@ -383,7 +383,7 @@ function initializeKnockout() {
                     if(result.isValid) {
                         self.PersonalCommands.push({
                             id: self.NewPersonalCommand(),
-                            text: self.NewPersonalCommandText()
+                            value: self.NewPersonalCommandText()
                         });
 
                         self.NewPersonalCommand(null);

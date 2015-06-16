@@ -173,11 +173,11 @@ router.route("/personalCommands")
         response.json(personalCommands.cloneDeep());
     })
     .put(function(req, response) {
-        var command = personalCommands.find({id: req.body.command});
+        var command = personalCommands.find({id: req.body.id});
 
         if(_.isUndefined(command)) {
             personalCommands.push({
-                id: req.body.command,
+                id: req.body.id,
                 value: req.body.value
             });
 
@@ -202,8 +202,8 @@ router.route("/personalCommands")
                 .map(function(item) {
                     return {
                         id: item.id,
-                        preview: _s.truncate(item.value, 50),
-                        text: item.value
+                        value: item.value,
+                        preview: _s.truncate(item.value, 40)
                     };
                 })
                 .filter(function(item) {
@@ -218,7 +218,7 @@ router.route("/personalCommands")
         response.json(commands);
     })
     .delete(function(req, response) {
-        personalCommands.remove({id: req.body.command});
+        personalCommands.remove({id: req.body.id});
 
         database.save();
 

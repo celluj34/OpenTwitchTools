@@ -99,7 +99,7 @@ function setupCustomControls() {
                 }
             },
             displayTpl: "<li>${id} - ${preview}</li>",
-            insertTpl: "${text}",
+            insertTpl: "${value}",
             searchKey: "id"
         });
 
@@ -369,7 +369,10 @@ function initializeKnockout() {
             $.ajax({
                 url: "/personalCommands",
                 type: "PUT",
-                data: {command: command},
+                data: {
+                    id: self.NewPersonalCommand(),
+                    value: self.NewPersonalCommandText()
+                },
                 success: function(result) {
                     if(result.isValid) {
                         self.PersonalCommands.push({
@@ -391,7 +394,7 @@ function initializeKnockout() {
             $.ajax({
                 url: "/personalCommands",
                 type: "DELETE",
-                data: {command: command},
+                data: {id: command},
                 success: function(result) {
                     if(result.isValid) {
                         self.PersonalCommands.remove(function(item) {

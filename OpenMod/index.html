@@ -251,10 +251,10 @@
                             <tbody data-bind="foreach: Keywords">
                                 <tr>
                                     <td>
-                                        <span data-bind="text: $data"></span>
+                                        <span data-bind="text: value"></span>
                                     </td>
                                     <td>
-                                        <a data-bind="click: function(){$parent.removeKeyword($data);}">Remove</a>
+                                        <a data-bind="click: function(){$parent.removeKeyword(value);}">Remove</a>
                                     </td>
                                 </tr>
                             </tbody>

@@ -137,9 +137,7 @@ router.route("/search")
 
 router.route("/keywords")
     .get(function(req, response) {
-        var keywordValues = keywords.pluck("value");
-
-        response.json({keywords: keywordValues});
+        response.json(keywords.cloneDeep());
     })
     .put(function(req, response) {
         var keyword = keywords.find({value: req.body.keyword});

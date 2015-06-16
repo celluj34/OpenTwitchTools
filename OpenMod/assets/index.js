@@ -22,7 +22,7 @@ function loadInfo() {
     }, "json");
 
     $.get("/keywords", function(data) {
-        window.viewModel.Keywords(data.keywords);
+        window.viewModel.Keywords(data);
     }, "json");
 
     $.get("/personalCommands", function(data) {
@@ -354,7 +354,9 @@ function initializeKnockout() {
                 data: {keyword: keyword},
                 success: function(result) {
                     if(result.isValid) {
-                        self.Keywords.remove(keyword);
+                        self.PersonalCommands.remove(function (item) {
+                            return item.value === keyword;
+                        });
                     }
                     else {
                         alert(result.error);

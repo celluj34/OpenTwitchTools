@@ -241,7 +241,7 @@ function initializeKnockout() {
         //settings and stuff
         self.Keywords = ko.observableArray();
         self.PersonalCommands = ko.observableArray();
-        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
+        self.TokenAuthUrl = ko.observable("http://sharpmod.azurewebsites.net/"); // "https://twitchtokenauth.azurewebsites.net/OpenMod";
 
         //input information
         self.OutgoingMessage = ko.observable();
@@ -424,10 +424,6 @@ function initializeKnockout() {
 
                 if(!matchingChannel) {
                     addChannel(selectedChannel);
-
-                    window.socket.emit("joinChannel", {
-                        channel: selectedChannel
-                    });
                 }
 
                 self.Select(selectedChannel);
@@ -498,6 +494,10 @@ function initializeKnockout() {
             if(!selectedChannel) {
                 return;
             }
+
+            window.socket.emit("joinChannel", {
+                channel: selectedChannel
+            });
 
             var newChannel = new channelViewModel(selectedChannel);
             self.Channels.push(newChannel);

@@ -1,5 +1,5 @@
 ﻿$(function() {
-    showModal("loginModal");
+    $("#loginModal").modal("show");
 
     $(".collapse.navbar-collapse").on("click", ".autoClose", function() {
         $(".collapse.navbar-collapse").collapse("hide");
@@ -276,24 +276,24 @@ function initializeKnockout() {
         };
 
         self.showTokenAuthModal = function() {
-            showModal("tokenAuthModal");
+            $("#tokenAuthModal").modal("show");
         };
 
         self.showJoinChannelModal = function() {
-            showModal("joinChannelModal");
+            $("#joinChannelModal").modal("show");
         };
 
         self.showKeywordModal = function() {
-            showModal("keywordModal");
+            $("#keywordModal").modal("show");
         };
 
         self.showPersonalCommandModal = function() {
-            showModal("personalCommandModal");
+            $("#personalCommandModal").modal("show");
         };
 
         self.showUsers = function() {
             alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
-            //showModal("usersModal");
+            //$("#usersModal").modal("show");
         };
 
         self.login = function() {
@@ -467,7 +467,7 @@ function initializeKnockout() {
             if(!self.AlreadyClicked()) {
                 self.SelectedComment(comment);
                 self.AlreadyClicked(true);
-                showModal("commentModal");
+                $("#commentModal").modal("show");
             }
         };
 
@@ -503,11 +503,6 @@ function initializeKnockout() {
 //		window.viewModel.setUsers(data);
 //	}, "json");
 //}
-
-function showModal(modal) {
-    $("#" + modal).modal("show");
-    $("body").css("padding-right", 0);
-}
 
 function shouldScroll() {
     var minHeight = document.body.scrollHeight - 40;

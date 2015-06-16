@@ -533,7 +533,6 @@ function highlightMessage(comment) {
         return _s.contains(casedComment, keyword.value.toLowerCase());
     });
 
-    //required because _.find returns undefined instead of false
     return !_.isUndefined(highlight);
 }
 
@@ -551,8 +550,11 @@ app.on("ready", function() {
         "node-integration": false,
         "show": false,
         "title": server.locals.appName,
-        "icon": server.locals.icon
+        "icon": server.locals.icon,
+        "resizeable": true
     });
+
+    mainWindow.setMenu(null);
 
     mainWindow.on("closed", function() {
         mainWindow = null;

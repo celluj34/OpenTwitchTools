@@ -21,3 +21,7 @@
 #webviewWrapper {
     height: 400px;
 }
+
+.select2 {
+    width: 100% !important;
+}

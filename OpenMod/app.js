@@ -217,27 +217,6 @@ router.route("/personalCommands")
         });
     });
 
-//router.route("/emotes")
-//    .post(function (req, response) {
-//      //use emoteset?
-//    var url = "https://api.twitch.tv/kraken/search/channels?q=" + channel;
-
-//    request(url, function (err, resp, body) {
-//        var data = JSON.parse(body);
-
-//        var channels = _.chain(data.channels)
-//                .map(function (item) {
-//            return {
-//                id: item.name,
-//                name: item.name
-//            };
-//        })
-//                .value();
-
-//        response.json(channels);
-//    });
-//});
-
 server.use("/", router);
 
 var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
@@ -321,15 +300,6 @@ function setupIncomingEventListeners(client) {
 
     client.addListener("chat", function(channel, user, message) {
         emitMessage(channel, user, message, false);
-    });
-
-    //only sent to broadcaster
-    client.addListener("hosted", function(channel, user, viewers) {
-        socketio.sockets.emit("hosted", {
-            channel: channel.substring(1),
-            name: user,
-            viewers: viewers
-        });
     });
 
     client.addListener("hosting", function(channel, user, viewers) {

@@ -6,12 +6,15 @@
     },
     {
       "id": "Password",
-      "value": "r2v0yvqyt7pqp1avyc05tlvlgai605"
+      "value": "94fytr38l1r1cpak971w3vjkiyu6jz"
     }
   ],
   "keywords": [
     {
       "value": "celluj34"
+    },
+    {
+      "value": "cell"
     }
   ],
   "personalCommands": [
@@ -22,6 +25,14 @@
     {
       "id": "tigerRAID",
       "value": "tigerParty tigerParty tiger raid!! tigerParty tigerParty"
+    },
+    {
+      "id": "raidDefense",
+      "value": "tigerDef tigerDef"
+    },
+    {
+      "id": "heartBomb",
+      "value": "<3 scarLOVE tigerLove"
     }
   ]
 }

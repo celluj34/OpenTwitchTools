@@ -146,15 +146,46 @@ function initializeKnockout() {
     var commentViewModel = function(data) {
         var self = this;
 
+        //comment static properties
         self.Name = data.name;
         self.Color = data.color;
         self.Message = data.message;
         self.Badges = data.badges;
         self.Timestamp = data.timestamp;
         self.Highlight = data.highlight;
-        self.MessageColor = data.isAction ? data.color : "inherit";
+        self.Action = data.isAction;
+
+        self.HighlightColor = self.Highlight ? "bg-danger" : "";
+
+        //observable properties
         self.Hidden = ko.observable(false);
 
+        //computed fields
+        self.ChatMessage = ko.computed(function() {
+            if(self.Hidden()) {
+                return "<i>message deleted. click to view.</i>";
+            }
+
+            return self.Message;
+        });
+
+        self.ChatColor = ko.computed(function() {
+            if(!self.Hidden() && self.Action) {
+                return self.Color;
+            }
+
+            return "inherit";
+        });
+
+        self.DetailColor = ko.computed(function() {
+            if(self.Action) {
+                return self.Color;
+            }
+
+            return "inherit";
+        });
+
+        //comment functions
         self.showComment = function() {
             window.viewModel.setComment(self);
         };
@@ -200,13 +231,17 @@ function initializeKnockout() {
     var channelViewModel = function(data) {
         var self = this;
 
+        //channel static properties
         self.ChannelName = data;
         self.ChannelHashName = "#" + data;
+
+        //observable properties
         self.Comments = ko.observableArray();
         self.MaxComments = ko.observable(100);
         self.Joined = ko.observable(false);
         self.Selected = ko.observable(false);
 
+        //channel functions
         self.addComment = function(comment, scroll) {
             self.Comments.push(new commentViewModel(comment));
             var length = self.Comments().length;

@@ -1,284 +1,392 @@
 ﻿$(function() {
-	showModal("loginModal");
+    $("#loginModal").modal("show");
 
-	$(".collapse.navbar-collapse").on("click", ".autoClose", function() {
-		$(".collapse.navbar-collapse").collapse("hide");
-	});
-
-	$(".collapse.navbar-collapse").on("click", ".channelClose", function() {
-		window.scrollTo(0, document.body.scrollHeight);
-	});
-
-	loadInfo();
-	setupSocketHandlers();
-	initializeKnockout();
+    loadInfo();
+    setupCustomControls();
+    setupSocketHandlers();
+    initializeKnockout();
 });
 
 function loadInfo() {
-	$.get("/loginInfo", function(data) {
-		window.viewModel.Username(data.username);
-		window.viewModel.Password(data.password);
-		window.viewModel.Channel(data.channel);
-	}, "json");
+    $.get("/loginInfo", function(data) {
+        window.viewModel.Username(data.username);
+        window.viewModel.Password(data.password);
+        window.viewModel.Channel(data.channel);
+    }, "json");
 
-	$.get("/keywords", function(data) {
-		window.viewModel.Keywords(data.keywords);
-	}, "json");
+    $.get("/keywords", function(data) {
+        window.viewModel.Keywords(data.keywords);
+    }, "json");
+
+    $.get("/personalCommands", function(data) {
+        window.viewModel.PersonalCommands(data);
+    }, "json");
+}
+
+function setupCustomControls() {
+    $(".collapse.navbar-collapse").on("click", ".autoClose", function () {
+        $(".collapse.navbar-collapse").collapse("hide");
+    });
+
+    $(".collapse.navbar-collapse").on("click", ".channelClose", function () {
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    $("#chatMessage").atwho({
+            at: "@",
+            displayTimeout: 300,
+            callbacks: {
+                remoteFilter: function(query, callback) {
+                    $.post("/users", {
+                        channel: window.viewModel.SelectedChannel().ChannelName,
+                        query: query
+                    }, function(data) {
+                        callback(data);
+                    });
+                }
+            }
+        })
+        .atwho({
+            at: "!",
+            displayTimeout: 300,
+            callbacks: {
+                remoteFilter: function(query, callback) {
+                    $.post("/personalCommands", {
+                        query: query
+                    }, function(data) {
+                        callback(data);
+                    });
+                }
+            },
+            displayTpl: "<li>${id} - ${preview}</li>",
+            insertTpl: "${value}",
+            searchKey: "id"
+        });
+
+    //.atwho({
+    //    at: "$",
+    //    displayTimeout: 300,
+    //    callbacks: {
+    //        remoteFilter: function (query, callback) {
+    //            $.get("/emotes", {
+    //                query: query
+    //            }, function (data) {
+    //                callback(data);
+    //            });
+    //        }
+    //    }
+    //});
 }
 
 function setupSocketHandlers() {
-	window.socket = io.connect("127.0.0.1:18044");
+    window.socket = io.connect("127.0.0.1:18044");
 
-	window.socket.on("incomingMessage", function(data) {
-		var scroll = shouldScroll();
+    window.socket.on("incomingMessage", function(data) {
+        var scroll = shouldScroll();
 
-		window.viewModel.addComment(data, scroll);
+        window.viewModel.addComment(data, scroll);
 
-		if(scroll) {
-			window.scrollTo(0, document.body.scrollHeight);
-		}
-	});
+        if(scroll) {
+            window.scrollTo(0, document.body.scrollHeight);
 
-	window.socket.on("userTimeout", function(data) {
-		window.viewModel.userTimeout(data);
-	});
+            $("#chatMessage").atwho("reposition");
+        }
+    });
+
+    window.socket.on("userTimeout", function(data) {
+        window.viewModel.userTimeout(data);
+    });
 }
 
 function initializeKnockout() {
-	var commentViewModel = function(data) {
-		var self = this;
+    var commentViewModel = function(data) {
+        var self = this;
 
-		self.Name = data.name;
-		self.Color = data.color;
-		self.Message = data.message;
-		self.Badges = data.badges;
-		self.Timestamp = data.timestamp;
-		self.Highlight = data.highlight;
-		self.MessageColor = data.isAction ? data.color : "inherit";
-		self.Hidden = ko.observable(false);
+        //comment static properties
+        self.Name = data.name;
+        self.Color = data.color;
+        self.Message = data.message;
+        self.Badges = data.badges;
+        self.Timestamp = data.timestamp;
+        self.Highlight = data.highlight;
+        self.Action = data.isAction;
 
-		self.showComment = function() {
-			window.viewModel.setComment(self);
-		};
+        self.HighlightColor = self.Highlight ? "bg-danger" : "";
 
-		self.closeComment = function() {
-			window.viewModel.unsetComment();
-		};
+        //observable properties
+        self.Hidden = ko.observable(false);
 
-		self.timeout = function(seconds) {
-			doAction("timeoutUser", {seconds: seconds});
-		};
+        //computed fields
+        self.ChatMessage = ko.computed(function() {
+            if(self.Hidden()) {
+                return "<i>message deleted. click to view.</i>";
+            }
 
-		self.ban = function() {
-			doAction("banUser");
-		};
+            return self.Message;
+        });
 
-		self.unban = function() {
-			doAction("unbanUser");
-		};
+        self.ChatColor = ko.computed(function() {
+            if(!self.Hidden() && self.Action) {
+                return self.Color;
+            }
 
-		self.op = function() {
-			doAction("mod");
-		};
+            return "inherit";
+        });
 
-		self.deop = function() {
-			doAction("unmod");
-		};
+        self.DetailColor = ko.computed(function() {
+            if(self.Action) {
+                return self.Color;
+            }
 
-		function doAction(action, properties) {
-			var sendData = {
-				user: self.Name,
-				channel: window.viewModel.Channel()
-			};
+            return "inherit";
+        });
 
-			$.extend(sendData, properties);
+        //comment functions
+        self.showComment = function() {
+            window.viewModel.setComment(self);
+        };
 
-			window.socket.emit(action, sendData);
+        self.closeComment = function() {
+            window.viewModel.unsetComment();
+        };
 
-			self.closeComment();
-		}
-	};
+        self.timeout = function(seconds) {
+            doAction("timeoutUser", {seconds: seconds});
+        };
 
-	var windowViewModel = function() {
-		var self = this;
+        self.ban = function() {
+            doAction("banUser");
+        };
 
-		//login information
-		self.Username = ko.observable();
-		self.Password = ko.observable();
-		self.Channel = ko.observable();
+        self.unban = function() {
+            doAction("unbanUser");
+        };
 
-		//chat information
-		self.Keywords = ko.observableArray();
-		self.SelectedComment = ko.observable();
-		self.AlreadyClicked = ko.observable(false);
-		self.TokenAuthUrl = "http://sharpbot.azurewebsites.net/";
+        self.op = function() {
+            doAction("mod");
+        };
 
-		//channel information
-		self.Comments = ko.observableArray();
-		self.MaxComments = ko.observable(100);
+        self.deop = function() {
+            doAction("unmod");
+        };
 
-		//input information
-		self.NewKeyword = ko.observable();
-		self.OutgoingMessage = ko.observable();
+        function doAction(action, properties) {
+            var sendData = {
+                user: self.Name,
+                channel: window.viewModel.Channel()
+            };
 
-		//modals
-		self.showTokenAuthModal = function() {
-			showModal("tokenAuthModal");
-		};
+            $.extend(sendData, properties);
 
-		self.showKeywordModal = function() {
-			showModal("keywordModal");
-		};
+            window.socket.emit(action, sendData);
 
-		self.showUsers = function() {
-			alert("This feature is currently in development. 'Show users for " + self.Channel() + "'.");
-			//showModal("usersModal");
-		};
+            self.closeComment();
+        }
+    };
 
-		//functions
-		self.login = function() {
-			var submitData = {
-				username: self.Username().toLowerCase(),
-				password: self.Password().toLowerCase(),
-				channel: self.Channel().toLowerCase()
-			};
+    var windowViewModel = function() {
+        var self = this;
 
-			$.post("/", submitData).done(function(data) {
-				if(!data.isValid) {
-					alert(data.error);
-				}
-				else {
-					hideModal("loginModal");
-				}
-			});
-		};
+        //login information
+        self.Username = ko.observable();
+        self.Password = ko.observable();
+        self.Channel = ko.observable();
 
-		self.addComment = function(data, scroll) {
-			self.Comments.push(new commentViewModel(data));
-			var length = self.Comments().length;
+        //chat information
+        self.Comments = ko.observableArray();
+        self.MaxComments = ko.observable(100);
+        self.SelectedComment = ko.observable();
+        self.AlreadyClicked = ko.observable(false);
 
-			if(scroll && length > self.MaxComments()) {
-				self.Comments.splice(0, length - self.MaxComments());
-			}
-		};
+        //settings and stuff
+        self.Keywords = ko.observableArray();
+        self.PersonalCommands = ko.observableArray();
+        self.TokenAuthUrl = ko.observable("http://sharpbot.azurewebsites.net/"); // "https://twitchtokenauth.azurewebsites.net/OpenBot";
 
-		self.addKeyword = function() {
-			var keyword = self.NewKeyword();
-			self.NewKeyword(null);
+        //input information
+        self.OutgoingMessage = ko.observable();
+        self.NewKeyword = ko.observable();
+        self.NewPersonalCommand = ko.observable();
+        self.NewPersonalCommandText = ko.observable();
 
-			$.ajax({
-				url: "/keywords",
-				type: "PUT",
-				data: {keyword: keyword},
-				success: function() {
-                    self.Keywords.push(keyword);
-				}
-			});
-		};
+        self.Brand = ko.computed(function() {
+            if(self.Channel()) {
+                return "#" + self.Channel();
+            }
 
-		self.removeKeyword = function(word) {
-			$.ajax({
-				url: "/keywords",
-				type: "DELETE",
-				data: {keyword: word},
-				success: function() {
-                    self.Keywords.remove(word);
-				}
-			});
-		};
+            return "";
+        });
 
-		self.userTimeout = function(data) {
-			_.each(self.Comments(), function(comment) {
-				if(comment.Name === data.user) {
-					comment.Hidden(true);
-				}
-			});
-		};
+        //modals
+        self.showTokenAuthModal = function() {
+            $("#tokenAuthModal").modal("show");
+        };
 
-		self.sendMessage = function() {
-			if(self.OutgoingMessage().length > 0) {
-				window.socket.emit("outgoingMessage", {
-					message: self.OutgoingMessage(),
-					channel: self.Channel()
-				});
+        self.showKeywordModal = function() {
+            $("#keywordModal").modal("show");
+        };
 
-				self.OutgoingMessage("");
-			}
-		};
+        self.showPersonalCommandModal = function() {
+            $("#personalCommandModal").modal("show");
+        };
 
-		self.setComment = function(comment) {
-			if(!self.AlreadyClicked()) {
-				self.SelectedComment(comment);
-				self.AlreadyClicked(true);
-				showModal("commentModal");
-			}
-		};
+        self.showUsers = function() {
+            alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
 
-		self.unsetComment = function() {
-			self.SelectedComment(null);
-			self.AlreadyClicked(false);
-			hideModal("commentModal");
-		};
-	};
+            //$.get("/users", {channel: channel}, function(data) {
+            //    window.viewModel.setUsers(data);
+            //}, "json");
 
-	window.viewModel = new windowViewModel();
-	ko.applyBindings(window.viewModel);
-}
+            //$("#usersModal").modal("show");
+        };
 
-//function getUsers(channel) {
-//	$.get("/users", {channel: channel}, function(data) {
-//		window.viewModel.setUsers(data);
-//	}, "json");
-//}
+        //functions
+        self.login = function() {
+            var submitData = {
+                username: self.Username().toLowerCase(),
+                password: self.Password().toLowerCase(),
+                channel: self.Channel().toLowerCase()
+            };
 
-function showModal(modal) {
-	$("#" + modal).modal("show");
-	$("body").css("padding-right", 0);
-}
+            $.post("/", submitData).done(function(data) {
+                if(!data.isValid) {
+                    alert(data.error);
+                }
+                else {
+                    $("#loginModal").modal("hide");
+                }
+            });
+        };
 
-function hideModal(modal) {
-	$("#" + modal).modal("hide");
-	$("body").css("padding-right", 0);
-}
+        self.addComment = function(data, scroll) {
+            self.Comments.push(new commentViewModel(data));
+            var length = self.Comments().length;
 
-function getScroll() {
-	if(typeof (window.pageYOffset) == "number") {
-		//Netscape compliant
-		return window.pageYOffset;
-	}
-	else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
-		//DOM compliant
-		return document.body.scrollTop;
-	}
-	else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
-		//IE6 standards compliant mode
-		return document.documentElement.scrollTop;
-	}
+            if(scroll && length > self.MaxComments()) {
+                self.Comments.splice(0, length - self.MaxComments());
+            }
+        };
 
-	return 0;
-}
+        self.addKeyword = function() {
+            $.ajax({
+                url: "/keywords",
+                type: "PUT",
+                data: {keyword: self.NewKeyword()},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.Keywords.push({value: self.NewKeyword()});
+                        self.NewKeyword(null);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
 
-function getSize() {
-	if(typeof (window.innerWidth) == "number") {
-		//Non-IE
-		return window.innerHeight;
-	}
-	else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-		//IE 6+ in 'standards compliant mode'
-		return document.documentElement.clientHeight;
-	}
-	else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
-		//IE 4 compatible
-		return document.body.clientHeight;
-	}
+        self.removeKeyword = function(keyword) {
+            $.ajax({
+                url: "/keywords",
+                type: "DELETE",
+                data: {keyword: keyword},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.Keywords.remove(function(item) {
+                            return item.value === keyword;
+                        });
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
 
-	return 0;
+        self.addPersonalCommand = function() {
+            $.ajax({
+                url: "/personalCommands",
+                type: "PUT",
+                data: {
+                    id: self.NewPersonalCommand(),
+                    value: self.NewPersonalCommandText()
+                },
+                success: function(result) {
+                    if(result.isValid) {
+                        self.PersonalCommands.push({
+                            id: self.NewPersonalCommand(),
+                            value: self.NewPersonalCommandText()
+                        });
+
+                        self.NewPersonalCommand(null);
+                        self.NewPersonalCommandText(null);
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
+
+        self.removePersonalCommand = function(command) {
+            $.ajax({
+                url: "/personalCommands",
+                type: "DELETE",
+                data: {id: command},
+                success: function(result) {
+                    if(result.isValid) {
+                        self.PersonalCommands.remove(function(item) {
+                            return item.id === command;
+                        });
+                    }
+                    else {
+                        alert(result.error);
+                    }
+                }
+            });
+        };
+
+        self.userTimeout = function(data) {
+            _.each(self.Comments(), function(comment) {
+                if(comment.Name === data.user) {
+                    comment.Hidden(true);
+                }
+            });
+        };
+
+        self.sendMessage = function() {
+            if(self.OutgoingMessage().length > 0) {
+                window.socket.emit("outgoingMessage", {
+                    message: self.OutgoingMessage(),
+                    channel: self.Channel()
+                });
+
+                self.OutgoingMessage("");
+            }
+        };
+
+        self.setComment = function(comment) {
+            if(!self.AlreadyClicked()) {
+                self.SelectedComment(comment);
+                self.AlreadyClicked(true);
+                $("#commentModal").modal("show");
+            }
+        };
+
+        self.unsetComment = function() {
+            self.SelectedComment(null);
+            self.AlreadyClicked(false);
+            $("#commentModal").modal("hide");
+        };
+    };
+
+    window.viewModel = new windowViewModel();
+    ko.applyBindings(window.viewModel);
 }
 
 function shouldScroll() {
-	var minHeight = document.body.scrollHeight - 40;
-	var currentHeight = getSize() + getScroll();
-	var maxHeight = document.body.scrollHeight;
+    var minHeight = document.body.scrollHeight - 40;
+    var currentHeight = window.innerHeight + window.pageYOffset;
+    var maxHeight = document.body.scrollHeight;
 
-	return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;
+    return (currentHeight - minHeight) * (currentHeight - maxHeight) <= 0;
 }

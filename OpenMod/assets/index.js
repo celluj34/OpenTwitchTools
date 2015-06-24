@@ -1,14 +1,6 @@
 ﻿$(function() {
     $("#loginModal").modal("show");
 
-    $(".collapse.navbar-collapse").on("click", ".autoClose", function() {
-        $(".collapse.navbar-collapse").collapse("hide");
-    });
-
-    $(".collapse.navbar-collapse").on("click", ".channelClose", function() {
-        window.scrollTo(0, document.body.scrollHeight);
-    });
-
     loadInfo();
     setupCustomControls();
     setupSocketHandlers();
@@ -31,6 +23,14 @@ function loadInfo() {
 }
 
 function setupCustomControls() {
+    $(".collapse.navbar-collapse").on("click", ".autoClose", function() {
+        $(".collapse.navbar-collapse").collapse("hide");
+    });
+
+    $(".collapse.navbar-collapse").on("click", ".channelClose", function() {
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+
     var select2Settings = {
         ajax: {
             delay: 200,
@@ -334,6 +334,11 @@ function initializeKnockout() {
 
         self.showUsers = function() {
             alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
+
+            //$.get("/users", {channel: channel}, function(data) {
+            //    window.viewModel.setUsers(data);
+            //}, "json");
+
             //$("#usersModal").modal("show");
         };
 
@@ -543,12 +548,6 @@ function initializeKnockout() {
     window.viewModel = new windowViewModel();
     ko.applyBindings(window.viewModel);
 }
-
-//function getUsers(channel) {
-//	$.get("/users", {channel: channel}, function(data) {
-//		window.viewModel.setUsers(data);
-//	}, "json");
-//}
 
 function shouldScroll() {
     var minHeight = document.body.scrollHeight - 40;

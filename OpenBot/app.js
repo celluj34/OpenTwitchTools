@@ -74,6 +74,35 @@ router.route("/")
     });
 
 router.route("/users")
+    .get(function(req, response) {
+        var channel = req.query.channel;
+        var url = _s.sprintf("http://tmi.twitch.tv/group/user/%s/chatters", channel);
+
+        request(url, function(err, resp, body) {
+            var data = JSON.parse(body);
+
+            var users =
+                _.chain(data.chatters)
+                    .map(function(group, index) {
+                        return _.map(group, function(user) {
+                            return {
+                                user: user,
+                                special: index
+
+                            };
+                        });
+                    })
+                    .flatten()
+                    .sortBy(function(item) {
+                        return item.special + " " + item.user;
+                    })
+                    .value();
+
+            response.json({
+                users: users
+            });
+        });
+    })
     .post(function(req, response) {
         var channel = req.body.channel;
         var query = req.body.query;

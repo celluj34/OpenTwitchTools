@@ -272,6 +272,7 @@ function initializeKnockout() {
         self.Channels = ko.observableArray();
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
+        self.Users = ko.observableArray();
 
         //settings and stuff
         self.Keywords = ko.observableArray();
@@ -333,13 +334,13 @@ function initializeKnockout() {
         };
 
         self.showUsers = function() {
-            alert("This feature is currently in development. 'Show users for " + self.SelectedChannel().ChannelName + "'.");
+            self.Users(null);
 
-            //$.get("/users", {channel: channel}, function(data) {
-            //    window.viewModel.setUsers(data);
-            //}, "json");
+            $.get("/users", {channel: self.SelectedChannel().ChannelName}, function(data) {
+                self.Users(data.users);
+            }, "json");
 
-            //$("#usersModal").modal("show");
+            $("#usersModal").modal("show");
         };
 
         self.login = function() {

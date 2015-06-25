@@ -254,7 +254,7 @@
 
                     <div class="col-md-12">
                         <label>Existing Keywords</label>
-                        <table class="table">
+                        <table class="table table-condensed">
                             <tbody data-bind="foreach: Keywords">
                                 <tr>
                                     <td>
@@ -305,7 +305,7 @@
 
                     <div class="col-md-12">
                         <label>Existing Commands</label>
-                        <table class="table">
+                        <table class="table table-condensed">
                             <tbody data-bind="foreach: PersonalCommands">
                                 <tr>
                                     <td>
@@ -316,6 +316,40 @@
                                     </td>
                                     <td>
                                         <a class="btn btn-danger" data-bind="click: function(){$parent.removePersonalCommand(id);}">Remove</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="usersModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Chat Users</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-condensed">
+                            <tbody data-bind="foreach: Users">
+                                <tr>
+                                    <td>
+                                        <span data-bind="text: user"></span>
+                                    </td>
+                                    <td>
+                                        <span data-bind="text: special"></span>
                                     </td>
                                 </tr>
                             </tbody>

@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav" data-bind="foreach: Channels">
                 <li data-bind="css: {active: Selected}" role="presentation">
-                    <a class="autoClose channelClose" data-bind="click: function(){$parent.Select(ChannelName);}, text: ChannelHashName" href="#"></a>
+                    <a class="autoClose channelClose" data-bind="click: function(){$parent.Select(Name);}, text: Brand" href="#"></a>
                 </li>
             </ul>
 
@@ -64,7 +64,7 @@
 <div class="body-content container">
     <div class="row">
         <div class="tab-content" data-bind="foreach: Channels">
-            <div class="tab-pane" data-bind="attr: {id: ChannelName}, css: {active: Selected}">
+            <div class="tab-pane" data-bind="attr: {id: Name}, css: {active: Selected}">
                 <div data-bind="foreach: Comments">
                     <div class="singleComment well well-sm" data-bind="click: showComment, css: HighlightColor">
                         <span data-bind="text: Timestamp"></span>
@@ -136,7 +136,9 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12" id="webviewWrapper">
-                        <webview data-bind="attr: {src: TokenAuthUrl}"></webview>
+                        <webview data-bind="attr: {src: TokenAuthUrl}" id="webviewControl">
+                            <div class="indicator"></div>
+                        </webview>
                     </div>
                 </div>
             </div>

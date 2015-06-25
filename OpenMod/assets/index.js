@@ -80,7 +80,7 @@ function setupCustomControls() {
             callbacks: {
                 remoteFilter: function(query, callback) {
                     $.post("/users", {
-                        channel: window.viewModel.SelectedChannel().ChannelName,
+                        channel: window.viewModel.SelectedChannel().Name,
                         query: query
                     }, function(data) {
                         callback(data);
@@ -145,7 +145,7 @@ function setupSocketHandlers() {
 }
 
 function initializeKnockout() {
-    var commentViewModel = function(data) {
+    var commentViewModel = function(data, channel) {
         var self = this;
 
         //comment static properties
@@ -156,6 +156,7 @@ function initializeKnockout() {
         self.Timestamp = data.timestamp;
         self.Highlight = data.highlight;
         self.Action = data.isAction;
+        self.Channel = channel;
 
         self.HighlightColor = self.Highlight ? "bg-danger" : "";
 
@@ -219,7 +220,7 @@ function initializeKnockout() {
         function doAction(action, properties) {
             var sendData = {
                 user: self.Name,
-                channel: window.viewModel.SelectedChannel().ChannelName
+                channel: self.Channel
             };
 
             $.extend(sendData, properties);
@@ -234,8 +235,8 @@ function initializeKnockout() {
         var self = this;
 
         //channel static properties
-        self.ChannelName = data;
-        self.ChannelHashName = "#" + data;
+        self.Name = data;
+        self.Brand = "#" + data;
 
         //observable properties
         self.Comments = ko.observableArray();
@@ -245,7 +246,7 @@ function initializeKnockout() {
 
         //channel functions
         self.addComment = function(comment, scroll) {
-            self.Comments.push(new commentViewModel(comment));
+            self.Comments.push(new commentViewModel(comment, self.Name));
             var length = self.Comments().length;
 
             if(scroll && length > self.MaxComments()) {
@@ -306,7 +307,7 @@ function initializeKnockout() {
 
         self.Brand = ko.computed(function() {
             if(self.ChannelIsSelected()) {
-                return "#" + self.SelectedChannel().ChannelName;
+                return self.SelectedChannel().Brand;
             }
 
             return "";
@@ -315,7 +316,7 @@ function initializeKnockout() {
         //functions
         self.Select = function(channelName) {
             _.each(self.Channels(), function(channel) {
-                channel.Selected(channel.ChannelName === channelName);
+                channel.Selected(channel.Name === channelName);
             });
         };
 
@@ -338,7 +339,7 @@ function initializeKnockout() {
         self.showUsers = function() {
             self.Users(null);
 
-            $.get("/users", {channel: self.SelectedChannel().ChannelName}, function(data) {
+            $.get("/users", {channel: self.SelectedChannel().Name}, function(data) {
                 self.Users(data.users);
             }, "json");
 
@@ -491,14 +492,14 @@ function initializeKnockout() {
 
         self.leaveChannel = function() {
             window.socket.emit("leaveChannel", {
-                channel: self.SelectedChannel().ChannelName
+                channel: self.SelectedChannel().Name
             });
 
             self.Channels.remove(self.SelectedChannel());
             var firstChannel = _.first(self.Channels());
 
             if(!_.isUndefined(firstChannel)) {
-                self.Select(firstChannel.ChannelName);
+                self.Select(firstChannel.Name);
             }
         };
 
@@ -506,7 +507,7 @@ function initializeKnockout() {
             if(self.OutgoingMessage().length > 0) {
                 window.socket.emit("outgoingMessage", {
                     message: self.OutgoingMessage(),
-                    channel: self.SelectedChannel().ChannelName
+                    channel: self.SelectedChannel().Name
                 });
 
                 self.OutgoingMessage("");
@@ -529,7 +530,7 @@ function initializeKnockout() {
 
         function findMatchingChannel(channelName) {
             return _.find(self.Channels(), function(channel) {
-                return channel.ChannelName === channelName;
+                return channel.Name === channelName;
             });
         }
 
@@ -544,12 +545,24 @@ function initializeKnockout() {
 
             var newChannel = new channelViewModel(selectedChannel);
             self.Channels.push(newChannel);
-            self.Select(newChannel.ChannelName);
+            self.Select(newChannel.Name);
         }
     };
 
     window.viewModel = new windowViewModel();
     ko.applyBindings(window.viewModel);
+
+    var webview = $("#webviewControl")[0];
+    
+    webview.addEventListener("loadstart", function () {
+        console.log("loadstart");
+    });
+
+    webview.addEventListener("loadstop", function () {
+        console.log("loadstop");
+    });
+
+    //webview.reload();
 }
 
 function shouldScroll() {

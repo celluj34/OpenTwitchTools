@@ -40,7 +40,7 @@ function setupCustomControls() {
             callbacks: {
                 remoteFilter: function(query, callback) {
                     $.post("/users", {
-                        channel: window.viewModel.SelectedChannel().ChannelName,
+                        channel: window.viewModel.SelectedChannel().Name,
                         query: query
                     }, function(data) {
                         callback(data);
@@ -101,7 +101,7 @@ function setupSocketHandlers() {
 }
 
 function initializeKnockout() {
-    var commentViewModel = function(data) {
+    var commentViewModel = function(data, channel) {
         var self = this;
 
         //comment static properties
@@ -112,6 +112,7 @@ function initializeKnockout() {
         self.Timestamp = data.timestamp;
         self.Highlight = data.highlight;
         self.Action = data.isAction;
+        self.Channel = channel;
 
         self.HighlightColor = self.Highlight ? "bg-danger" : "";
 
@@ -175,7 +176,7 @@ function initializeKnockout() {
         function doAction(action, properties) {
             var sendData = {
                 user: self.Name,
-                channel: window.viewModel.Channel()
+                channel: self.Channel
             };
 
             $.extend(sendData, properties);
@@ -236,7 +237,7 @@ function initializeKnockout() {
         self.showUsers = function() {
             self.Users(null);
 
-            $.get("/users", {channel: self.SelectedChannel().ChannelName}, function(data) {
+            $.get("/users", {channel: self.Channel}, function(data) {
                 self.Users(data.users);
             }, "json");
 

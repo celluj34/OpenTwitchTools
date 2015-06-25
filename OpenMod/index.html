@@ -135,10 +135,12 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12" id="webviewWrapper">
-                        <webview data-bind="attr: {src: TokenAuthUrl}" id="webviewControl">
-                            <div class="indicator"></div>
-                        </webview>
+                    <div class="col-md-12" id="webview-wrapper">
+                        <div class="text-center webview-loading" data-bind="visible: TokenAuthLoading">
+                            Loading...
+                        </div>
+
+                        <webview data-bind="attr: {src: TokenAuthUrl}" id="webview-control"></webview>
                     </div>
                 </div>
             </div>

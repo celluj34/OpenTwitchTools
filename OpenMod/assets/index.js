@@ -33,6 +33,10 @@ function setupCustomControls() {
 
     $("[data-toggle='tooltip']").tooltip();
 
+    $("#webview-control")[0].addEventListener("dom-ready", function() {
+        window.viewModel.TokenAuthLoading(false);
+    });
+
     var select2Settings = {
         ajax: {
             delay: 200,
@@ -280,7 +284,8 @@ function initializeKnockout() {
         //settings and stuff
         self.Keywords = ko.observableArray();
         self.PersonalCommands = ko.observableArray();
-        self.TokenAuthUrl = ko.observable("http://sharpmod.azurewebsites.net/"); // "https://twitchtokenauth.azurewebsites.net/OpenMod";
+        self.TokenAuthUrl = "http://sharpmod.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenMod";
+        self.TokenAuthLoading = ko.observable(true);
 
         //input information
         self.OutgoingMessage = ko.observable();
@@ -551,18 +556,6 @@ function initializeKnockout() {
 
     window.viewModel = new windowViewModel();
     ko.applyBindings(window.viewModel);
-
-    var webview = $("#webviewControl")[0];
-    
-    webview.addEventListener("loadstart", function () {
-        console.log("loadstart");
-    });
-
-    webview.addEventListener("loadstop", function () {
-        console.log("loadstop");
-    });
-
-    //webview.reload();
 }
 
 function shouldScroll() {

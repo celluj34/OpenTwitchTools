@@ -31,8 +31,12 @@ function setupCustomControls() {
     $(".collapse.navbar-collapse").on("click", ".channelClose", function() {
         window.scrollTo(0, document.body.scrollHeight);
     });
-    
+
     $("[data-toggle='tooltip']").tooltip();
+
+    $("#webview-control")[0].addEventListener("dom-ready", function() {
+        window.viewModel.TokenAuthLoading(false);
+    });
 
     $("#chatMessage").atwho({
             at: "@",
@@ -205,7 +209,8 @@ function initializeKnockout() {
         //settings and stuff
         self.Keywords = ko.observableArray();
         self.PersonalCommands = ko.observableArray();
-        self.TokenAuthUrl = ko.observable("http://sharpbot.azurewebsites.net/"); // "https://twitchtokenauth.azurewebsites.net/OpenBot";
+        self.TokenAuthUrl = "http://sharpbot.azurewebsites.net/"; // "https://twitchtokenauth.azurewebsites.net/OpenBot";
+        self.TokenAuthLoading = ko.observable(true);
 
         //input information
         self.OutgoingMessage = ko.observable();

@@ -18,10 +18,15 @@
     right: 0;
 }
 
-#webviewWrapper {
+#webview-wrapper {
     height: 400px;
 }
 
 .select2 {
     width: 100% !important;
+}
+
+.webview-loading {
+    margin-bottom: -100px;
+    padding-top: 100px;
 }

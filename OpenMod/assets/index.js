@@ -31,6 +31,8 @@ function setupCustomControls() {
         window.scrollTo(0, document.body.scrollHeight);
     });
 
+    $("[data-toggle='tooltip']").tooltip();
+
     var select2Settings = {
         ajax: {
             delay: 200,

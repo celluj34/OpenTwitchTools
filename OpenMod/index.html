@@ -236,7 +236,10 @@
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Keywords</h4>
+                <h4 class="modal-title">
+                    Keywords
+                    <i class="glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="You can use Keywords to specify certain words or phrases that can be used to highlight chat messages. Keywords are evaluated ignoring case."></i>
+                </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -246,7 +249,10 @@
                                 <label for="newKeyword">Add New Keyword</label>
                                 <input class="form-control" data-bind="value: NewKeyword" id="newKeyword" required type="text" />
                             </div>
-                            <button style="display: none" type="submit"></button>
+                            <div class="pull-right">
+                                <button class="btn btn-primary" type="submit">Submit</button>
+                            </div>
+                            <div class="clearfix"></div>
                         </form>
                     </div>
 
@@ -283,7 +289,10 @@
                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Personal Commands</h4>
+                <h4 class="modal-title">
+                    Personal Commands
+                    <i class="glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="You can use Personal Commands as an easy way to insert commonly-used phrases. Once your command is saved, access them by typing '!' in the message box. There you can search and use <enter> or <tab> to insert to text as specified by the command."></i>
+                </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -297,7 +306,10 @@
                                 <label for="newPersonalCommandText">Text</label>
                                 <input class="form-control" data-bind="value: NewPersonalCommandText" id="newPersonalCommandText" required type="text" />
                             </div>
-                            <button style="display: none" type="submit"></button>
+                            <div class="pull-right">
+                                <button class="btn btn-primary" type="submit">Submit</button>
+                            </div>
+                            <div class="clearfix"></div>
                         </form>
                     </div>
 

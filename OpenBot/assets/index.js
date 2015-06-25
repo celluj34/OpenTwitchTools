@@ -31,6 +31,8 @@ function setupCustomControls() {
     $(".collapse.navbar-collapse").on("click", ".channelClose", function() {
         window.scrollTo(0, document.body.scrollHeight);
     });
+    
+    $("[data-toggle='tooltip']").tooltip();
 
     $("#chatMessage").atwho({
             at: "@",

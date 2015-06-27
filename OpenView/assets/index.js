@@ -65,37 +65,46 @@ function initializeKnockout() {
 
         //channel static properties
         self.Name = data;
-        self.Brand = "#" + data;
-        self.EmbedUrl = "http://www.twitch.tv/" + data + "/embed";
 
         //observable properties
         self.Selected = ko.observable(false);
+
+        //computed properties
+        self.Brand = ko.computed(function() {
+            return "#" + self.Name;
+        });
+
+        self.EmbedUrl = ko.computed(function() {
+            return "http://www.twitch.tv/" + self.Name + "/embed";
+        });
+
+        self.EmbedId = ko.computed(function() {
+            return self.Name + "player";
+        });
+
+        self.Selector = ko.computed(function() {
+            return "#" + self.EmbedId();
+        });
     };
 
     var windowViewModel = function() {
         var self = this;
 
-        //obs
+        //observable properties
         self.LoginSelectedChannel = ko.observable();
 
         //chat information
         self.Channels = ko.observableArray();
 
-        //computed values
+        //computed properties
         self.SelectedChannel = ko.computed(function() {
-            var selectedChannel = _.find(self.Channels(), function(channel) {
+            return _.find(self.Channels(), function(channel) {
                 return channel.Selected();
             });
-
-            if(_.isUndefined(selectedChannel)) {
-                return null;
-            }
-
-            return selectedChannel;
         });
 
         self.ChannelIsSelected = ko.computed(function() {
-            return !_.isNull(self.SelectedChannel());
+            return !_.isUndefined(self.SelectedChannel());
         });
 
         self.Brand = ko.computed(function() {
@@ -110,6 +119,15 @@ function initializeKnockout() {
         self.Select = function(channelName) {
             _.each(self.Channels(), function(channel) {
                 channel.Selected(channel.Name === channelName);
+
+                var player = $(channel.Selector())[0];
+
+                if(channel.Selected()) {
+                    player.playVideo();
+                }
+                else {
+                    player.pauseVideo();
+                }
             });
         };
 

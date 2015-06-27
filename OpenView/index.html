@@ -51,7 +51,9 @@
             <div class="row">
                 <div class="tab-content" data-bind="foreach: Channels">
                     <div class="tab-pane" data-bind="attr: {id: Name}, css: {active: Selected}">
-                        <webview data-bind="attr:{src: EmbedUrl}" plugins></webview>
+                        <div class="embed-responsive embed-responsive-4by3">
+                            <webview class="embed-responsive-item" data-bind="attr:{src: EmbedUrl, id: EmbedId}" plugins></webview>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,6 +95,7 @@
         <script src="assets/lib/select2/js/select2.min.js"></script>
         <script src="assets/lib/underscore/underscore-min.js" type="text/javascript"></script>
         <script src="assets/lib/knockout/knockout.js" type="text/javascript"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
         <script src="assets/index.js" type="text/javascript"></script>
     </body>
 </html>

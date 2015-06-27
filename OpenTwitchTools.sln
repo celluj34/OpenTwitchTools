@@ -7,6 +7,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "OpenMod", "OpenMod\OpenMod.
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "OpenBot", "OpenBot\OpenBot.njsproj", "{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "OpenView", "OpenView\OpenView.njsproj", "{7DDF0188-DD6C-4425-A45B-47F2377458CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC79D5C5-8AED-4130-BC8E-9A99FB502E90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DDF0188-DD6C-4425-A45B-47F2377458CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DDF0188-DD6C-4425-A45B-47F2377458CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DDF0188-DD6C-4425-A45B-47F2377458CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DDF0188-DD6C-4425-A45B-47F2377458CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

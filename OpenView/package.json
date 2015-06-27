@@ -1,0 +1,16 @@
+{
+  "name": "OpenView",
+  "description": "OpenView",
+  "main": "app.js",
+  "author": {
+    "name": "Joseph Cellucci",
+    "email": "celluj34@gmail.com"
+  },
+  "dependencies": {
+    "body-parser": "1.13.1",
+    "express": "4.13.0",
+    "request": "2.58.0",
+    "underscore": "1.8.3",
+    "underscore.string": "3.1.1"
+  }
+}

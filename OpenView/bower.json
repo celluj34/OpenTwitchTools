@@ -1,0 +1,14 @@
+{
+  "name": "OpenView",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "3.3.5",
+    "jquery": "2.1.4",
+    "jquery.atwho": "1.3.2",
+    "jquery.caret": "1.5.2",
+    "knockout": "3.3.0",
+    "select2": "4.0.0",
+    "socket.io": "1.3.5",
+    "underscore": "1.8.3"
+  }
+}

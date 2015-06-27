@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenMod</title>
+        <meta charset="utf-8" />
+        <meta content="width=device-width" initial-scale="1.0 " name="viewport" />
+        <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/lib/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/site.css" rel="stylesheet" type="text/css" />
+        <link href="assets/images/icon.png" rel="icon" type="image/png">
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="collapsed navbar-toggle" data-target=".collapse.navbar-collapse" data-toggle="collapse" type="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a class="hidden-lg hidden-md hidden-sm navbar-brand" data-bind="text: Brand, visible: ChannelIsSelected" href="#"></a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav" data-bind="foreach: Channels">
+                        <li data-bind="css: {active: Selected}" role="presentation">
+                            <a class="autoClose channelClose" data-bind="click: function(){$parent.Select(Name);}, text: Brand" href="#"></a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Tools <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a class="autoClose" data-bind="click: showJoinChannelModal" href="#">Join Channel</a>
+                                </li>
+                                <li>
+                                    <a class="autoClose" data-bind="click: leaveChannel, visible: ChannelIsSelected" href="#">Leave Channel</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="body-content container">
+            <div class="row">
+                <div class="tab-content" data-bind="foreach: Channels">
+                    <div class="tab-pane" data-bind="attr: {id: Name}, css: {active: Selected}">
+                        <!--<object bgcolor="#000000" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" height="{HEIGHT}" type="application/x-shockwave-flash" width="{WIDTH}">-->
+                            <!--<param name="allowFullScreen" value="true" />-->
+                            <!--<param name="allowNetworking" value="all" />-->
+                            <!--<param name="allowScriptAccess" value="always" />-->
+                            <!--<param name="movie" value="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" />-->
+                            <!--<param name="flashvars" value="channel={CHANNEL}&auto_play={AUTO_PLAY}&start_volume={VOLUME}" />-->
+                        <!--</object>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div aria-hidden="true" class="fade in modal" data-backdrop="static" data-keyboard="false" id="joinChannelModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Join Channel</h4>
+                    </div>
+                    <form data-bind="submit: joinChannel">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="newChannel">Channel</label>
+                                        <div>
+                                            <select class="select2" data-bind="value: LoginSelectedChannel" id="newChannel"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-default" data-dismiss="modal" type="button">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Join</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+        <script src="assets/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="assets/lib/select2/js/select2.min.js"></script>
+        <script src="assets/lib/select2/js/select2.min.js"></script>
+        <script src="assets/lib/underscore/underscore-min.js" type="text/javascript"></script>
+        <script src="assets/lib/knockout/knockout.js" type="text/javascript"></script>
+        <script src="assets/index.js" type="text/javascript"></script>
+    </body>
+</html>

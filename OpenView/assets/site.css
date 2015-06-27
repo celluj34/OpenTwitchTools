@@ -1,0 +1,32 @@
+.body-content {
+    padding-bottom: 55px;
+    padding-top: 55px;
+}
+
+#chatMessage {
+    margin: 8px 0;
+    width: 100%;
+}
+
+.singleComment {
+    margin: 3px 7px;
+    padding: 3px;
+}
+
+.dropdown-menu {
+    left: inherit;
+    right: 0;
+}
+
+#webview-wrapper {
+    height: 400px;
+}
+
+.select2 {
+    width: 100% !important;
+}
+
+.webview-loading {
+    margin-bottom: -100px;
+    padding-top: 100px;
+}

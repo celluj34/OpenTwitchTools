@@ -69,7 +69,10 @@ app.on("ready", function() {
         "show": false,
         "title": server.locals.appName,
         "icon": server.locals.icon,
-        "resizeable": true
+        "resizeable": true,
+        "web-preferences": {
+            "plugins": true
+        }
     });
 
     mainWindow.setMenu(null);

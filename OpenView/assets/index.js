@@ -19,20 +19,20 @@ function setupCustomControls() {
     //$("#webview-control")[0].addEventListener("dom-ready", function() {
     //    window.viewModel.TokenAuthLoading(false);
     //});
-    
+
     $("#newChannel").select2({
         ajax: {
             delay: 200,
             dataType: "json",
             url: "/search",
-            data: function (params) {
+            data: function(params) {
                 return {
                     channel: params.term,
                     page: params.page
                 };
             },
             method: "POST",
-            processResults: function (data) {
+            processResults: function(data) {
                 return {
                     results: data
                 };
@@ -44,16 +44,16 @@ function setupCustomControls() {
             name: "Search",
             id: null
         },
-        templateResult: function (channel) {
+        templateResult: function(channel) {
             return channel.name;
         },
-        templateSelection: function (channel) {
+        templateSelection: function(channel) {
             return channel.name;
         },
-        escapeMarkup: function (markup) {
+        escapeMarkup: function(markup) {
             return markup;
         },
-        id: function (channel) {
+        id: function(channel) {
             return channel.id;
         }
     });
@@ -66,6 +66,7 @@ function initializeKnockout() {
         //channel static properties
         self.Name = data;
         self.Brand = "#" + data;
+        self.EmbedUrl = "http://www.twitch.tv/" + data + "/embed";
 
         //observable properties
         self.Selected = ko.observable(false);
@@ -73,7 +74,7 @@ function initializeKnockout() {
 
     var windowViewModel = function() {
         var self = this;
-        
+
         //obs
         self.LoginSelectedChannel = ko.observable();
 
@@ -111,7 +112,7 @@ function initializeKnockout() {
                 channel.Selected(channel.Name === channelName);
             });
         };
-        
+
         self.showJoinChannelModal = function() {
             $("#joinChannelModal").modal("show");
         };

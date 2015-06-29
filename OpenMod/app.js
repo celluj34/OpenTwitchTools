@@ -12,7 +12,7 @@
     app = require("app"),
     BrowserWindow = require("browser-window"),
     moment = require("moment"),
-    client,
+    tmiClient,
     mainWindow;
 
 server.locals.appName = "OpenMod";
@@ -262,51 +262,52 @@ function setupOutgoingCommandHandlers(socket) {
             var message = data.message.substring(4);
 
             if(message.length > 0) {
-                client.action(data.channel, message);
+                tmiClient.action(data.channel, message);
             }
         }
         else {
-            client.say(data.channel, data.message);
+            tmiClient.say(data.channel, data.message);
         }
     });
 
     socket.on("joinChannel", function(data) {
         getBadges(data.channel);
 
-        client.join(data.channel);
+        tmiClient.join(data.channel);
     });
 
     socket.on("timeoutUser", function(data) {
-        client.timeout(data.channel, data.user, data.seconds);
+        tmiClient.timeout(data.channel, data.user, data.seconds);
     });
 
     socket.on("banUser", function(data) {
-        client.ban(data.channel, data.user);
+        tmiClient.ban(data.channel, data.user);
     });
 
     socket.on("unbanUser", function(data) {
-        client.unban(data.channel, data.user);
+        tmiClient.unban(data.channel, data.user);
     });
 
     socket.on("leaveChannel", function(data) {
         badges(data.channel).remove();
 
-        client.part(data.channel);
+        tmiClient.part(data.channel);
     });
 }
 
 function setupConnection(initialChannel, username, password) {
-    if(!client) {
+    if(_.isNull(tmiClient)) {
         var clientSettings = {
             options: {
-                debug: false,
-                debugIgnore: ["ping", "chat", "action"],
-                emitSelf: true,
-                logging: false
+                debug: false
+            },
+            connection: {
+                random: "chat",
+                reconnect: true
             },
             identity: {
                 username: username,
-                password: "oauth:" + password
+                password: password
             }
         };
 
@@ -314,11 +315,11 @@ function setupConnection(initialChannel, username, password) {
             clientSettings.channels = [initialChannel];
         }
 
-        client = new irc.client(clientSettings);
+        tmiClient = new tmi.client(clientSettings);
 
-        client.connect();
+        tmiClient.connect();
 
-        setupIncomingEventListeners(client);
+        setupIncomingEventListeners(tmiClient);
     }
 }
 
@@ -340,7 +341,6 @@ function setupIncomingEventListeners(client) {
     });
 
     client.addListener("join", function(channel, user) {
-
         socketio.sockets.emit("channelJoined", {
             channel: channel.substring(1),
             name: user

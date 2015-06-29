@@ -2,7 +2,7 @@
     server = express(),
     router = express.Router(),
     path = require("path"),
-    irc = require("twitch-irc"),
+    tmi = require("tmi.js"),
     _ = require("underscore"),
     _s = require("underscore.string"),
     lowdb = require("lowdb"),

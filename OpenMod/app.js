@@ -253,12 +253,8 @@ var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
 socketio = socketio.listen(serverListener);
 
 socketio.on("connection", function(socket) {
-    setupOutgoingCommandHandlers(socket);
-});
-
-function setupOutgoingCommandHandlers(socket) {
     socket.on("outgoingMessage", function(data) {
-        if(_s.startsWith(data.message, "/me ")) {
+        if(_s.startsWith(data.message, "/me ") || _s.startsWith(data.message, "\me ")) {
             var message = data.message.substring(4);
 
             if(message.length > 0) {
@@ -293,10 +289,10 @@ function setupOutgoingCommandHandlers(socket) {
 
         tmiClient.part(data.channel);
     });
-}
+});
 
 function setupConnection(initialChannel, username, password) {
-    if(_.isNull(tmiClient)) {
+    if(_.isUndefined(tmiClient) || _.isNull(tmiClient)) {
         var clientSettings = {
             options: {
                 debug: false
@@ -430,10 +426,10 @@ function getBadges(channel) {
 
 function emitMessage(channel, user, message, action) {
     var data = {
-        name: user.username,
-        badges: parseAttributes(user.special, channel.substring(1)),
-        color: user.color,
-        message: parseMessage(message, user.emote),
+        name: user["display-name"] || user["username"],
+        badges: parseBadges(channel.substring(1), user),
+        color: user["color"],
+        message: parseMessage(message, user["emotes"]),
         channel: channel.substring(1),
         highlight: highlightMessage(message),
         isAction: action,
@@ -483,9 +479,23 @@ function parseMessage(message, emotes) {
     return newMessage;
 }
 
-function parseAttributes(attributes, channel) {
-    if(!attributes || attributes.length === 0) {
-        return null;
+function parseBadges(channel, user) {
+    var attributes = [];
+
+    if(user["turbo"]) {
+        attributes.push("turbo");
+    }
+
+    if(user["subscriber"]) {
+        attributes.push("subscriber");
+    }
+
+    if(user["user-type"]) {
+        attributes.push(user["user-type"]);
+    }
+
+    if(user["username"] === channel) {
+        attributes.push("broadcaster");
     }
 
     var attributeString = _.chain(attributes)

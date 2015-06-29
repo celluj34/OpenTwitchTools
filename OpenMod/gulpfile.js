@@ -17,10 +17,10 @@ gulp.task("clean", function(cb) {
 
 gulp.task("copy", ["clean"], function() {
     var bower = {
+        "at.js": "at.js/dist/**/*.{css,js,map}",
         "bootstrap": "bootstrap/dist/**/*.{css,js,map,ttf,svg,woff,woff2,eot}",
+        "caret.js": "caret.js/dist/**/*.{css,js,map}",
         "jquery": "jquery/dist/jquery*.{js,map}",
-        "jquery.atwho": "jquery.atwho/dist/**/*.{css,js,map}",
-        "jquery.caret": "jquery.caret/dist/**/*.{css,js,map}",
         "knockout": "knockout/dist/knockout*.{js,map}",
         "select2": "select2/dist/**/*{css,js,map}",
         "underscore": "underscore/underscore*.{js,map}"
@@ -32,4 +32,4 @@ gulp.task("copy", ["clean"], function() {
     }
 });
 
-gulp.task("default", ["clean"]);
+gulp.task("default", ["clean", "copy"]);

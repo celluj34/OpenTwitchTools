@@ -2,10 +2,10 @@
   "name": "OpenMod",
   "private": true,
   "dependencies": {
+    "At.js": "1.3.2",
     "bootstrap": "3.3.5",
+    "caret.js": "0.2.2",
     "jquery": "2.1.4",
-    "jquery.atwho": "1.3.2",
-    "jquery.caret": "1.5.2",
     "knockout": "3.3.0",
     "select2": "4.0.0",
     "underscore": "1.8.3"

@@ -371,8 +371,6 @@ function initializeKnockout() {
                     addChannel(selectedChannel);
 
                     $("#loginModal").modal("hide");
-
-                    self.LoginSelectedChannel("");
                 }
             });
         };
@@ -515,7 +513,7 @@ function initializeKnockout() {
                     channel: self.SelectedChannel().Name
                 });
 
-                self.OutgoingMessage("");
+                self.OutgoingMessage(null);
             }
         };
 

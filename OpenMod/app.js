@@ -478,6 +478,35 @@ function parseMessage(message, emotes) {
     return newMessage + message.substring(lastEndIndex);
 }
 
+function parseMessage2(message, emotes) {
+    if(!emotes || emotes.length === 0) {
+        return message;
+    }
+
+    var newMessage = message.split("");
+
+    for(var emoteIndex in emotes) {
+        var emote = emotes[emoteIndex];
+
+        for(var charIndexes in emote) {
+            var emoteIndexes = emote[charIndexes];
+
+            if(typeof emoteIndexes == "string") {
+                emoteIndexes = emoteIndexes.split("-");
+                emoteIndexes = [parseInt(emoteIndexes[0]), parseInt(emoteIndexes[1])];
+
+                for(var i = emoteIndexes[0]; i <= emoteIndexes[1]; ++i) {
+                    newMessage[i] = "";
+                }
+
+                newMessage[emoteIndexes[0]] = makeImage(name, "http://static-cdn.jtvnw.net/emoticons/v1/" + emoteIndex + "/1.0");
+            }
+        }
+    }
+
+    return newMessage.join("");
+}
+
 function parseBadges(channel, user) {
     var attributes = [];
 

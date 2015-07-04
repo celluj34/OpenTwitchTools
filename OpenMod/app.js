@@ -440,15 +440,26 @@ function emitMessage(channel, user, message, action) {
 }
 
 function parseMessage(message, emotes) {
-    var emoteArray = _.chain(emotes)
+    if(!emotes || emotes.length === 0) {
+        return message;
+    }
+
+    var newMessage = "";
+    var lastEndIndex = 0;
+
+    _.chain(emotes)
         .map(function(emote, index) {
             var charIndex = _.map(emote, function(chars) {
                 var indexes = chars.split("-");
 
+                var startIndex = parseInt(indexes[0]);
+                var endIndex = parseInt(indexes[1]) + 1;
+                var name = message.substring(startIndex, endIndex);
+
                 return {
-                    url: "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0",
-                    startIndex: parseInt(indexes[0]),
-                    endIndex: parseInt(indexes[1]) + 1
+                    url: makeImage(name, "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0"),
+                    startIndex: startIndex,
+                    endIndex: endIndex
                 };
             });
 
@@ -456,27 +467,15 @@ function parseMessage(message, emotes) {
         })
         .flatten()
         .sortBy(function(item) {
-            return -1 * item.startIndex;
+            return item.startIndex;
         })
-        .value();
+        .each(function(emote) {
+            newMessage += (message.substring(lastEndIndex, emote.startIndex) + emote.url);
 
-    if(emoteArray.length === 0) {
-        return message;
-    }
+            lastEndIndex = emote.endIndex;
+        });
 
-    var newMessage = message;
-
-    _.each(emoteArray, function(emote) {
-        var emoteName = newMessage.substring(emote.startIndex, emote.endIndex);
-
-        var leftPart = newMessage.substring(0, emote.startIndex);
-        var middlePart = makeImage(emoteName, emote.url);
-        var rightPart = newMessage.substring(emote.endIndex);
-
-        newMessage = leftPart + middlePart + rightPart;
-    });
-
-    return newMessage;
+    return newMessage + message.substring(lastEndIndex);
 }
 
 function parseBadges(channel, user) {

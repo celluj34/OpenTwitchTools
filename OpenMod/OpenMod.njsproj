@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="assets\custom\dataTables.bootstrap.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.min.js" />
     <Compile Include="assets\lib\bootstrap\js\bootstrap.js" />
@@ -36,6 +37,9 @@
     <Compile Include="assets\lib\bootstrap\js\npm.js" />
     <Compile Include="assets\lib\caret.js\jquery.caret.js" />
     <Compile Include="assets\lib\caret.js\jquery.caret.min.js" />
+    <Compile Include="assets\lib\datatables\js\jquery.dataTables.js" />
+    <Compile Include="assets\lib\datatables\js\jquery.dataTables.min.js" />
+    <Compile Include="assets\lib\datatables\js\jquery.js" />
     <Compile Include="assets\lib\jquery\jquery.js" />
     <Compile Include="assets\lib\jquery\jquery.min.js" />
     <Compile Include="assets\lib\knockout\knockout.debug.js" />
@@ -106,12 +110,21 @@
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\lib\datatables\css\jquery.dataTables.css" />
+    <Content Include="assets\lib\datatables\css\jquery.dataTables.min.css" />
+    <Content Include="assets\lib\datatables\css\jquery.dataTables_themeroller.css" />
+    <Content Include="assets\lib\datatables\images\sort_asc.png" />
+    <Content Include="assets\lib\datatables\images\sort_asc_disabled.png" />
+    <Content Include="assets\lib\datatables\images\sort_both.png" />
+    <Content Include="assets\lib\datatables\images\sort_desc.png" />
+    <Content Include="assets\lib\datatables\images\sort_desc_disabled.png" />
     <Content Include="assets\lib\jquery\jquery.min.map" />
     <Content Include="assets\lib\select2\css\select2.css" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
     <Content Include="assets\database.json" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
     <Content Include="assets\lib\underscore\underscore-min.map" />
+    <Content Include="assets\custom\dataTables.bootstrap.css" />
     <Content Include="project.json" />
     <Content Include="package.json" />
     <Content Include="assets\site.css" />
@@ -129,6 +142,10 @@
     <Folder Include="assets\lib\bootstrap\fonts\" />
     <Folder Include="assets\lib\bootstrap\js\" />
     <Folder Include="assets\lib\caret.js\" />
+    <Folder Include="assets\lib\datatables\" />
+    <Folder Include="assets\lib\datatables\css\" />
+    <Folder Include="assets\lib\datatables\images\" />
+    <Folder Include="assets\lib\datatables\js\" />
     <Folder Include="assets\lib\jquery\" />
     <Folder Include="assets\lib\knockout\" />
     <Folder Include="assets\lib\select2\" />
@@ -136,6 +153,7 @@
     <Folder Include="assets\lib\select2\js\" />
     <Folder Include="assets\lib\select2\js\i18n\" />
     <Folder Include="assets\lib\underscore\" />
+    <Folder Include="assets\custom\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

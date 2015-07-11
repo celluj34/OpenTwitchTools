@@ -37,6 +37,23 @@ function setupCustomControls() {
         window.viewModel.TokenAuthLoading(false);
     });
 
+    $("#usersTable").DataTable({
+        columns: [
+            {
+                title: "User",
+                data: "user",
+                class: "col-sm-6"
+            },
+            {
+                title: "Type",
+                data: "type",
+                class: "col-sm-6"
+
+            }
+        ],
+        dom: "frt<\"text-center\"i>p"
+    });
+
     var select2Settings = {
         ajax: {
             delay: 200,
@@ -279,7 +296,6 @@ function initializeKnockout() {
         self.Channels = ko.observableArray();
         self.SelectedComment = ko.observable();
         self.AlreadyClicked = ko.observable(false);
-        self.Users = ko.observableArray();
 
         //settings and stuff
         self.Keywords = ko.observableArray();
@@ -342,11 +358,9 @@ function initializeKnockout() {
         };
 
         self.showUsers = function() {
-            self.Users(null);
+            var url = "/users?channel=" + self.SelectedChannel().Name;
 
-            $.get("/users", {channel: self.SelectedChannel().Name}, function(data) {
-                self.Users(data.users);
-            }, "json");
+            $("#usersTable").DataTable().ajax.url(url).load();
 
             $("#usersModal").modal("show");
         };

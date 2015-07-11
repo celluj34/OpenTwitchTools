@@ -98,7 +98,7 @@ router.route("/users")
                     .value();
 
             response.json({
-                users: users
+                aaData: users
             });
         });
     })

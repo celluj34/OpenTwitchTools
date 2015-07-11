@@ -87,14 +87,13 @@ router.route("/users")
                         return _.map(group, function(user) {
                             return {
                                 user: user,
-                                special: index
-
+                                type: index
                             };
                         });
                     })
                     .flatten()
                     .sortBy(function(item) {
-                        return item.special + " " + item.user;
+                        return item.type + " " + item.user;
                     })
                     .value();
 

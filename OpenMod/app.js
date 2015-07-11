@@ -546,8 +546,8 @@ app.on("ready", function() {
         "icon": server.locals.icon,
         "resizeable": true
     });
-
-    mainWindow.setMenu(null);
+    
+    //mainWindow.setMenu(null);
 
     mainWindow.on("closed", function() {
         mainWindow = null;

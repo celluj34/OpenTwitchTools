@@ -12,7 +12,7 @@
     app = require("app"),
     BrowserWindow = require("browser-window"),
     moment = require("moment"),
-    tmiClient,
+    client,
     mainWindow;
 
 server.locals.appName = "OpenMod";
@@ -247,9 +247,7 @@ router.route("/personalCommands")
 
 server.use("/", router);
 
-var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
-
-socketio = socketio.listen(serverListener);
+socketio = socketio.listen(server.listen(server.locals.port, server.locals.ipAddress));
 
 socketio.on("connection", function(socket) {
     socket.on("outgoingMessage", function(data) {
@@ -257,41 +255,41 @@ socketio.on("connection", function(socket) {
             var message = data.message.substring(4);
 
             if(message.length > 0) {
-                tmiClient.action(data.channel, message);
+                client.action(data.channel, message);
             }
         }
         else {
-            tmiClient.say(data.channel, data.message);
+            client.say(data.channel, data.message);
         }
     });
 
     socket.on("joinChannel", function(data) {
         getBadges(data.channel);
 
-        tmiClient.join(data.channel);
+        client.join(data.channel);
     });
 
     socket.on("timeoutUser", function(data) {
-        tmiClient.timeout(data.channel, data.user, data.seconds);
+        client.timeout(data.channel, data.user, data.seconds);
     });
 
     socket.on("banUser", function(data) {
-        tmiClient.ban(data.channel, data.user);
+        client.ban(data.channel, data.user);
     });
 
     socket.on("unbanUser", function(data) {
-        tmiClient.unban(data.channel, data.user);
+        client.unban(data.channel, data.user);
     });
 
     socket.on("leaveChannel", function(data) {
         badges(data.channel).remove();
 
-        tmiClient.part(data.channel);
+        client.part(data.channel);
     });
 });
 
 function setupConnection(initialChannel, username, password) {
-    if(_.isUndefined(tmiClient) || _.isNull(tmiClient)) {
+    if(_.isUndefined(client) || _.isNull(client)) {
         var clientSettings = {
             options: {
                 debug: false
@@ -310,11 +308,11 @@ function setupConnection(initialChannel, username, password) {
             clientSettings.channels = [initialChannel];
         }
 
-        tmiClient = new tmi.client(clientSettings);
+        client = new tmi.client(clientSettings);
 
-        tmiClient.connect();
+        client.connect();
 
-        setupIncomingEventListeners(tmiClient);
+        setupIncomingEventListeners(client);
     }
 }
 

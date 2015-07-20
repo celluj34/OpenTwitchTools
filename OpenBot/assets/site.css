@@ -27,6 +27,9 @@
 }
 
 .webview-loading {
-    margin-bottom: -100px;
     padding-top: 100px;
+}
+
+.highlight-background {
+    background-color: #F2DEDE;
 }

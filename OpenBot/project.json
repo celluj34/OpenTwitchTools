@@ -1,0 +1,15 @@
+{
+  "exclude": [
+    "node_modules",
+    "bower_components"
+  ],
+  "scripts": {
+    "postrestore": [
+      "npm install",
+      "bower install"
+    ],
+    "prepare": [
+      "gulp copy"
+    ]
+  }
+}

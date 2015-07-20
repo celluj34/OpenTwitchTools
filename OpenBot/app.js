@@ -2,7 +2,7 @@
     server = express(),
     router = express.Router(),
     path = require("path"),
-    irc = require("twitch-irc"),
+    tmi = require("tmi.js"),
     _ = require("underscore"),
     _s = require("underscore.string"),
     lowdb = require("lowdb"),
@@ -18,7 +18,7 @@
 server.locals.appName = "OpenBot";
 server.locals.ipAddress = "127.0.0.1";
 server.locals.port = 18077;
-server.locals.startupUrl = _s.sprintf("http://%s:%s", server.locals.ipAddress, server.locals.port);
+server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
 server.locals.index = path.join(__dirname, "index.html");
 server.locals.database = path.join(__dirname, "assets", "database.json");
 server.locals.icon = path.join(__dirname, "assets", "images", "icon.png");
@@ -76,7 +76,7 @@ router.route("/")
 router.route("/users")
     .get(function(req, response) {
         var channel = req.query.channel;
-        var url = _s.sprintf("http://tmi.twitch.tv/group/user/%s/chatters", channel);
+        var url = "http://tmi.twitch.tv/group/user/" + channel + "/chatters";
 
         request(url, function(err, resp, body) {
             var data = JSON.parse(body);
@@ -87,14 +87,13 @@ router.route("/users")
                         return _.map(group, function(user) {
                             return {
                                 user: user,
-                                special: index
-
+                                type: index
                             };
                         });
                     })
                     .flatten()
                     .sortBy(function(item) {
-                        return item.special + " " + item.user;
+                        return item.type + " " + item.user;
                     })
                     .value();
 
@@ -106,7 +105,7 @@ router.route("/users")
     .post(function(req, response) {
         var channel = req.body.channel;
         var query = req.body.query;
-        var url = _s.sprintf("http://tmi.twitch.tv/group/user/%s/chatters", channel);
+        var url = "http://tmi.twitch.tv/group/user/" + channel + "/chatters";
 
         request(url, function(err, resp, body) {
             var data = JSON.parse(body);
@@ -146,7 +145,7 @@ router.route("/loginInfo")
 
 router.route("/search")
     .post(function(req, response) {
-        var url = _s.sprintf("https://api.twitch.tv/kraken/search/channels?q=%s", req.body.channel);
+        var url = "https://api.twitch.tv/kraken/search/channels?q=" + req.body.channel;
 
         request(url, function(err, resp, body) {
             var data = JSON.parse(body);
@@ -250,17 +249,11 @@ router.route("/personalCommands")
 
 server.use("/", router);
 
-var serverListener = server.listen(server.locals.port, server.locals.ipAddress);
-
-socketio = socketio.listen(serverListener);
+socketio = socketio.listen(server.listen(server.locals.port, server.locals.ipAddress));
 
 socketio.on("connection", function(socket) {
-    setupOutgoingCommandHandlers(socket);
-});
-
-function setupOutgoingCommandHandlers(socket) {
     socket.on("outgoingMessage", function(data) {
-        if(_s.startsWith(data.message, "/me ")) {
+        if(_s.startsWith(data.message, "/me ") || _s.startsWith(data.message, "\me ")) {
             var message = data.message.substring(4);
 
             if(message.length > 0) {
@@ -295,25 +288,22 @@ function setupOutgoingCommandHandlers(socket) {
 
         client.part(data.channel);
     });
-}
+});
 
 function setupConnection(initialChannel, username, password) {
-    if(!client) {
+    if(_.isUndefined(client) || _.isNull(client)) {
         var clientSettings = {
             options: {
-                debug: false,
-                debugIgnore: ["ping", "chat", "action"],
-                emitSelf: true,
-                logging: false
+                debug: false
             },
             identity: {
                 username: username,
-                password: "oauth:" + password
+                password: password
             },
             channels: [initialChannel]
         };
 
-        client = new irc.client(clientSettings);
+        client = new tmi.client(clientSettings);
 
         client.connect();
 
@@ -348,7 +338,6 @@ function setupIncomingEventListeners(client) {
     });
 
     client.addListener("join", function(channel, user) {
-
         socketio.sockets.emit("channelJoined", {
             channel: channel.substring(1),
             name: user
@@ -408,7 +397,7 @@ function setupIncomingEventListeners(client) {
 }
 
 function getBadges(channel) {
-    var url = _s.sprintf("https://api.twitch.tv/kraken/chat/%s/badges", channel);
+    var url = "https://api.twitch.tv/kraken/chat/" + channel + "/badges";
 
     request(url, function(err, resp, body) {
         body = JSON.parse(body);
@@ -452,15 +441,26 @@ function emitMessage(channel, user, message, action) {
 }
 
 function parseMessage(message, emotes) {
-    var emoteArray = _.chain(emotes)
+    if(!emotes || emotes.length === 0) {
+        return message;
+    }
+
+    var newMessage = "";
+    var lastEndIndex = 0;
+
+    _.chain(emotes)
         .map(function(emote, index) {
             var charIndex = _.map(emote, function(chars) {
                 var indexes = chars.split("-");
 
+                var startIndex = parseInt(indexes[0]);
+                var endIndex = parseInt(indexes[1]) + 1;
+                var name = message.substring(startIndex, endIndex);
+
                 return {
-                    url: "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0",
-                    startIndex: parseInt(indexes[0]),
-                    endIndex: parseInt(indexes[1]) + 1
+                    url: makeImage(name, "http://static-cdn.jtvnw.net/emoticons/v1/" + index + "/1.0"),
+                    startIndex: startIndex,
+                    endIndex: endIndex
                 };
             });
 
@@ -468,32 +468,34 @@ function parseMessage(message, emotes) {
         })
         .flatten()
         .sortBy(function(item) {
-            return -1 * item.startIndex;
+            return item.startIndex;
         })
-        .value();
+        .each(function(emote) {
+            newMessage += (message.substring(lastEndIndex, emote.startIndex) + emote.url);
 
-    if(emoteArray.length === 0) {
-        return message;
-    }
+            lastEndIndex = emote.endIndex;
+        });
 
-    var newMessage = message;
-
-    _.each(emoteArray, function(emote) {
-        var emoteName = newMessage.substring(emote.startIndex, emote.endIndex);
-
-        var leftPart = newMessage.substring(0, emote.startIndex);
-        var middlePart = makeImage(emoteName, emote.url);
-        var rightPart = newMessage.substring(emote.endIndex);
-
-        newMessage = leftPart + middlePart + rightPart;
-    });
-
-    return newMessage;
+    return newMessage + message.substring(lastEndIndex);
 }
 
-function parseAttributes(attributes, channel) {
-    if(!attributes || attributes.length === 0) {
-        return null;
+function parseBadges(channel, user) {
+    var attributes = [];
+
+    if(user["turbo"]) {
+        attributes.push("turbo");
+    }
+
+    if(user["subscriber"]) {
+        attributes.push("subscriber");
+    }
+
+    if(user["user-type"]) {
+        attributes.push(user["user-type"]);
+    }
+
+    if(user["username"] === channel) {
+        attributes.push("broadcaster");
     }
 
     var attributeString = _.chain(attributes)
@@ -518,16 +520,16 @@ function parseAttributes(attributes, channel) {
 }
 
 function makeImage(name, url) {
-    return _s.sprintf("<img alt='%1$s' title='%1$s' src='%2$s' />", name, url);
+    return "<img alt='" + name + "' title='" + name + "' src='" + url + "' />";
 }
 
 function highlightMessage(comment) {
     var casedComment = comment.toLowerCase();
-
-    var highlight = keywords.find(function(keyword) {
+    
+    var highlight = keywords.find(function (keyword) {
         return _s.contains(casedComment, keyword.value.toLowerCase());
     });
-
+    
     return !_.isUndefined(highlight);
 }
 

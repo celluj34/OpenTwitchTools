@@ -98,7 +98,7 @@ router.route("/users")
                     .value();
 
             response.json({
-                users: users
+                aaData: users
             });
         });
     })
@@ -296,6 +296,10 @@ function setupConnection(initialChannel, username, password) {
             options: {
                 debug: false
             },
+            connection: {
+                random: "chat",
+                reconnect: true
+            },
             identity: {
                 username: username,
                 password: password
@@ -427,10 +431,10 @@ function getBadges(channel) {
 
 function emitMessage(channel, user, message, action) {
     var data = {
-        name: user.username,
-        badges: parseAttributes(user.special, channel.substring(1)),
-        color: user.color,
-        message: parseMessage(message, user.emote),
+        name: user["display-name"] || user["username"],
+        badges: parseBadges(channel.substring(1), user),
+        color: user["color"],
+        message: parseMessage(message, user["emotes"]),
         channel: channel.substring(1),
         highlight: highlightMessage(message),
         isAction: action,
@@ -525,11 +529,11 @@ function makeImage(name, url) {
 
 function highlightMessage(comment) {
     var casedComment = comment.toLowerCase();
-    
-    var highlight = keywords.find(function (keyword) {
+
+    var highlight = keywords.find(function(keyword) {
         return _s.contains(casedComment, keyword.value.toLowerCase());
     });
-    
+
     return !_.isUndefined(highlight);
 }
 

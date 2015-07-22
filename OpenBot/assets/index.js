@@ -15,7 +15,7 @@ function loadInfo() {
     }, "json");
 
     $.get("/keywords", function(data) {
-        window.viewModel.Keywords(data.keywords);
+        window.viewModel.Keywords(data);
     }, "json");
 
     $.get("/personalCommands", function(data) {
@@ -36,6 +36,22 @@ function setupCustomControls() {
 
     $("#webview-control")[0].addEventListener("dom-ready", function() {
         window.viewModel.TokenAuthLoading(false);
+    });
+
+    $("#usersTable").DataTable({
+        columns: [
+            {
+                title: "User",
+                data: "user",
+                class: "col-sm-6"
+            },
+            {
+                title: "Type",
+                data: "type",
+                class: "col-sm-6"
+            }
+        ],
+        dom: "frt<\"text-center\"i>p"
     });
 
     $("#chatMessage").atwho({
@@ -85,7 +101,7 @@ function setupCustomControls() {
 }
 
 function setupSocketHandlers() {
-    window.socket = io.connect("127.0.0.1:18044");
+    window.socket = io.connect("127.0.0.1:18077");
 
     window.socket.on("incomingMessage", function(data) {
         var scroll = shouldScroll();
@@ -240,11 +256,9 @@ function initializeKnockout() {
         };
 
         self.showUsers = function() {
-            self.Users(null);
+            var url = "/users?channel=" + self.Channel();
 
-            $.get("/users", {channel: self.Channel}, function(data) {
-                self.Users(data.users);
-            }, "json");
+            $("#usersTable").DataTable().ajax.url(url).load();
 
             $("#usersModal").modal("show");
         };
@@ -369,7 +383,7 @@ function initializeKnockout() {
                     channel: self.Channel()
                 });
 
-                self.OutgoingMessage("");
+                self.OutgoingMessage(null);
             }
         };
 

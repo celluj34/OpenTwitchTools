@@ -6,6 +6,7 @@
     <meta content="width=device-width" initial-scale="1.0 " name="viewport" />
     <link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/lib/at.js/css/jquery.atwho.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/custom/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="assets/site.css" rel="stylesheet" type="text/css" />
     <link href="assets/images/icon.png" rel="icon" type="image/png">
 </head>
@@ -54,7 +55,7 @@
             </div>
             <div class="tab-pane" id="chat">
                 <div data-bind="foreach: Comments">
-                    <div class="singleComment well well-sm" data-bind="click: showComment, css: HighlightColor">
+                    <div class="singleComment well well-sm" data-bind="click: showComment, css: {'highlight-background': HighlightColor}">
                         <span data-bind="text: Timestamp"></span>
                         <span data-bind="html: Badges"></span>
                         <strong data-bind="text: Name, style: {color: Color}"></strong>
@@ -313,18 +314,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table table-condensed">
-                            <tbody data-bind="foreach: Users">
-                                <tr>
-                                    <td>
-                                        <span data-bind="text: user"></span>
-                                    </td>
-                                    <td>
-                                        <span data-bind="text: special"></span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <table class="table table-condensed" id="usersTable"></table>
                     </div>
                 </div>
             </div>

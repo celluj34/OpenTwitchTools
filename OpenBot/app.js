@@ -265,12 +265,6 @@ socketio.on("connection", function(socket) {
         }
     });
 
-    socket.on("joinChannel", function(data) {
-        getBadges(data.channel);
-
-        client.join(data.channel);
-    });
-
     socket.on("timeoutUser", function(data) {
         client.timeout(data.channel, data.user, data.seconds);
     });
@@ -281,12 +275,6 @@ socketio.on("connection", function(socket) {
 
     socket.on("unbanUser", function(data) {
         client.unban(data.channel, data.user);
-    });
-
-    socket.on("leaveChannel", function(data) {
-        badges(data.channel).remove();
-
-        client.part(data.channel);
     });
 });
 
@@ -310,6 +298,8 @@ function setupConnection(initialChannel, username, password) {
         client = new tmi.client(clientSettings);
 
         client.connect();
+
+        getBadges(initialChannel);
 
         setupIncomingEventListeners(client);
     }

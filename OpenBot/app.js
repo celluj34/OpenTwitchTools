@@ -12,7 +12,8 @@
     app = require("app"),
     BrowserWindow = require("browser-window"),
     moment = require("moment"),
-    client,
+    clientSender,
+    clientListener,
     mainWindow;
 
 server.locals.appName = "OpenBot";
@@ -257,29 +258,29 @@ socketio.on("connection", function(socket) {
             var message = data.message.substring(4);
 
             if(message.length > 0) {
-                client.action(data.channel, message);
+                clientSender.action(data.channel, message);
             }
         }
         else {
-            client.say(data.channel, data.message);
+            clientSender.say(data.channel, data.message);
         }
     });
 
     socket.on("timeoutUser", function(data) {
-        client.timeout(data.channel, data.user, data.seconds);
+        clientSender.timeout(data.channel, data.user, data.seconds);
     });
 
     socket.on("banUser", function(data) {
-        client.ban(data.channel, data.user);
+        clientSender.ban(data.channel, data.user);
     });
 
     socket.on("unbanUser", function(data) {
-        client.unban(data.channel, data.user);
+        clientSender.unban(data.channel, data.user);
     });
 });
 
 function setupConnection(initialChannel, username, password) {
-    if(_.isUndefined(client) || _.isNull(client)) {
+    if(!clientSender && !clientListener) {
         var clientSettings = {
             options: {
                 debug: false
@@ -295,17 +296,19 @@ function setupConnection(initialChannel, username, password) {
             channels: [initialChannel]
         };
 
-        client = new tmi.client(clientSettings);
+        clientSender = new tmi.client(clientSettings);
+        clientListener = new tmi.client(clientSettings);
 
-        client.connect();
+        clientSender.connect();
+        clientListener.connect();
 
         getBadges(initialChannel);
 
-        setupIncomingEventListeners(client);
+        setupIncomingEventHandlers(clientListener);
     }
 }
 
-function setupIncomingEventListeners(client) {
+function setupIncomingEventHandlers(client) {
     client.addListener("action", function(channel, user, message) {
         emitMessage(channel, user, message, true);
     });
@@ -465,12 +468,30 @@ function parseMessage(message, emotes) {
             return item.startIndex;
         })
         .each(function(emote) {
-            newMessage += (message.substring(lastEndIndex, emote.startIndex) + emote.url);
+            var nonEmoteStuff = message.substring(lastEndIndex, emote.startIndex);
+
+            newMessage += parseMessageUrls(nonEmoteStuff);
+            newMessage += emote.url;
 
             lastEndIndex = emote.endIndex;
         });
 
-    return newMessage + message.substring(lastEndIndex);
+    var remainder = message.substring(lastEndIndex);
+
+    return newMessage + parseMessageUrls(remainder);
+}
+
+function parseMessageUrls(message) {
+    return message;
+    //var words = message.split(" ");
+
+    //for (var i = 0; i < words.length; ++i) {
+    //    if(request.isUri(words[i])) {
+    //        words[i] = "<a href='" + words[i] + "' >" + words[i] + "</a>";
+    //    }
+    //}
+
+    //return words.join(" ");
 }
 
 function parseBadges(channel, user) {

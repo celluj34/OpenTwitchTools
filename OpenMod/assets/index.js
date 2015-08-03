@@ -31,6 +31,16 @@ function setupCustomControls() {
         window.scrollTo(0, document.body.scrollHeight);
     });
 
+    $("#commentModal").on("click", "#modalSingleComment a", function(e) {
+        e.preventDefault();
+
+        var url = $(this).attr("href");
+        
+        window.socket.emit("openLink", {
+            url: url
+        });
+    });
+
     $("[data-toggle='tooltip']").tooltip();
 
     $("#webview-control")[0].addEventListener("dom-ready", function() {

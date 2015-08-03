@@ -12,8 +12,10 @@
     app = require("app"),
     BrowserWindow = require("browser-window"),
     moment = require("moment"),
+    shell = require("shell"),
     clientSender,
     clientListener,
+    linkify = require("linkify-it")(),
     mainWindow;
 
 server.locals.appName = "OpenBot";
@@ -277,6 +279,17 @@ socketio.on("connection", function(socket) {
     socket.on("unbanUser", function(data) {
         clientSender.unban(data.channel, data.user);
     });
+
+    socket.on("openLink", function(data) {
+        var url = data.url;
+
+        if(_s.startsWith(url, "https://") || _s.startsWith(url, "http://")) {
+            shell.openExternal(url);
+        }
+        else {
+            shell.openExternal("http://" + url);
+        }
+    });
 });
 
 function setupConnection(initialChannel, username, password) {
@@ -482,16 +495,15 @@ function parseMessage(message, emotes) {
 }
 
 function parseMessageUrls(message) {
-    return message;
-    //var words = message.split(" ");
+    var words = message.split(" ");
 
-    //for (var i = 0; i < words.length; ++i) {
-    //    if(request.isUri(words[i])) {
-    //        words[i] = "<a href='" + words[i] + "' >" + words[i] + "</a>";
-    //    }
-    //}
+    for(var i = 0; i < words.length; ++i) {
+        if(linkify.pretest(words[i]) || linkify.test(words[i])) {
+            words[i] = makeLink(words[i]);
+        }
+    }
 
-    //return words.join(" ");
+    return words.join(" ");
 }
 
 function parseBadges(channel, user) {
@@ -536,6 +548,10 @@ function parseBadges(channel, user) {
 
 function makeImage(name, url) {
     return "<img alt='" + name + "' title='" + name + "' src='" + url + "' />";
+}
+
+function makeLink(link) {
+    return "<a href='" + link + "' >" + link + "</a>";
 }
 
 function highlightMessage(comment) {

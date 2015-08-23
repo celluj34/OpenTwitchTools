@@ -18,7 +18,7 @@
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartWebBrowser>False</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -44,6 +44,12 @@
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\lib\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\lib\datatables\css\dataTables.bootstrap.css" />
+    <Content Include="assets\lib\datatables\css\dataTables.bootstrap.min.css" />
+    <Content Include="assets\lib\datatables\css\dataTables.foundation.css" />
+    <Content Include="assets\lib\datatables\css\dataTables.foundation.min.css" />
+    <Content Include="assets\lib\datatables\css\dataTables.jqueryui.css" />
+    <Content Include="assets\lib\datatables\css\dataTables.jqueryui.min.css" />
     <Content Include="assets\lib\datatables\css\jquery.dataTables.css" />
     <Content Include="assets\lib\datatables\css\jquery.dataTables.min.css" />
     <Content Include="assets\lib\datatables\css\jquery.dataTables_themeroller.css" />
@@ -98,6 +104,12 @@
     <Compile Include="assets\lib\bootstrap\js\npm.js" />
     <Compile Include="assets\lib\caret.js\jquery.caret.js" />
     <Compile Include="assets\lib\caret.js\jquery.caret.min.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.bootstrap.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.bootstrap.min.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.foundation.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.foundation.min.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.jqueryui.js" />
+    <Compile Include="assets\lib\datatables\js\dataTables.jqueryui.min.js" />
     <Compile Include="assets\lib\datatables\js\jquery.dataTables.js" />
     <Compile Include="assets\lib\datatables\js\jquery.dataTables.min.js" />
     <Compile Include="assets\lib\datatables\js\jquery.js" />

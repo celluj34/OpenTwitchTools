@@ -28,7 +28,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="assets\custom\dataTables.bootstrap.css" />
     <Content Include="assets\database.json" />
     <Content Include="assets\images\icon.png" />
     <Content Include="assets\lib\at.js\css\jquery.atwho.css" />
@@ -70,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\" />
-    <Folder Include="assets\custom\" />
     <Folder Include="assets\images\" />
     <Folder Include="assets\lib\" />
     <Folder Include="assets\lib\at.js\" />
@@ -95,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="assets\custom\dataTables.bootstrap.js" />
     <Compile Include="assets\index.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.min.js" />

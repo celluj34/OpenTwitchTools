@@ -29,7 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="assets\custom\dataTables.bootstrap.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.js" />
     <Compile Include="assets\lib\at.js\js\jquery.atwho.min.js" />
     <Compile Include="assets\lib\bootstrap\js\bootstrap.js" />
@@ -134,7 +133,6 @@
     <Content Include="assets\lib\jquery\jquery.min.map" />
     <Content Include="assets\lib\select2\css\select2.css" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
-    <Content Include="assets\custom\dataTables.bootstrap.css" />
     <Content Include="assets\lib\select2\css\select2.min.css" />
     <Content Include="assets\lib\underscore\underscore-min.map" />
     <Content Include="project.json" />
@@ -145,7 +143,6 @@
   <ItemGroup>
     <Folder Include="assets\" />
     <Folder Include="assets\images\" />
-    <Folder Include="assets\custom\" />
     <Folder Include="assets\lib\" />
     <Folder Include="assets\lib\at.js\" />
     <Folder Include="assets\lib\at.js\css\" />

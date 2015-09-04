@@ -157,8 +157,8 @@ function setupSocketHandlers() {
     window.socket.on("incomingMessage", function(data) {
         var scroll = shouldScroll();
 
-        window.viewModel.addComment(data, scroll);
-
+        window.viewModel.addComment(data);
+        
         if(scroll) {
             window.scrollTo(0, document.body.scrollHeight);
 
@@ -172,6 +172,10 @@ function setupSocketHandlers() {
 
     window.socket.on("userTimeout", function(data) {
         window.viewModel.userTimeout(data);
+    });
+
+    window.socket.on("notice", function(data) {
+        console.log(data);
     });
 }
 
@@ -276,11 +280,11 @@ function initializeKnockout() {
         self.Selected = ko.observable(false);
 
         //channel functions
-        self.addComment = function(comment, scroll) {
+        self.addComment = function(comment) {
             self.Comments.push(new commentViewModel(comment, self.Name));
             var length = self.Comments().length;
 
-            if(scroll && length > self.MaxComments()) {
+            if(length > self.MaxComments()) {
                 self.Comments.splice(0, length - self.MaxComments());
             }
         };
@@ -399,11 +403,11 @@ function initializeKnockout() {
             });
         };
 
-        self.addComment = function(data, scroll) {
+        self.addComment = function(data) {
             var matchingChannel = findMatchingChannel(data.channel);
 
             if(matchingChannel) {
-                matchingChannel.addComment(data, scroll);
+                matchingChannel.addComment(data);
             }
         };
 

@@ -275,7 +275,11 @@ socketio.on("connection", function(socket) {
     });
 
     socket.on("timeoutUser", function(data) {
-        clientSender.timeout(data.channel, data.user, data.seconds);
+        clientSender.timeout(data.channel, data.user, data.seconds).then(function() {
+            sendNotice(data.channel, "Successfully timed out " + data.user + ".");
+        }, function(err) {
+            sendNotice(data.channel, "Failed to time out " + data.user + ". Error: " + err);
+        });
     });
 
     socket.on("banUser", function(data) {
@@ -407,6 +411,19 @@ function setupIncomingEventHandlers(client) {
             channel: channel.substring(1),
             viewers: viewers
         });
+    });
+
+    client.addListener("notice", function(channel, msgid, message) {
+        message = _s.sprintf("SYSTEM MESSAGE: %s - %s", msgid, message);
+
+        sendNotice(channel, message);
+    });
+}
+
+function sendNotice(channel, message) {
+    socketio.sockets.emit("notice", {
+        channel: channel.substring(1),
+        message: message
     });
 }
 

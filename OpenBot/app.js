@@ -404,6 +404,13 @@ function setupIncomingEventHandlers(client) {
             viewers: viewers
         });
     });
+    
+    client.addListener("notice", function (channel, viewers) {
+        socketio.sockets.emit("notice", {
+            channel: channel.substring(1),
+            viewers: viewers
+        });
+    });
 }
 
 function getBadges(channel) {

@@ -152,7 +152,7 @@ function setupCustomControls() {
 }
 
 function setupSocketHandlers() {
-    window.socket = io.connect("127.0.0.1:18044");
+    window.socket = io.connect("127.0.0.1:18011");
 
     window.socket.on("incomingMessage", function(data) {
         var scroll = shouldScroll();

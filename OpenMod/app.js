@@ -20,7 +20,7 @@
 
 server.locals.appName = "OpenMod";
 server.locals.ipAddress = "127.0.0.1";
-server.locals.port = 18044;
+server.locals.port = 18011;
 server.locals.startupUrl = "http://" + server.locals.ipAddress + ":" + server.locals.port;
 server.locals.index = path.join(__dirname, "index.html");
 server.locals.database = path.join(__dirname, "assets", "database.json");

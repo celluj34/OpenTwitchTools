@@ -44,7 +44,7 @@ function setupCustomControls() {
 
     $("[data-toggle='tooltip']").tooltip();
 
-    $("#webview-control")[0].addEventListener("dom-ready", function() {
+    $("#webview-control").on("dom-ready", function() {
         window.viewModel.TokenAuthLoading(false);
     });
 

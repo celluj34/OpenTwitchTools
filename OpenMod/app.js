@@ -603,10 +603,11 @@ app.on("ready", function() {
         "resizeable": true
     });
 
-    //mainWindow.setMenu(null);
+    mainWindow.setMenu(null);
 
     mainWindow.on("closed", function() {
         mainWindow = null;
+        delete mainWindow;
     });
 
     //mainWindow.openDevTools();

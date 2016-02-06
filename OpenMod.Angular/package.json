@@ -1,0 +1,23 @@
+{
+  "author": {
+    "name": "Joe",
+    "email": "celluj34@gmail.com"
+  },
+  "dependencies": {
+    "angular2": "2.0.0-beta.3",
+    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.34.2",
+    "express": "4.13.4",
+    "reflect-metadata": "0.1.3",
+    "rxjs": "5.0.0-beta.1"
+  },
+  "description": "OpenMod.Angular",
+  "devDependencies": {
+    "fs": "0.0.2",
+    "gulp": "3.9.0",
+    "rimraf": "2.5.1"
+  },
+  "main": "app.js",
+  "name": "OpenMod.Angular",
+  "version": "0.0.0"
+}

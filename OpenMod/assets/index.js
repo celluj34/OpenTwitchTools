@@ -280,11 +280,14 @@ function initializeKnockout() {
         self.Selected = ko.observable(false);
 
         //channel functions
-        self.addComment = function(comment) {
+        self.addComment = function (comment) {
+            var scroll = shouldScroll();
+
             self.Comments.push(new commentViewModel(comment, self.Name));
+
             var length = self.Comments().length;
 
-            if(length > self.MaxComments()) {
+            if(length > self.MaxComments() && scroll) {
                 self.Comments.splice(0, length - self.MaxComments());
             }
         };

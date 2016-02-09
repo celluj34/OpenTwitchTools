@@ -6,7 +6,7 @@
 
 server.locals.ipAddress = '127.0.0.1';
 server.locals.port = 18011;
-server.locals.startupUrl = 'http://' + server.locals.ipAddress + ':' + server.locals.port + '/app/views/login.html';
+server.locals.startupUrl = 'http://' + server.locals.ipAddress + ':' + server.locals.port + '/index.html';
 
 server.use(express.static(__dirname));
 

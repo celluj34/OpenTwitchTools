@@ -1,7 +1,6 @@
 ﻿(function(app) {
     app.AppComponent =
-        ng.core
-        .Component({
+        ng.core.Component({
             selector: 'open-mod',
             template: '<h1>My First Angular 2-2 App</h1>'
         })

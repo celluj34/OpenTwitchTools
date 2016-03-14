@@ -1,5 +1,3 @@
-﻿(function(app) {
-    document.addEventListener('DOMContentLoaded', function() {
-        ng.platform.browser.bootstrap(app.AppComponent);
-    });
-})(window.app || (window.app = {}));
+﻿angular.module('OpenMod', []);
+angular.module('OpenMod.services', []);
+angular.module('OpenMod.components', ['OpenMod.services']);

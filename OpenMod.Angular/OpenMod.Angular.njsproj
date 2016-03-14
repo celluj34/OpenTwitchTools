@@ -32,32 +32,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
-    <Compile Include="app\app.component.js" />
+    <Compile Include="app\components\Login.es6" />
+    <Compile Include="app\components\Login.js" />
     <Compile Include="app\OpenMod.js" />
-    <Compile Include="app\services\LoginApiService.es6" />
+    <Compile Include="app\register.js" />
+    <Compile Include="app\services\LoginService.es6" />
+    <Compile Include="app\services\LoginService.js" />
     <Compile Include="app\services\SocketService.es6" />
-    <Compile Include="app\services\_services.js" />
+    <Compile Include="app\services\SocketService.js" />
     <Compile Include="app\_spec\references.js" />
     <Compile Include="gulpfile.js" />
-    <Content Include="app\services\_services.js.map">
-<DependentUpon>app\services\_services.js</DependentUpon>
-</Content>
+    <Compile Include="js\angular\angular.js" />
     <Content Include="app\views\login.html" />
+    <Content Include="app\_spec\services\LoginService_spec.es6" />
     <Content Include="index.html" />
     <Content Include="package.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="app\" />
-    <Folder Include="app\controllers\" />
-    <Folder Include="app\directives\" />
+    <Folder Include="app\components\" />
     <Folder Include="app\models\" />
     <Folder Include="app\services\" />
     <Folder Include="app\views\" />
     <Folder Include="app\_spec\" />
-    <Folder Include="app\_spec\controllers\" />
+    <Folder Include="app\_spec\components\" />
     <Folder Include="app\_spec\models\" />
-    <Folder Include="app\_spec\directives\" />
     <Folder Include="app\_spec\services\" />
+    <Folder Include="js\" />
+    <Folder Include="js\angular\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

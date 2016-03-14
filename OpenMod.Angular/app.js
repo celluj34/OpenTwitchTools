@@ -35,7 +35,7 @@ app.on('ready', function() {
         delete mainWindow;
     });
 
-    //mainWindow.openDevTools();
+    mainWindow.openDevTools();
     mainWindow.loadURL(server.locals.startupUrl);
     mainWindow.show();
 });

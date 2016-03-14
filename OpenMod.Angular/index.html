@@ -1,25 +1,23 @@
-﻿<html>
+﻿<html ng-app="OpenMod">
     <head>
         <title>OpenMod</title>
         <meta content="width=device-width, initial-scale=1" name="viewport">
 
-        <!-- 1. Load libraries -->
-        <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
-        <script src="node_modules/rxjs/bundles/Rx.umd.js"></script>
-        <script src="node_modules/angular2/bundles/angular2-all.umd.js"></script>
-        <script src="app/app.component.js"></script>
-        <script src="app/OpenMod.js"></script>
-        <script src="app/services/_services.js"></script>
-        <script src="app/services/_services.js.map"></script>
+        <!--Angular2 libraries and dependencies-->
+        <script src="js/angular/angular.js"></script>
 
+        <!--OpenBot modules and components-->
+        <script src="app/register.js"></script>
+        <script src="app/OpenMod.js"></script>
+
+        <script src="app/components/Login.js"></script>
+        <script src="app/services/LoginService.js"></script>
+        <script src="app/services/SocketService.js"></script>
+        <!--<script src="app/bootstrap.js"></script>-->
     </head>
 
     <!-- 3. Display the application -->
     <body>
-		http://www.html5rocks.com/en/tutorials/frameworks/angular-websockets/
-		
-        <open-mod>
-
-        </open-mod>
+        Nothing here {{'yet' + '!'}}
     </body>
 </html>

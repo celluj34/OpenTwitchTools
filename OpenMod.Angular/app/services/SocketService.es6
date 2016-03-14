@@ -1,21 +1,26 @@
 ﻿class SocketService {
     constructor($rootscope) {
+        //private fields
         this._rootscope = $rootscope;
         this._socket = io.connect();
     }
-    getLoginCredentials(callback) {
-        const socket = this.socket;
-        const rootscope = this._socket;
-
-        socket.emit('get-credentials', function() {
-            var args = arguments;
-            rootscope.$apply(function() {
-                if(callback) {
-                    callback.apply(socket, args);
-                }
-            });
+    apply(callback) {
+        this._rootscope.$apply(() => {
+            callback.apply(this._socket, arguments);
         });
+    }
+    on(event, callback) {
+        callback = this.apply(callback);
+
+        this._socket.on(event, callback);
+    }
+    emit(event, data, callback) {
+        callback = this.apply(callback);
+
+        this._socket.emit(event, data, callback);
     }
 }
 
-angular.module('OpenMod').service('socketService', SocketService);
+//SocketService.$inject = ['$rootscope'];
+
+register('OpenMod.services').service('SocketService', SocketService);

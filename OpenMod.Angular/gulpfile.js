@@ -32,7 +32,6 @@ const transpileFile = function(file) {
 
 const copyFile = function(source, destination) {
     return gulp.src(source)
-        .pipe(uglify())
         .pipe(gulp.dest(destination));
 };
 
@@ -53,8 +52,20 @@ gulp.task('OpenMod', function() {
 });
 
 gulp.task('angular', function() {
-    return copyFile('node_modules/angular/angular.js', 'js/angular');
+    return copyFile('node_modules/angular/angular.min.js', 'js');
+});
+
+gulp.task('bootstrapJS', function () {
+    return copyFile('node_modules/bootstrap/dist/js/bootstrap.min.js', 'js');
+});
+
+gulp.task('bootstrapCSS', function() {
+    return copyFile('node_modules/bootstrap/dist/css/bootstrap.min.css', 'css');
+});
+
+gulp.task('jquery', function() {
+    return copyFile('node_modules/jquery/dist/jquery.min.js', 'js');
 });
 
 gulp.task('_ES6', ['components', 'models', 'services']);
-gulp.task('_Angular', ['angular']);
+gulp.task('_Libs', ['angular', 'bootstrapJS', 'bootstrapCSS', 'jquery']);

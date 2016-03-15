@@ -42,9 +42,12 @@
     <Compile Include="app\services\SocketService.js" />
     <Compile Include="app\_spec\references.js" />
     <Compile Include="gulpfile.js" />
-    <Compile Include="js\angular\angular.js" />
+    <Compile Include="js\angular.min.js" />
+    <Compile Include="js\bootstrap.min.js" />
+    <Compile Include="js\jquery.min.js" />
     <Content Include="app\views\login.html" />
     <Content Include="app\_spec\services\LoginService_spec.es6" />
+    <Content Include="css\bootstrap.min.css" />
     <Content Include="index.html" />
     <Content Include="package.json" />
   </ItemGroup>
@@ -58,8 +61,8 @@
     <Folder Include="app\_spec\components\" />
     <Folder Include="app\_spec\models\" />
     <Folder Include="app\_spec\services\" />
+    <Folder Include="css\" />
     <Folder Include="js\" />
-    <Folder Include="js\angular\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

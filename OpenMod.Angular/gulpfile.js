@@ -17,10 +17,8 @@ const transpileAppFolder = function(folder) {
         .pipe(gulp.dest(destination));
 };
 
-const transpileFile = function(file) {
-    const destination = `app/${file}`;
-
-    return gulp.src(file)
+const transpileFile = function (source, destination) {
+    return gulp.src(source)
         .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['es2015']
@@ -48,7 +46,11 @@ gulp.task('services', function() {
 });
 
 gulp.task('OpenMod', function() {
-    return transpileFile('OpenMod.es6');
+    return transpileFile('app/OpenMod.es6', 'app/');
+});
+
+gulp.task('register', function() {
+    return transpileFile('app/register.es6', 'app/');
 });
 
 gulp.task('angular', function() {
@@ -67,5 +69,5 @@ gulp.task('jquery', function() {
     return copyFile('node_modules/jquery/dist/jquery.min.js', 'js');
 });
 
-gulp.task('_ES6', ['components', 'models', 'services']);
+gulp.task('_ES6', ['components', 'models', 'services', 'OpenMod', 'register']);
 gulp.task('_Libs', ['angular', 'bootstrapJS', 'bootstrapCSS', 'jquery']);

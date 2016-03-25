@@ -34,7 +34,9 @@
     <Compile Include="app.js" />
     <Compile Include="app\components\Login.es6" />
     <Compile Include="app\components\Login.js" />
+    <Compile Include="app\OpenMod.es6" />
     <Compile Include="app\OpenMod.js" />
+    <Compile Include="app\register.es6" />
     <Compile Include="app\register.js" />
     <Compile Include="app\services\LoginService.es6" />
     <Compile Include="app\services\LoginService.js" />

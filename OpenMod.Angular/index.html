@@ -1,10 +1,12 @@
-﻿<html ng-app="OpenMod">
+﻿<html ng-app="OpenMod" ng-strict-di>
     <head>
         <title>OpenMod</title>
         <meta content="width=device-width, initial-scale=1" name="viewport">
 
         <!--Angular2 libraries and dependencies-->
-        <script src="js/angular/angular.js"></script>
+        <script src="js/angular.min.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
 
         <!--OpenBot modules and components-->
         <script src="app/register.js"></script>
@@ -13,11 +15,22 @@
         <script src="app/components/Login.js"></script>
         <script src="app/services/LoginService.js"></script>
         <script src="app/services/SocketService.js"></script>
-        <!--<script src="app/bootstrap.js"></script>-->
+
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
     </head>
 
     <!-- 3. Display the application -->
     <body>
-        Nothing here {{'yet' + '!'}}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    Nothing here {{'yet' + '!'}}
+                </div>
+            </div>
+        </div>
+
+        <login ng-controller="LoginController">
+
+        </login>
     </body>
 </html>

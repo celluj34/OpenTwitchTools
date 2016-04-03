@@ -44,7 +44,7 @@
     <Content Include="_spec\services\LoginService_spec.es6" />
     <Content Include="index.html" />
     <Content Include="package.json" />
-    <Content Include="src\components\Login.js" />
+    <Content Include="src\components\LoginComponent.js" />
     <Content Include="src\OpenMod.js" />
     <Content Include="src\services\LoginService.js" />
     <Content Include="src\services\SocketService.js" />

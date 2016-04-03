@@ -1,6 +1,6 @@
 ﻿class LoginService {
     constructor(SocketService) {
-        console.log("LoginService");
+        console.log('LoginService');
         //private fields
         this._socketService = SocketService;
     }

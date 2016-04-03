@@ -18,14 +18,16 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
-        "min-width": 400,
+        "minwidth": 400,
         "width": 800,
-        "min-height": 400,
+        "minheight": 400,
         "height": 600,
         "center": true,
-        "node-integration": false,
         "show": false,
-        "resizeable": true
+        "resizeable": true,
+        "webPreferences": {
+            "nodeIntegration": false,
+        }
     });
 
     //mainWindow.setMenu(null);

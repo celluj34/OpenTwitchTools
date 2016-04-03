@@ -31,40 +31,39 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app.js" />
-    <Compile Include="app\components\Login.es6" />
-    <Compile Include="app\components\Login.js" />
-    <Compile Include="app\OpenMod.es6" />
-    <Compile Include="app\OpenMod.js" />
-    <Compile Include="app\register.es6" />
-    <Compile Include="app\register.js" />
-    <Compile Include="app\services\LoginService.es6" />
-    <Compile Include="app\services\LoginService.js" />
-    <Compile Include="app\services\SocketService.es6" />
-    <Compile Include="app\services\SocketService.js" />
-    <Compile Include="app\_spec\references.js" />
+    <Compile Include="app\js\angular.min.js" />
+    <Compile Include="app\js\bootstrap.min.js" />
+    <Compile Include="app\js\jquery.min.js" />
+    <Compile Include="app\scripts\app.min.js" />
+    <Compile Include="_spec\references.js" />
     <Compile Include="gulpfile.js" />
-    <Compile Include="js\angular.min.js" />
-    <Compile Include="js\bootstrap.min.js" />
-    <Compile Include="js\jquery.min.js" />
+    <Content Include="app.js" />
+    <Content Include="app\css\bootstrap.min.css" />
+    <Content Include="app\scripts\app.min.js.map" />
     <Content Include="app\views\login.html" />
-    <Content Include="app\_spec\services\LoginService_spec.es6" />
-    <Content Include="css\bootstrap.min.css" />
+    <Content Include="_spec\services\LoginService_spec.es6" />
     <Content Include="index.html" />
     <Content Include="package.json" />
+    <Content Include="src\components\Login.js" />
+    <Content Include="src\OpenMod.js" />
+    <Content Include="src\services\LoginService.js" />
+    <Content Include="src\services\SocketService.js" />
+    <Content Include="src\views\login.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="app\" />
-    <Folder Include="app\components\" />
-    <Folder Include="app\models\" />
-    <Folder Include="app\services\" />
+    <Folder Include="app\css\" />
+    <Folder Include="app\js\" />
+    <Folder Include="app\scripts\" />
     <Folder Include="app\views\" />
-    <Folder Include="app\_spec\" />
-    <Folder Include="app\_spec\components\" />
-    <Folder Include="app\_spec\models\" />
-    <Folder Include="app\_spec\services\" />
-    <Folder Include="css\" />
-    <Folder Include="js\" />
+    <Folder Include="_spec\" />
+    <Folder Include="_spec\components\" />
+    <Folder Include="_spec\models\" />
+    <Folder Include="_spec\services\" />
+    <Folder Include="src\" />
+    <Folder Include="src\components\" />
+    <Folder Include="src\services\" />
+    <Folder Include="src\views\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

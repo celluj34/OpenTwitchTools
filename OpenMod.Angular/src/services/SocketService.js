@@ -1,6 +1,6 @@
 ﻿class SocketService {
     constructor($rootscope) {
-        console.log("SocketService");
+        console.log('SocketService');
         //private fields
         this._rootscope = $rootscope;
         this._socket = io.connect();

@@ -30,11 +30,13 @@
 
 //LoginComponent.$inject = ['LoginService'];
 
-register('OpenMod.components').controller('LoginComponent', LoginComponent);
+//register('OpenMod.components').controller('LoginComponent', LoginComponent);
 
 angular.module('OpenMod.components').component('login', {
     templateUrl: 'app/views/login.html',
-    controller: LoginComponent,
+    controller: function() {
+        return new LoginComponent();
+    },
     bindings: {
         username: '=',
         password: '=',

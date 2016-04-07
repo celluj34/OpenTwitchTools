@@ -1,13 +1,17 @@
-﻿class LoginComponent {
-    constructor() {
-        console.log("LoginComponent");
+﻿import LoginService from '../services/LoginService';
+
+export default class LoginComponent {
+    /*@ngInject;*/
+    constructor(LoginService) {
+        console.log('LoginComponent');
+
         //private fields
-        //this._loginService = LoginService;
+        this._loginService = LoginService;
 
         //public properties
         this.username = null;
         this.password = null;
-        //this.loadingPromise = null;
+        this.loadingPromise = null;
         this.loaded = false;
     }
     get config() {
@@ -17,7 +21,7 @@
         };
     }
     $onInit() {
-        //this.loadingPromise = this._loginService.requestCredentials((data) => this.setCredentials(data));
+        this.loadingPromise = this._loginService.requestCredentials((data) => this.setCredentials(data));
     }
     setCredentials(data) {
         data = data || {};
@@ -27,20 +31,3 @@
         this.loaded = true;
     }
 }
-
-//LoginComponent.$inject = ['LoginService'];
-
-//register('OpenMod.components').controller('LoginComponent', LoginComponent);
-
-angular.module('OpenMod.components').component('login', {
-    templateUrl: 'app/views/login.html',
-    controller: function() {
-        return new LoginComponent();
-    },
-    bindings: {
-        username: '=',
-        password: '=',
-        loadingPromise: '=',
-        loaded: '='
-    }
-});

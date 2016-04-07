@@ -1,6 +1,10 @@
-﻿class SocketService {
+import $rootscope from 'angular';
+
+export default class SocketService {
+    /*@ngInject;*/
     constructor($rootscope) {
         console.log('SocketService');
+
         //private fields
         this._rootscope = $rootscope;
         this._socket = io.connect();
@@ -22,6 +26,4 @@
     }
 }
 
-//SocketService.$inject = ['$rootscope'];
 
-register('OpenMod.services').service('SocketService', SocketService);

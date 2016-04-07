@@ -45,12 +45,12 @@ gulp.task('jshint', function() {
 gulp.task('scripts', ['jshint'], function() {
     return browserify({
             entries: src.scripts.app,
-            debug: true // Build source maps
+            debug: true, // Build source maps
         })
         .transform(babelify.configure({
             // You can configure babel here!
             // https://babeljs.io/docs/usage/options/
-        
+            presets: ['es2016']
         }))
         .bundle()
         .pipe(vinylSourceStream(out.scripts.file))
@@ -67,22 +67,13 @@ gulp.task('scripts', ['jshint'], function() {
         .pipe(plugins.connect.reload());
 });
 
-//gulp.task('serve', ['build', 'watch'], function() {
-//    plugins.connect.server({
-//        root: build,
-//        port: 4242,
-//        livereload: true,
-//        fallback: build + 'index.html'
-//    });
-//});
-
 gulp.task('_Watch', function() {
     gulp.watch(src.html, ['html']);
     gulp.watch(src.scripts.all, ['scripts']);
 });
 
 gulp.task('_Build', ['_Libs', 'scripts', 'html']);
-//gulp.task('default', ['serve']);
+gulp.task('default', ['_Build']);
 
 //----------------------------------
 const copyFile = function(source, destination) {

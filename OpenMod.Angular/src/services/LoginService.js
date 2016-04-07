@@ -1,6 +1,10 @@
-﻿class LoginService {
+﻿import SocketService from '../services/SocketService';
+
+export default class LoginService {
+    /*@ngInject;*/
     constructor(SocketService) {
         console.log('LoginService');
+
         //private fields
         this._socketService = SocketService;
     }
@@ -11,7 +15,3 @@
         this._socketService.emit('submit-credentials', data, callback);
     }
 }
-
-//LoginService.$inject = ['SocketService'];
-
-register('OpenMod.services').service('LoginService', LoginService);

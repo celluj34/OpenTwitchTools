@@ -1,6 +1,4 @@
-﻿import LoginService from '../services/LoginService';
-
-export default class LoginComponent {
+﻿export default class LoginComponent {
     /*@ngInject;*/
     constructor(LoginService) {
         console.log('LoginComponent');

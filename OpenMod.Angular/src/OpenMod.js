@@ -1,10 +1,12 @@
-﻿//import angular from 'angular';
+﻿//angular (duh)
+import angular from 'angular';
 
+// src classes
 import LoginComponent from './components/LoginComponent';
 import LoginService from './services/LoginService';
 import SocketService from './services/SocketService';
 
 angular.module('OpenMod', [])
-    .controller('LoginComponent', LoginComponent)
+    .service('SocketService', SocketService)
     .service('LoginService', LoginService)
-    .service('SocketService', SocketService);
+    .controller('LoginComponent', LoginComponent);

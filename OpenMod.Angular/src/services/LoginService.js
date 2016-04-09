@@ -1,6 +1,4 @@
-﻿import SocketService from '../services/SocketService';
-
-export default class LoginService {
+﻿export default class LoginService {
     /*@ngInject;*/
     constructor(SocketService) {
         console.log('LoginService');

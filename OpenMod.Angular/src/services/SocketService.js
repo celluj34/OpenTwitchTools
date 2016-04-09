@@ -1,12 +1,10 @@
-import $rootscope from 'angular';
-
-export default class SocketService {
+﻿export default class SocketService {
     /*@ngInject;*/
-    constructor($rootscope) {
+    constructor($rootScope) {
         console.log('SocketService');
 
         //private fields
-        this._rootscope = $rootscope;
+        this._rootscope = $rootScope;
         this._socket = io.connect();
     }
     apply(callback) {
@@ -25,5 +23,3 @@ export default class SocketService {
         this._socket.emit(event, data, callback);
     }
 }
-
-

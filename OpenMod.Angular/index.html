@@ -1,33 +1,24 @@
-﻿<html ng-app="OpenMod" ng-strict-di>
+﻿<html >
     <head>
         <title>OpenMod</title>
         <meta content="width=device-width, initial-scale=1" name="viewport">
-
-        <!--external libraries and dependencies-->
-        <!--Angular is already loaded, so no need to re-included here-->
-        <!--<script src="app/js/angular.min.js"></script>-->
-        <script src="app/js/jquery.min.js"></script>
-        <script src="app/js/bootstrap.min.js"></script>
-
+        
         <!--OpenBot modules and components-->
         <script src="app/scripts/app.min.js"></script>
-
-        <!--CSS and themes-->
-        <link href="app/css/bootstrap.min.css" rel="stylesheet" />
     </head>
 
     <!-- 3. Display the application -->
-    <body>
+    <body ng-app="OpenMod" ng-strict-di>
+        <link href="app/themes/bootstrap-flatly.css" rel="stylesheet" />
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     Nothing here {{'yet' + '!'}}
+
+                    <div ng-controller="LoginComponent as main"></div>
                 </div>
             </div>
         </div>
-
-        <login ng-controller="LoginController">
-
-        </login>
     </body>
 </html>

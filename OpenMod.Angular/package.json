@@ -1,41 +1,44 @@
 {
-    "author": {
-        "name": "Joe",
-        "email": "celluj34@gmail.com"
-    },
-    "dependencies": {
-        "angular": "1.5.3",
-        "bootstrap": "3.3.6",
-        "express": "4.13.4",
-        "jquery": "2.2.2"
-    },
-    "description": "OpenMod.Angular",
+  "author": {
+    "name": "Joe",
+    "email": "celluj34@gmail.com"
+  },
+  "description": "OpenMod.Angular",
     "devDependencies": {
+        "angular": "1.5.3",
+        "angular-route": "1.5.3",
         "babelify": "7.2.0",
-        "browserify": "13.0.0",
         "babel-preset-es2015": "6.6.0",
         "babel-preset-es2016": "6.0.11",
+        "bootstrap-sass": "3.3.6",
+        "bootswatch": "3.3.6",
+        "browserify": "13.0.0",
+        "express": "4.13.4",
         "fs": "0.0.2",
         "gulp": "3.9.1",
         "gulp-babel": "6.1.2",
+        "gulp-clean-css": "2.0.5",
         "gulp-connect": "3.2.2",
+        "gulp-foreach": "0.1.0",
         "gulp-jshint": "2.0.0",
-        "gulp-sourcemaps": "1.6.0",
-        "gulp-uglify": "1.5.3",
         "gulp-load-plugins": "1.2.0",
         "gulp-ng-annotate": "2.0.0",
-        "karma": "0.13.22",
-        "karma-jasmine": "0.3.8",
+        "gulp-sass": "2.2.0",
+        "gulp-sourcemaps": "1.6.0",
+        "gulp-uglify": "1.5.3",
         "jasmine-core": "2.4.1",
         "jshint": "2.9.1",
         "jshint-stylish": "2.1.0",
+        "karma": "0.13.22",
+        "karma-jasmine": "0.3.8",
+        "path": "0.12.7",
         "rimraf": "2.5.2",
-        "vinyl-source-stream": "1.1.0",
-        "vinyl-buffer": "1.0.0"
+        "vinyl-buffer": "1.0.0",
+        "vinyl-source-stream": "1.1.0"
     },
-    "main": "app.js",
-    "name": "open-bot",
-    "version": "0.0.0",
-    "repository": "https://github.com/celluj34/OpenTwitchTools",
-    "license": "MIT"
+  "main": "app.js",
+  "name": "open-bot",
+  "version": "0.0.0",
+  "repository": "https://github.com/celluj34/OpenTwitchTools",
+  "license": "MIT"
 }

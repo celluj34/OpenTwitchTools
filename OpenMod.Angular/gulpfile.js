@@ -3,26 +3,41 @@ var babelify = require('babelify');
 var browserify = require('browserify');
 var vinylSourceStream = require('vinyl-source-stream');
 var vinylBuffer = require('vinyl-buffer');
-
-// Load all gulp plugins into the plugins object.
+var gutil = require('gulp-util');
+var foreach = require('gulp-foreach');
+var path = require('path');
+var sass = require('gulp-sass');
+var cleanCSS = require('gulp-clean-css');
 var plugins = require('gulp-load-plugins')();
+
+var basePath = 'node_modules/bootstrap-sass/assets';
+var build = 'app/';
 
 var src = {
     html: 'src/views/*.html',
+    css: {
+        themes: 'node_modules/bootswatch/**/_bootswatch.scss',
+        fonts: basePath + '/fonts/**/*'
+    },
     scripts: {
         all: 'src/**/*.js',
         app: 'src/OpenMod.js'
     }
 };
 
-var build = 'app/';
 var out = {
     html: {
         folder: build + 'views/'
     },
+    themes: {
+        folder: build + 'themes/'
+    },
+    fonts: {
+        folder: build + 'fonts/'
+    },
     scripts: {
-        file: 'app.min.js',
-        folder: build + 'scripts/'
+        folder: build + 'scripts/',
+        file: 'app.min.js'
     }
 };
 
@@ -30,6 +45,27 @@ gulp.task('html', function() {
     return gulp.src(src.html)
         .pipe(gulp.dest(out.html.folder))
         .pipe(plugins.connect.reload());
+});
+
+gulp.task('fonts', function () {
+    return gulp.src(src.css.fonts)
+        .pipe(gulp.dest(out.fonts.folder));
+});
+
+gulp.task('themes', function () {
+    return gulp.src(src.css.themes)
+        .pipe(foreach(function (stream, file) {
+            var theme = path.basename(path.dirname(file.path));
+            var themeName = 'bootstrap-' + theme + '.scss';
+            var content = contentString(theme);
+
+            return string_src(themeName, content);
+        }))
+        .pipe(sass().on('error', sass.logError))
+        .pipe(cleanCSS({
+            processImport: false
+        }))
+        .pipe(gulp.dest(out.themes.folder));
 });
 
 /* The jshint task runs jshint with ES6 support. */
@@ -67,34 +103,26 @@ gulp.task('scripts', ['jshint'], function() {
         .pipe(plugins.connect.reload());
 });
 
-gulp.task('_Watch', function() {
-    gulp.watch(src.html, ['html']);
-    gulp.watch(src.scripts.all, ['scripts']);
-});
+gulp.task('_Build', ['scripts', 'html', 'themes', 'fonts']);
 
-gulp.task('_Build', ['_Libs', 'scripts', 'html']);
 gulp.task('default', ['_Build']);
 
-//----------------------------------
-const copyFile = function(source, destination) {
-    return gulp.src(source)
-        .pipe(gulp.dest(destination));
-};
+function contentString(theme) {
+    return '' +
+        '@import "node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";\r\n' +
+        '@import "node_modules/bootswatch/' + theme + '/_variables.scss";\r\n' +
+        '@import "node_modules/bootswatch/' + theme + '/_bootswatch.scss";';
+}
 
-gulp.task('angular', function() {
-    return copyFile('node_modules/angular/angular.min.js', 'app/js');
-});
+function string_src(filename, string) {
+    var src = require('stream').Readable({
+        objectMode: true
+    });
 
-gulp.task('bootstrapJS', function() {
-    return copyFile('node_modules/bootstrap/dist/js/bootstrap.min.js', 'app/js');
-});
+    src._read = function() {
+        this.push(new gutil.File({cwd: '', base: '', path: filename, contents: new Buffer(string)}));
+        this.push(null);
+    };
 
-gulp.task('bootstrapCSS', function() {
-    return copyFile('node_modules/bootstrap/dist/css/bootstrap.min.css', 'app/css');
-});
-
-gulp.task('jquery', function() {
-    return copyFile('node_modules/jquery/dist/jquery.min.js', 'app/js');
-});
-
-gulp.task('_Libs', ['angular', 'bootstrapJS', 'bootstrapCSS', 'jquery']);
+    return src;
+}

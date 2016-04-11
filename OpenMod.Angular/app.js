@@ -2,6 +2,7 @@
     server = express(),
     app = require('app'),
     BrowserWindow = require('browser-window'),
+    socketio = require('socket.io'),
     mainWindow;
 
 server.locals.ipAddress = '127.0.0.1';
@@ -10,7 +11,11 @@ server.locals.startupUrl = 'http://' + server.locals.ipAddress + ':' + server.lo
 
 server.use(express.static(__dirname));
 
-server.listen(server.locals.port, server.locals.ipAddress);
+socketio = socketio.listen(server.listen(server.locals.port, server.locals.ipAddress));
+
+socketio.on('connection', function(socket) {
+    console.log('socket connected');
+});
 
 app.on('window-all-closed', function() {
     app.quit();

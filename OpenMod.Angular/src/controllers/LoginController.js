@@ -1,10 +1,9 @@
-﻿export default class LoginComponent {
+﻿export default class LoginController {
     /*@ngInject;*/
-    constructor(LoginService) {
-        console.log('LoginComponent');
-
+    constructor(LoginService, $uibModal) {
         //private fields
         this._loginService = LoginService;
+        this._uibModal = $uibModal;
 
         //public properties
         this.username = null;
@@ -28,4 +27,18 @@
         this.password = data.password || '';
         this.loaded = true;
     }
+    //openModal() {
+
+    //    this._uibModal.open({
+    //        animation: true,
+    //        templateUrl: 'myModalContent.html',
+    //        controller: 'ModalInstanceCtrl',
+    //        size: size,
+    //        resolve: {
+    //            items: function () {
+    //                return $scope.items;
+    //            }
+    //        }
+    //    });
+    //}
 }

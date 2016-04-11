@@ -1,8 +1,6 @@
 ﻿export default class SocketService {
     /*@ngInject;*/
     constructor($rootScope) {
-        console.log('SocketService');
-
         //private fields
         this._rootscope = $rootScope;
         this._socket = io.connect();

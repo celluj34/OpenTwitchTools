@@ -1,8 +1,6 @@
 ﻿export default class LoginService {
     /*@ngInject;*/
     constructor(SocketService) {
-        console.log('LoginService');
-
         //private fields
         this._socketService = SocketService;
     }

@@ -1,22 +1,24 @@
-﻿<html >
-    <head>
+﻿<html ng-app="OpenMod" ng-strict-di>
+    <head ng-controller="CssController as css">
         <title>OpenMod</title>
         <meta content="width=device-width, initial-scale=1" name="viewport">
-        
+        <base href="/">
+
+        <link ng-href="app/themes/bootstrap-{{css.theme}}.css" rel="stylesheet" />
+
         <!--OpenBot modules and components-->
         <script src="app/scripts/app.min.js"></script>
+        <script src="app/scripts/ui-bootstrap-tpls.js"></script>
+
+        <script src="/socket.io/socket.io.js"></script>
     </head>
 
     <!-- 3. Display the application -->
-    <body ng-app="OpenMod" ng-strict-di>
-        <link href="app/themes/bootstrap-flatly.css" rel="stylesheet" />
-
+    <body>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    Nothing here {{'yet' + '!'}}
-
-                    <div ng-controller="LoginComponent as main"></div>
+                    <div ng-view></div>
                 </div>
             </div>
         </div>

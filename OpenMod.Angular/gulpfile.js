@@ -4,20 +4,16 @@ var browserify = require('browserify');
 var vinylSourceStream = require('vinyl-source-stream');
 var vinylBuffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
-var foreach = require('gulp-foreach');
-var path = require('path');
-var sass = require('gulp-sass');
-var cleanCSS = require('gulp-clean-css');
+var rename = require('gulp-rename');
 var plugins = require('gulp-load-plugins')();
 
-var basePath = 'node_modules/bootstrap-sass/assets';
 var build = 'app/';
 
 var src = {
     html: 'src/views/*.html',
     css: {
-        themes: 'node_modules/bootswatch/**/_bootswatch.scss',
-        fonts: basePath + '/fonts/**/*'
+        themes: 'node_modules/bootswatch/**/bootstrap.min.css',
+        fonts: 'node_modules/bootswatch/fonts/*'
     },
     scripts: {
         all: 'src/**/*.js',
@@ -43,8 +39,7 @@ var out = {
 
 gulp.task('html', function() {
     return gulp.src(src.html)
-        .pipe(gulp.dest(out.html.folder))
-        .pipe(plugins.connect.reload());
+        .pipe(gulp.dest(out.html.folder));
 });
 
 gulp.task('fonts', function () {
@@ -52,18 +47,12 @@ gulp.task('fonts', function () {
         .pipe(gulp.dest(out.fonts.folder));
 });
 
-gulp.task('themes', function () {
+gulp.task('themes', function() {
     return gulp.src(src.css.themes)
-        .pipe(foreach(function (stream, file) {
-            var theme = path.basename(path.dirname(file.path));
-            var themeName = 'bootstrap-' + theme + '.scss';
-            var content = contentString(theme);
-
-            return string_src(themeName, content);
-        }))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(cleanCSS({
-            processImport: false
+        .pipe(rename(function(path) {
+            path.basename = 'bootstrap-' + path.dirname;
+            path.extname = '.min.css';
+            path.dirname = '';
         }))
         .pipe(gulp.dest(out.themes.folder));
 });
@@ -99,30 +88,9 @@ gulp.task('scripts', ['jshint'], function() {
         .pipe(plugins.sourcemaps.write('./', {
             includeContent: true
         }))
-        .pipe(gulp.dest(out.scripts.folder))
-        .pipe(plugins.connect.reload());
+        .pipe(gulp.dest(out.scripts.folder));
 });
 
 gulp.task('_Build', ['scripts', 'html', 'themes', 'fonts']);
 
 gulp.task('default', ['_Build']);
-
-function contentString(theme) {
-    return '' +
-        '@import "node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";\r\n' +
-        '@import "node_modules/bootswatch/' + theme + '/_variables.scss";\r\n' +
-        '@import "node_modules/bootswatch/' + theme + '/_bootswatch.scss";';
-}
-
-function string_src(filename, string) {
-    var src = require('stream').Readable({
-        objectMode: true
-    });
-
-    src._read = function() {
-        this.push(new gutil.File({cwd: '', base: '', path: filename, contents: new Buffer(string)}));
-        this.push(null);
-    };
-
-    return src;
-}

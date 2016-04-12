@@ -56,8 +56,6 @@
     <Content Include="app\views\login.html" />
     <Content Include="app\views\oauth_modal.html" />
     <Content Include="src\app.config.js" />
-    <Content Include="src\models\Message.js" />
-    <Content Include="src\models\Channel.js" />
     <Content Include="src\controllers\CssController.js" />
     <Content Include="src\services\CssService.js" />
     <Compile Include="app\scripts\app.min.js" />
@@ -80,7 +78,6 @@
     <Folder Include="app\scripts\" />
     <Folder Include="app\themes\" />
     <Folder Include="app\views\" />
-    <Folder Include="src\models\" />
     <Folder Include="_spec\" />
     <Folder Include="_spec\components\" />
     <Folder Include="_spec\models\" />

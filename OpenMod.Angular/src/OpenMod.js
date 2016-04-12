@@ -1,6 +1,6 @@
 ﻿//angular libraries
 import angular from 'angular';
-import route from 'angular-route';
+import route from 'angular-ui-router';
 import uiBootstrap from 'angular-ui-bootstrap';
 
 // src classes
@@ -13,8 +13,8 @@ import SocketService from './services/SocketService';
 // other things
 import routing from './app.config';
 
-angular.module('OpenMod', ['ngRoute', 'ui.bootstrap'])
-    .config(['$routeProvider', '$locationProvider', routing])
+angular.module('OpenMod', ['ui.router', 'ui.bootstrap'])
+    .config(['$stateProvider', '$urlRouterProvider', routing])
     .service('SocketService', SocketService)
     .service('LoginService', LoginService)
     .service('CssService', CssService)

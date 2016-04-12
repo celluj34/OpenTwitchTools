@@ -1,13 +1,15 @@
-﻿export default function routing($routeProvider, $locationProvider) {
+﻿export default function routing($stateProvider, $urlRouterProvider) {
     'ngInject';
 
     const viewPrefix = '/app/views/';
 
-    $routeProvider
-        .when('/', {
-            templateUrl: `${viewPrefix}login.html`,
-            controller: 'LoginController'
-        })
+    $stateProvider
+            .state('login', {
+                url: '/',
+                templateUrl: `${viewPrefix}login.html`,
+                controller: 'LoginController',
+                controllerAs: 'ctrl'
+            })
         //.when('/chat', {
         //    templateUrl: `${viewPrefix}chat.html`,
         //    controller: 'ChatComponent'
@@ -24,7 +26,7 @@
         //    templateUrl: `${viewPrefix}settings.html`,
         //    controller: 'SettingsComponent'
         //})
-        .otherwise('/');
+        ;
 
-    $locationProvider.html5Mode(true);
+    $urlRouterProvider.otherwise('/');
 }

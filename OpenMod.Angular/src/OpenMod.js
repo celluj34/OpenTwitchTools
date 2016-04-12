@@ -13,7 +13,7 @@ import SocketService from './services/SocketService';
 // other things
 import routing from './app.config';
 
-angular.module('OpenMod', ['ngRoute'])
+angular.module('OpenMod', ['ngRoute', 'ui.bootstrap'])
     .config(['$routeProvider', '$locationProvider', routing])
     .service('SocketService', SocketService)
     .service('LoginService', LoginService)

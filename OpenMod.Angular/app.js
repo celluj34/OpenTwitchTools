@@ -14,7 +14,19 @@ server.use(express.static(__dirname));
 socketio = socketio.listen(server.listen(server.locals.port, server.locals.ipAddress));
 
 socketio.on('connection', function(socket) {
-    console.log('socket connected');
+    socket.on('request-credentials', function(data, callback) {
+        callback({
+            username: 'celluj34',
+            password: 'password',
+            remember: true
+        });
+    });
+
+    socket.on('submit-credentials', function(data, callback) {
+        callback({
+            isValid: true
+        });
+    });
 });
 
 app.on('window-all-closed', function() {

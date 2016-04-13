@@ -1,8 +1,9 @@
 ﻿export default class LoginController {
     /*@ngInject;*/
-    constructor(LoginService, $uibModal) {
+    constructor(LoginService, $state, $uibModal) {
         //private fields
         this._loginService = LoginService;
+        this._state = $state;
         this._uibModal = $uibModal;
 
         //public properties
@@ -30,9 +31,20 @@
         this.loaded = true;
     }
     submitCredentials() {
-    //openModal() {
+        const data = {
+            username: this.username,
+            password: this.password,
+            remember: this.remember
+        };
+
+        this._loginService.submitCredentials(data, () => this.loginSuccessful());
+    }
+    loginSuccessful() {
+        console.log('loginSuccessful()');
+        //this._state.go('chat');
     }
 
+    //openModal() {
     //    this._uibModal.open({
     //        animation: true,
     //        templateUrl: 'myModalContent.html',

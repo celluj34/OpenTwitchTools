@@ -15,8 +15,12 @@
     }
     get config() {
         return {
-            usernamePlaceholder: 'Username',
-            passwordPlaceholder: 'OAuth Token'
+            usernamePlaceholder: 'Username (required)',
+            usernameLabel: 'Username',
+            passwordPlaceholder: 'OAuth Token (required)',
+            passwordLabel: 'OAuth Token',
+            rememberLabel: 'Remember?',
+            submitLabel: 'Submit',
         };
     }
     $onInit() {

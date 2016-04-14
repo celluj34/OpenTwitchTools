@@ -8,7 +8,7 @@
                 url: '/',
                 templateUrl: `${viewPrefix}login.html`,
                 controller: 'LoginController',
-                controllerAs: 'ctrl'
+                controllerAs: 'login'
             })
         //.when('/chat', {
         //    templateUrl: `${viewPrefix}chat.html`,

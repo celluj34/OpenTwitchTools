@@ -1,25 +1,25 @@
 ﻿<div class="well">
-    <form class="clearfix" ng-submit="ctrl.submitCredentials()">
+    <form class="clearfix" ng-submit="login.submitCredentials()">
         <div class="form-group">
-            <label for="username">Username</label>
-            <input class="form-control" id="username" ng-model="ctrl.username" ng-required="true" placeholder="Username (required)" type="text">
+            <label for="username">{{::login.config.usernameLabel}}</label>
+            <input class="form-control" id="username" ng-model="login.username" ng-required="true" placeholder="{{::login.config.usernamePlaceholder}}" type="text">
         </div>
 
         <div class="form-group">
-            <label for="oauth-token">OAuth Token</label>
-            <input class="form-control" id="oauth-token" ng-model="ctrl.password" ng-required="true" placeholder="OAuth Token (required)" type="password">
+            <label for="oauth-token">{{::login.config.passwordLabel}}</label>
+            <input class="form-control" id="oauth-token" ng-model="login.password" ng-required="true" placeholder="{{::login.config.passwordPlaceholder}}" type="password">
         </div>
 
         <div class="checkbox">
             <label>
-                <input ng-model="ctrl.remember" type="checkbox"> Remember OAuth Token?
+                <input ng-model="login.remember" type="checkbox"> {{::login.config.rememberLabel}}
             </label>
         </div>
 
         <!--<button class="btn btn-default btn-sm">Get OAuth Token</button>-->
 
         <div class="pull-right">
-            <button class="btn btn-default btn-sm" type="submit">Submit</button>
+            <button class="btn btn-default btn-sm" type="submit">{{::login.config.submitLabel}}</button>
         </div>
     </form>
 </div>

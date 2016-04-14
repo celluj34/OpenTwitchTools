@@ -8,17 +8,19 @@
         this.theme = null;
         this.loadingPromise = null;
     }
+    get config() {
+        return {
+            defaultTheme: 'flatly'
+        };
+    }
     $onInit() {
+        this._cssService.updateTheme((data) => this.setTheme(data));
+
         this.loadingPromise = this._cssService.getTheme((data) => this.setTheme(data));
     }
     setTheme(data) {
         data = data || {};
 
-        this.theme = data.theme || 'flatly';
+        this.theme = data.theme || this.config.defaultTheme;
     }
-    //updateTheme(data) {
-    //    data = data || {};
-
-    //    this.theme = data.theme || '';
-    //}
 }

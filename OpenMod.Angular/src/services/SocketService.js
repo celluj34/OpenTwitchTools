@@ -16,6 +16,7 @@
 
         socket.on(event, function() {
             var args = arguments;
+
             rootScope.$apply(function() {
                 callback.apply(socket, args);
             });
@@ -27,6 +28,7 @@
 
         socket.emit(event, data, function() {
             var args = arguments;
+
             rootScope.$apply(function() {
                 if(callback) {
                     callback.apply(socket, args);

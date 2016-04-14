@@ -1,60 +1,14 @@
-﻿var express = require('express'),
-    server = express(),
-    app = require('app'),
-    BrowserWindow = require('browser-window'),
-    socketio = require('socket.io'),
-    mainWindow;
+﻿var appLoader = require('./node/app-loader'),
+    server = require('./node/server'),
+    socket = require('./node/socket-config');
 
-server.locals.ipAddress = '127.0.0.1';
-server.locals.port = 18011;
-server.locals.startupUrl = 'http://' + server.locals.ipAddress + ':' + server.locals.port + '/index.html';
+// set up expressJS http server
+//  pass in the current working directory as the path for all static files.
+var serverListener = server.listen(__dirname);
 
-server.use(express.static(__dirname));
+// set up socket.io to listen over expressJS.
+//  pass in the previously- created listener
+socket.init(serverListener);
 
-socketio = socketio.listen(server.listen(server.locals.port, server.locals.ipAddress));
-
-socketio.on('connection', function(socket) {
-    socket.on('request-credentials', function(data, callback) {
-        callback({
-            username: 'celluj34',
-            password: 'password',
-            remember: true
-        });
-    });
-
-    socket.on('submit-credentials', function(data, callback) {
-        callback({
-            isValid: true
-        });
-    });
-});
-
-app.on('window-all-closed', function() {
-    app.quit();
-});
-
-app.on('ready', function() {
-    mainWindow = new BrowserWindow({
-        "minwidth": 400,
-        "width": 800,
-        "minheight": 400,
-        "height": 600,
-        "center": true,
-        "show": false,
-        "resizeable": true,
-        "webPreferences": {
-            "nodeIntegration": false,
-        }
-    });
-
-    //mainWindow.setMenu(null);
-
-    mainWindow.on('closed', function() {
-        mainWindow = null;
-        delete mainWindow;
-    });
-
-    mainWindow.openDevTools();
-    mainWindow.loadURL(server.locals.startupUrl);
-    mainWindow.show();
-});
+// open window and display app
+appLoader.run();

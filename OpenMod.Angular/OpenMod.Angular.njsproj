@@ -58,6 +58,11 @@
     <Content Include="src\app.config.js" />
     <Content Include="src\controllers\CssController.js" />
     <Content Include="src\services\CssService.js" />
+    <Compile Include="node\server.js" />
+    <Compile Include="node\constants.js" />
+    <Compile Include="node\app-loader.js" />
+    <Compile Include="node\socket-handlers.js" />
+    <Compile Include="node\socket-config.js" />
     <Compile Include="app\scripts\app.min.js" />
     <Compile Include="_spec\controllers\CssController_spec.js" />
     <Compile Include="_spec\references.js" />
@@ -82,6 +87,7 @@
     <Folder Include="app\scripts\" />
     <Folder Include="app\themes\" />
     <Folder Include="app\views\" />
+    <Folder Include="node\" />
     <Folder Include="_spec\" />
     <Folder Include="_spec\controllers\" />
     <Folder Include="_spec\services\" />

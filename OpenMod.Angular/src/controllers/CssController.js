@@ -5,7 +5,7 @@
         this._cssService = CssService;
 
         //public properties
-        this.theme = null;
+        this.theme = this.config.defaultTheme;
         this.loadingPromise = null;
     }
     get config() {

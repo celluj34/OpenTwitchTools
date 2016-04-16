@@ -1,27 +1,29 @@
 ﻿<div class="modal-header">
-    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+    <button class="close" ng-click="oauth.close()" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <h4 class="modal-title">Generate oauth token</h4>
+
+    <h4 class="modal-title">
+        {{::oauth.config.title}}
+    </h4>
 </div>
 
 <div class="modal-body">
     <div class="row">
-        <div class="col-md-12" id="webview-wrapper">
-            <div class="text-center webview-loading" data-bind="visible: TokenAuthLoading">
+        <div class="col-md-12" style="height: 400px">
+            <div class="text-center" ng-if="oauth.loading" style="padding-top: 100px">
                 Loading...
             </div>
 
-            <webview src="{{ctrl.tokenAuthUrl}}" id="webview-control"></webview>
+            <webview ng-if="!oauth.loading" src="{{::oauth.config.tokenAuthUrl}}" style="height: 400px"></webview>
         </div>
     </div>
 </div>
 
 <div class="modal-footer">
     <div class="text-left">
-        In order to log in, you must generate an oauth token. This is required. Please use the "Connect with Twitch" button above to generate your token. Copy that token and paste it into the password field on the previous form.
+        {{::oauth.config.footer}}
     </div>
 
-    <button class="btn btn-primary" ng-click="ok()" type="button">OK</button>
-    <button class="btn btn-warning" ng-click="cancel()" type="button">Cancel</button>
+    <button class="btn btn-danger" ng-click="oauth.close()" type="button">{{::oauth.config.close}}</button>
 </div>

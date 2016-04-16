@@ -6,6 +6,7 @@ import uiBootstrap from 'angular-ui-bootstrap';
 // src classes
 import LoginController from './controllers/LoginController';
 import CssController from './controllers/CssController';
+import OAuthController from './controllers/OAuthController';
 import LoginService from './services/LoginService';
 import CssService from './services/CssService';
 import SocketService from './services/SocketService';
@@ -19,4 +20,5 @@ angular.module('OpenMod', ['ui.router', 'ui.bootstrap'])
     .service('LoginService', LoginService)
     .service('CssService', CssService)
     .controller('LoginController', LoginController)
-    .controller('CssController', CssController);
+    .controller('CssController', CssController)
+    .controller('OAuthController', OAuthController);

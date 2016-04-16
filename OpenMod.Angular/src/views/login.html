@@ -1,6 +1,6 @@
 ﻿<div class="well">
     <form class="clearfix" ng-submit="login.submitCredentials()">
-        <uib-alert ng-repeat="error in login.errors" type="danger" close="login.closeAlert($index)">
+        <uib-alert close="login.closeAlert($index)" ng-repeat="error in login.errors" type="danger">
             {{::error}}
         </uib-alert>
 
@@ -20,10 +20,12 @@
             </label>
         </div>
 
-        <!--<button class="btn btn-default btn-sm">Get OAuth Token</button>-->
+        <button class="btn btn-default btn-sm" ng-click="login.openModal()" type="button">
+            {{::login.config.oauthButtonLabel}}
+        </button>
 
         <div class="pull-right">
-            <button class="btn btn-default btn-sm" type="submit">{{::login.config.submitLabel}}</button>
+            <button class="btn btn-success btn-sm" type="submit">{{::login.config.submitLabel}}</button>
         </div>
     </form>
 </div>

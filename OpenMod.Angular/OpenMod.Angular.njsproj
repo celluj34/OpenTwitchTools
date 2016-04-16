@@ -41,6 +41,7 @@
     <Compile Include="node\app-loader.js" />
     <Compile Include="node\socket-handlers.js" />
     <Compile Include="node\socket-config.js" />
+    <Content Include="src\controllers\OAuthController.js" />
     <Compile Include="_spec\controllers\CssController_spec.js" />
     <Compile Include="_spec\references.js" />
     <Compile Include="gulpfile.js" />

@@ -22,6 +22,7 @@
             passwordLabel: 'OAuth Token',
             rememberLabel: 'Remember?',
             submitLabel: 'Submit',
+            oauthButtonLabel: 'Get OAuth Token'
         };
     }
     $onInit() {
@@ -58,18 +59,14 @@
     closeAlert(index) {
         this.errors.splice(index, 1);
     }
-
-    //openModal() {
-    //    this._uibModal.open({
-    //        animation: true,
-    //        templateUrl: 'myModalContent.html',
-    //        controller: 'ModalInstanceCtrl',
-    //        size: size,
-    //        resolve: {
-    //            items: function () {
-    //                return $scope.items;
-    //            }
-    //        }
-    //    });
-    //}
+    openModal() {
+        //I don't like all of this configuration here. Can it be moved to app.config.js (routing)?
+        this._uibModal.open({
+            templateUrl: 'app/views/oauth.html',
+            controller: 'OAuthController',
+            controllerAs: 'oauth',
+            size: 'lg',
+            keyboard : false,
+        });
+    }
 }

@@ -1,5 +1,9 @@
 ﻿<div class="well">
     <form class="clearfix" ng-submit="login.submitCredentials()">
+        <uib-alert ng-repeat="error in login.errors" type="danger" close="login.closeAlert($index)">
+            {{::error}}
+        </uib-alert>
+
         <div class="form-group">
             <label for="username">{{::login.config.usernameLabel}}</label>
             <input class="form-control" id="username" ng-model="login.username" ng-required="true" placeholder="{{::login.config.usernamePlaceholder}}" type="text">

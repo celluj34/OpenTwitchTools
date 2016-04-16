@@ -1,4 +1,5 @@
-﻿// defines the explicit handlers methods for socket, without attaching them to a defined event
+﻿var twitchAuth = require('./auth.js');
+// defines the explicit handlers methods for socket, without attaching them to a defined event
 module.exports = {
     getTheme: (data, callback) => {
         callback({
@@ -13,8 +14,12 @@ module.exports = {
         });
     },
     submitCredentials: (data, callback) => {
-        callback({
-            isValid: true
+        twitchAuth.authenticate(data, (result) => {
+            if(result.isValid && data.remember) {
+                //save
+            }
+
+            callback(result);
         });
     }
 };

@@ -34,6 +34,7 @@
     <Content Include="src\app.config.js" />
     <Content Include="src\controllers\CssController.js" />
     <Content Include="src\services\CssService.js" />
+    <Compile Include="node\auth.js" />
     <Compile Include="node\server.js" />
     <Compile Include="node\constants.js" />
     <Compile Include="node\app-loader.js" />

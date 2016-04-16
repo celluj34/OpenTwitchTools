@@ -31,30 +31,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="app\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="app\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="app\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="app\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="app\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="app\scripts\app.min.js.map" />
-    <Content Include="app\themes\bootstrap-cerulean.min.css" />
-    <Content Include="app\themes\bootstrap-cosmo.min.css" />
-    <Content Include="app\themes\bootstrap-cyborg.min.css" />
-    <Content Include="app\themes\bootstrap-darkly.min.css" />
-    <Content Include="app\themes\bootstrap-flatly.min.css" />
-    <Content Include="app\themes\bootstrap-journal.min.css" />
-    <Content Include="app\themes\bootstrap-lumen.min.css" />
-    <Content Include="app\themes\bootstrap-paper.min.css" />
-    <Content Include="app\themes\bootstrap-readable.min.css" />
-    <Content Include="app\themes\bootstrap-sandstone.min.css" />
-    <Content Include="app\themes\bootstrap-simplex.min.css" />
-    <Content Include="app\themes\bootstrap-slate.min.css" />
-    <Content Include="app\themes\bootstrap-spacelab.min.css" />
-    <Content Include="app\themes\bootstrap-superhero.min.css" />
-    <Content Include="app\themes\bootstrap-united.min.css" />
-    <Content Include="app\themes\bootstrap-yeti.min.css" />
-    <Content Include="app\views\login.html" />
-    <Content Include="app\views\oauth_modal.html" />
     <Content Include="src\app.config.js" />
     <Content Include="src\controllers\CssController.js" />
     <Content Include="src\services\CssService.js" />
@@ -63,12 +39,11 @@
     <Compile Include="node\app-loader.js" />
     <Compile Include="node\socket-handlers.js" />
     <Compile Include="node\socket-config.js" />
-    <Compile Include="app\scripts\app.min.js" />
     <Compile Include="_spec\controllers\CssController_spec.js" />
     <Compile Include="_spec\references.js" />
     <Compile Include="gulpfile.js" />
     <Content Include="app.js" />
-    <Content Include="src\views\oauth_modal.html" />
+    <Content Include="src\views\oauth.html" />
     <Compile Include="_spec\controllers\LoginController_spec.js" />
     <Compile Include="_spec\services\CssService_spec.js" />
     <Compile Include="_spec\services\SocketService_spec.js" />
@@ -82,11 +57,6 @@
     <Content Include="src\views\login.html" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app\" />
-    <Folder Include="app\fonts\" />
-    <Folder Include="app\scripts\" />
-    <Folder Include="app\themes\" />
-    <Folder Include="app\views\" />
     <Folder Include="node\" />
     <Folder Include="_spec\" />
     <Folder Include="_spec\controllers\" />

@@ -7,7 +7,7 @@
 var serverListener = server.listen(__dirname);
 
 // set up socket.io to listen over expressJS.
-//  pass in the previously- created listener
+//  pass in the previously-created listener
 socket.init(serverListener);
 
 // open window and display app

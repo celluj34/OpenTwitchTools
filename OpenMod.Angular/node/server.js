@@ -1,10 +1,10 @@
-﻿var express = require('express'),
-    constants = require('./constants');
+﻿const express = require('express'),
+      constants = require('./constants');
 
 module.exports = {
     listen: (path) => {
         // initialize espress
-        var server = express();
+        const server = express();
 
         // setup static routes for all files
         server.use(express.static(path));

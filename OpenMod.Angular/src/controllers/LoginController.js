@@ -53,7 +53,9 @@
             //this._state.go('chat');
         }
         else {
-            this.errors.push(result.error);
+            if(!this.errors.includes(result.error)) {
+                this.errors.push(result.error);
+            }
         }
     }
     closeAlert(index) {
@@ -66,7 +68,6 @@
             controller: 'OAuthController',
             controllerAs: 'oauth',
             size: 'lg',
-            keyboard : false,
         });
     }
 }

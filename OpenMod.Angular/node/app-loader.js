@@ -1,6 +1,6 @@
-﻿var app = require('app'),
-    constants = require('./constants'),
-    BrowserWindow = require('browser-window');
+﻿const app = require('app'),
+      constants = require('./constants'),
+      BrowserWindow = require('browser-window');
 
 module.exports = {
     run: () => {

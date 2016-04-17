@@ -1,7 +1,7 @@
-﻿var socketio = require('socket.io'),
-    socketHandlers = require('./socket-handlers');
+﻿const socketio = require('socket.io'),
+      socketHandlers = require('./socket-handlers');
 
-var attach = (socket) => {
+const attach = (socket) => {
     socket.on('get-theme', socketHandlers.getTheme);
     socket.on('request-credentials', socketHandlers.requestCredentials);
     socket.on('submit-credentials', socketHandlers.submitCredentials);

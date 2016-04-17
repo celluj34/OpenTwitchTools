@@ -1,4 +1,6 @@
-﻿var twitchAuth = require('./auth.js');
+﻿const twitchAuth = require('./auth.js'),
+      database = require('./database');
+
 // defines the explicit handlers methods for socket, without attaching them to a defined event
 module.exports = {
     getTheme: (data, callback) => {
@@ -7,16 +9,18 @@ module.exports = {
         });
     },
     requestCredentials: (data, callback) => {
-        callback({
-            username: 'celluj34',
-            password: 'password',
-            remember: true
-        });
+        const credentials = database.getCredentials();
+
+        callback(credentials);
     },
     submitCredentials: (data, callback) => {
         twitchAuth.authenticate(data, (result) => {
-            if(result.isValid && data.remember) {
-                //save
+            if(result.isValid) {
+                if(!data.remember) {
+                    data = {};
+                }
+
+                database.saveCredentials(data);
             }
 
             callback(result);

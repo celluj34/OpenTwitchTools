@@ -1,0 +1,16 @@
+{
+  "Settings": [
+    {
+      "id": "Username",
+      "value": ""
+    },
+    {
+      "id": "Password",
+      "value": ""
+    },
+    {
+      "id": "Remember",
+      "value": true
+    }
+  ]
+}

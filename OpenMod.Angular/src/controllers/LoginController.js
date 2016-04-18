@@ -49,8 +49,7 @@
     }
     loginSuccessful(result) {
         if(result.isValid) {
-            alert('go to chat');
-            //this._state.go('chat');
+            this._state.go('chat');
         }
         else {
             if(!this.errors.includes(result.error)) {

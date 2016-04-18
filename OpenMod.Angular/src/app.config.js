@@ -9,6 +9,12 @@
             templateUrl: `${viewPrefix}login.html`,
             controller: 'LoginController',
             controllerAs: 'login'
+        })
+        .state('chat', {
+            url: '/chat',
+            templateUrl: `${viewPrefix}chat.html`,
+            controller: 'ChatController',
+            controllerAs: 'chat'
         });
 
     //.when('/chat', {

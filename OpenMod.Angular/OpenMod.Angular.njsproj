@@ -44,10 +44,13 @@
     <Compile Include="node\socket-handlers.js" />
     <Compile Include="node\socket-config.js" />
     <Content Include="src\controllers\OAuthController.js" />
+    <Content Include="src\controllers\ChatController.js" />
+    <Content Include="src\services\ChatService.js" />
     <Compile Include="_spec\controllers\CssController_spec.js" />
     <Compile Include="_spec\references.js" />
     <Compile Include="gulpfile.js" />
     <Content Include="app.js" />
+    <Content Include="src\views\chat.html" />
     <Content Include="src\views\oauth.html" />
     <Compile Include="_spec\controllers\LoginController_spec.js" />
     <Compile Include="_spec\services\CssService_spec.js" />

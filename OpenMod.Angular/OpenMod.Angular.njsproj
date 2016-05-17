@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>OpenMod.Angular</Name>
     <RootNamespace>OpenMod.Angular</RootNamespace>
-    <NodeExePath>"C:\electron x64\electron.exe"</NodeExePath>
+    <NodeExePath>"C:\electron\electron.exe"</NodeExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

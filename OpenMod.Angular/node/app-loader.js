@@ -1,6 +1,7 @@
-﻿const app = require('app'),
-      constants = require('./constants'),
-      BrowserWindow = require('browser-window');
+﻿const electron = require('electron'),
+      app = electron.app,
+      BrowserWindow = electron.BrowserWindow,
+      constants = require('./constants');
 
 module.exports = {
     run: () => {
@@ -21,7 +22,7 @@ module.exports = {
                 "show": false,
                 "resizeable": true,
                 "webPreferences": {
-                    "nodeIntegration": false,
+                    "nodeIntegration": false
                 }
             });
 

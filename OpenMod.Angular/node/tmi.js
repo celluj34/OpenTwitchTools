@@ -1,7 +1,7 @@
 ﻿const tmi = require('tmi.js');
 
 //generate client settings given a username and password
-var clientSettings = (username, password) => {
+const clientSettings = (username, password) => {
     return {
         options: {
             debug: false
